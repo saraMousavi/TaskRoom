@@ -23,7 +23,7 @@ public interface ColorsDao {
     void delete(Colors colors);
 
     @Query("SELECT * FROM Colors ORDER BY colors_id DESC")
-    LiveData<List<Colors>> getAllColors(Colors colors);
+    LiveData<List<Colors>> getAllColors();
 
     @Query("SELECT * FROM Colors WHERE colors_id=:colors_id")
     LiveData<List<Colors>> getColor(Integer colors_id);
