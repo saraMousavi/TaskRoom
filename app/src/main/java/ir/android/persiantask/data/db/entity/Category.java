@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 /**
  * Room Table Builder
- * Category table for save all Category of Projects
+ * CategoryDao table for save all CategoryDao of Projects
  * */
 @Entity(tableName = "Category")
 public class Category {
