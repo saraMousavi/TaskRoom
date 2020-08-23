@@ -3,6 +3,7 @@ package ir.android.persiantask.data.db.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 /**
@@ -20,13 +21,13 @@ import androidx.room.PrimaryKey;
  * <p>
  * 'tasks_repeateddays' save all day that user choose in custom type and put them near each other with kama
  */
-@Entity(foreignKeys = {@ForeignKey(entity = Label.class,
-        parentColumns = "label_id",
-        childColumns = "label_id"),
-        @ForeignKey(entity = Projects.class,
-                parentColumns = "project_id",
-                childColumns = "projects_id")},
-        tableName = "Tasks")
+@Entity(indices = {@Index("label_id"), @Index("projects_id")},
+        foreignKeys = {@ForeignKey(entity = Label.class,
+                parentColumns = "label_id",
+                childColumns = "label_id"),
+                @ForeignKey(entity = Projects.class,
+                        parentColumns = "project_id",
+                        childColumns = "projects_id")}, tableName = "Tasks")
 public class Tasks {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "tasks_id")
@@ -58,8 +59,6 @@ public class Tasks {
     @ColumnInfo(name = "tasks_comment")
     private String tasks_comment;
 
-    public Tasks() {
-    }
 
     public Tasks(Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype, Integer projects_id, String tasks_title, Integer tasks_isrepeated, Integer tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime, String tasks_repeateddays, Integer tasks_enddate, Integer label_id, String tasks_comment) {
         this.tasks_priority = tasks_priority;
@@ -121,7 +120,7 @@ public class Tasks {
         this.tasks_isrepeated = tasks_isrepeated;
     }
 
-    public Object getTasks_isrepeated() {
+    public Integer getTasks_isrepeated() {
         return tasks_isrepeated;
     }
 

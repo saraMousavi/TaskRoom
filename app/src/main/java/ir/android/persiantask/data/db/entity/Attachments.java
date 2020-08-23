@@ -10,10 +10,10 @@ import androidx.room.PrimaryKey;
  * Attachment table for save attachment path and type for each task
  *
  * */
-@Entity(foreignKeys = @ForeignKey(entity = Tasks.class,
-        parentColumns = "tasks_id",
-        childColumns = "tasks_id"),
-        tableName = "Attachments")
+//foreignKeys = @ForeignKey(entity = Tasks.class,
+//        parentColumns = "tasks_id",
+//        childColumns = "tasks_id"),
+@Entity(tableName = "Attachments")
 public class Attachments {
   @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name="attachments_id")
@@ -24,8 +24,6 @@ public class Attachments {
   private Integer attachments_path;
   @ColumnInfo(name="tasks_id")
   private Integer tasks_id;
-  public Attachments(){
-  }
   public Attachments(Integer attachments_type, Integer attachments_path, Integer tasks_id){
    this.attachments_type=attachments_type;
    this.attachments_path=attachments_path;

@@ -2,6 +2,7 @@ package ir.android.persiantask.data.db.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 /**
@@ -15,8 +16,7 @@ public class Colors {
   private Integer colors_id;
   @ColumnInfo(name="colors_code")
   private String colors_code;
-  public Colors(){
-  }
+
   public Colors(String colors_code){
    this.colors_code=colors_code;
   }

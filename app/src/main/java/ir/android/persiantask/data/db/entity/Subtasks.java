@@ -3,6 +3,7 @@ package ir.android.persiantask.data.db.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 /**
@@ -11,10 +12,10 @@ import androidx.room.PrimaryKey;
  * <p>
  * if(subtasks_iscompleted == 1) check complete checkbox else if(subtasks_iscompleted == 0) uncheck complete checkbox
  */
-@Entity(foreignKeys = @ForeignKey(entity = Tasks.class,
-        parentColumns = "tasks_id",
-        childColumns = "tasks_id"),
-        tableName = "Subtasks")
+@Entity(indices = {@Index("tasks_id")},
+        foreignKeys = @ForeignKey(entity = Tasks.class,
+                parentColumns = "tasks_id",
+                childColumns = "tasks_id"), tableName = "Subtasks")
 public class Subtasks {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "subtasks_id")
@@ -33,6 +34,10 @@ public class Subtasks {
 
     public Integer getSubtasks_iscompleted() {
         return subtasks_iscompleted;
+    }
+
+    public void setSubtasks_iscompleted(Integer subtasks_iscompleted) {
+        this.subtasks_iscompleted = subtasks_iscompleted;
     }
 
     public void setSubtasks_title(String subtasks_title) {

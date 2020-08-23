@@ -3,16 +3,16 @@ package ir.android.persiantask.data.db.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 /**
  * Room Table Builder
  * Label table use for save all Label for Tasks
  * */
-@Entity(foreignKeys = @ForeignKey(entity = Colors.class,
+@Entity(indices = {@Index("color_id")},foreignKeys = @ForeignKey(entity = Colors.class,
         parentColumns = "colors_id",
-        childColumns = "color_id"),
-        tableName = "Label")
+        childColumns = "color_id"),tableName = "Label")
 public class Label {
   @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name="label_id")
@@ -21,8 +21,7 @@ public class Label {
   private Integer color_id;
   @ColumnInfo(name="label_title")
   private String label_title;
-  public Label(){
-  }
+
   public Label(Integer color_id, String label_title){
    this.color_id=color_id;
    this.label_title=label_title;

@@ -17,8 +17,7 @@ public class Category {
   @ColumnInfo(name="category_title")
   private String category_title;
 
-  public Category(){
-  }
+
   public Category(String category_title){
    this.category_title=category_title;
   }
