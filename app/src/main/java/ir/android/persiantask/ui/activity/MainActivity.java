@@ -12,8 +12,8 @@ import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import java.util.ArrayList;
 
 import ir.android.persiantask.R;
-import ir.android.persiantask.ui.adapters.ScreenSlidePagerAdapter;
-import ir.android.persiantask.ui.fragment.ScreenSlidePageFragment;
+import ir.android.persiantask.ui.adapters.ScreenSlidePageAdapterJ;
+import ir.android.persiantask.ui.fragment.ScreenSlidePageFragmentJ;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,12 +21,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayList<ScreenSlidePageFragment> fragList = new ArrayList<>();
-        fragList.add(ScreenSlidePageFragment.newInstance(getString(R.string.Projects), R.color.white));
-        fragList.add(ScreenSlidePageFragment.newInstance(getString(R.string.Reminders), R.color.white));
-        fragList.add(ScreenSlidePageFragment.newInstance(getString(R.string.Calender), R.color.white));
-        fragList.add(ScreenSlidePageFragment.newInstance(getString(R.string.Setting), R.color.white));
-        ScreenSlidePagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(fragList, getSupportFragmentManager());
+        ArrayList<ScreenSlidePageFragmentJ> fragList = new ArrayList<>();
+        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Projects), R.color.white));
+        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Reminders), R.color.white));
+        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Calender), R.color.white));
+        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Setting), R.color.white));
+
+        ScreenSlidePageAdapterJ pagerAdapter = new ScreenSlidePageAdapterJ(fragList, getSupportFragmentManager());
 
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
 //        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "rubik.ttf"));
