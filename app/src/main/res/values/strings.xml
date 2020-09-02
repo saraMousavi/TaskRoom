@@ -105,4 +105,13 @@
     <string name="taskTitle">عنوان تسک</string>
     <string name="createNewProject">ایجاد پروژه جدید</string>
     <string name="subtasks">کارهای فرعی</string>
+    <string name="chart">نمودار</string>
+    <string name="support">پشتیبانی</string>
+    <string name="aboutus">درباره ما</string>
+    <string name="theme">شخصی سازی</string>
+    <string name="projectCategory">دسته بندی پروژه</string>
+    <string name="darkmood">حالت شب</string>
+    <string name="share">اشتراک</string>
+    <string name="versionapp">نسخه برنامه</string>
+    <string name="versionappnum">1.0.0</string>
 </resources>
