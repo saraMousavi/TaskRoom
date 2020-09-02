@@ -9,17 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import ir.android.persiantask.ui.fragment.ScreenSlidePageFragmentJ;
+import ir.android.persiantask.ui.fragment.ProjectsFragment;
 import kotlin.jvm.internal.Intrinsics;
 
-public class ScreenSlidePageAdapterJ extends FragmentStatePagerAdapter {
-    public ScreenSlidePageAdapterJ(@NotNull ArrayList<ScreenSlidePageFragmentJ> fragmentList, @NotNull FragmentManager fm) {
+public class ProjectsAdapter extends FragmentStatePagerAdapter {
+    public ProjectsAdapter(@NotNull ArrayList<ProjectsFragment> fragmentList, @NotNull FragmentManager fm) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         Intrinsics.checkParameterIsNotNull(fragmentList, "fragmentList");
         Intrinsics.checkParameterIsNotNull(fm, "fm");
         this.fragmentList = fragmentList;
     }
-    private final ArrayList<ScreenSlidePageFragmentJ> fragmentList;
+    private final ArrayList<ProjectsFragment> fragmentList;
     @NonNull
     @Override
     public Fragment getItem(int position) {
@@ -28,7 +28,7 @@ public class ScreenSlidePageAdapterJ extends FragmentStatePagerAdapter {
             Intrinsics.checkExpressionValueIsNotNull(fragmentList, "fragmentList[position]");
             return fragmentList;
         } else {
-            return (new ScreenSlidePageFragmentJ());
+            return (new ProjectsFragment());
         }
     }
 

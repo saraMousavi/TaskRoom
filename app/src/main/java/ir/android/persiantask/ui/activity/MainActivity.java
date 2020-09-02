@@ -12,8 +12,8 @@ import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import java.util.ArrayList;
 
 import ir.android.persiantask.R;
-import ir.android.persiantask.ui.adapters.ScreenSlidePageAdapterJ;
-import ir.android.persiantask.ui.fragment.ScreenSlidePageFragmentJ;
+import ir.android.persiantask.ui.adapters.ProjectsAdapter;
+import ir.android.persiantask.ui.fragment.ProjectsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,13 +21,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayList<ScreenSlidePageFragmentJ> fragList = new ArrayList<>();
-        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Projects), R.color.white));
-        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Reminders), R.color.white));
-        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Calender), R.color.white));
-        fragList.add(ScreenSlidePageFragmentJ.newInstance(getString(R.string.Setting), R.color.white));
+        ArrayList<ProjectsFragment> fragList = new ArrayList<>();
+        fragList.add(ProjectsFragment.newInstance(getString(R.string.Projects), R.color.white));
+        fragList.add(ProjectsFragment.newInstance(getString(R.string.Reminders), R.color.white));
+        fragList.add(ProjectsFragment.newInstance(getString(R.string.Calender), R.color.white));
+        fragList.add(ProjectsFragment.newInstance(getString(R.string.Setting), R.color.white));
 
-        ScreenSlidePageAdapterJ pagerAdapter = new ScreenSlidePageAdapterJ(fragList, getSupportFragmentManager());
+        ProjectsAdapter pagerAdapter = new ProjectsAdapter(fragList, getSupportFragmentManager());
 
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
 //        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "rubik.ttf"));
