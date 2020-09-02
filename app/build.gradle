@@ -5,6 +5,10 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     dataBinding.enabled = true
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "ir.android.persiantask"
         minSdkVersion 19
@@ -72,6 +76,8 @@ dependencies {
 
 
     implementation 'com.android.support:multidex:1.0.3'
+    //calender view
+    implementation 'com.github.mohamadian:PersianHorizontalExpCalendar:1.5'
 
 
 }

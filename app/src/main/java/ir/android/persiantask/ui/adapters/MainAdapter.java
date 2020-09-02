@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import ir.android.persiantask.ui.fragment.ProjectsFragment;
 import kotlin.jvm.internal.Intrinsics;
 
-public class ProjectsAdapter extends FragmentStatePagerAdapter {
-    public ProjectsAdapter(@NotNull ArrayList<ProjectsFragment> fragmentList, @NotNull FragmentManager fm) {
+public class MainAdapter extends FragmentStatePagerAdapter {
+    public MainAdapter(@NotNull ArrayList<Fragment> fragmentList, @NotNull FragmentManager fm) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         Intrinsics.checkParameterIsNotNull(fragmentList, "fragmentList");
         Intrinsics.checkParameterIsNotNull(fm, "fm");
         this.fragmentList = fragmentList;
     }
-    private final ArrayList<ProjectsFragment> fragmentList;
+    private final ArrayList<Fragment> fragmentList;
     @NonNull
     @Override
     public Fragment getItem(int position) {

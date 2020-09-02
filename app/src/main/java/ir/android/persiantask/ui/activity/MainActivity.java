@@ -1,6 +1,7 @@
 package ir.android.persiantask.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
@@ -12,7 +13,8 @@ import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import java.util.ArrayList;
 
 import ir.android.persiantask.R;
-import ir.android.persiantask.ui.adapters.ProjectsAdapter;
+import ir.android.persiantask.ui.adapters.MainAdapter;
+import ir.android.persiantask.ui.fragment.CalenderFragment;
 import ir.android.persiantask.ui.fragment.ProjectsFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayList<ProjectsFragment> fragList = new ArrayList<>();
+        ArrayList<Fragment> fragList = new ArrayList<>();
         fragList.add(ProjectsFragment.newInstance(getString(R.string.Projects), R.color.white));
         fragList.add(ProjectsFragment.newInstance(getString(R.string.Reminders), R.color.white));
-        fragList.add(ProjectsFragment.newInstance(getString(R.string.Calender), R.color.white));
+        fragList.add(CalenderFragment.newInstance(getString(R.string.Calender), R.color.white));
         fragList.add(ProjectsFragment.newInstance(getString(R.string.Setting), R.color.white));
 
-        ProjectsAdapter pagerAdapter = new ProjectsAdapter(fragList, getSupportFragmentManager());
+        MainAdapter pagerAdapter = new MainAdapter(fragList, getSupportFragmentManager());
 
         final BubbleNavigationLinearView bubbleNavigationLinearView = findViewById(R.id.bottom_navigation_view_linear);
 //        bubbleNavigationLinearView.setTypeface(Typeface.createFromAsset(getAssets(), "rubik.ttf"));
