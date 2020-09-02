@@ -13,11 +13,11 @@
         android:id="@+id/reminders_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/guideline3"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="parent" />
 
 
