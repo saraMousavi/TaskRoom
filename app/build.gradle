@@ -79,6 +79,9 @@ dependencies {
     //calender view
     implementation 'com.github.mohamadian:PersianHorizontalExpCalendar:1.5'
 
+    //RollingLayoutManager
+    implementation 'com.github.VRGsoftUA:RollingLayoutManager:1.0'
+
 
 }
 configurations.all {

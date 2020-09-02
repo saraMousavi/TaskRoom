@@ -17,6 +17,7 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.ui.adapters.MainAdapter;
 import ir.android.persiantask.ui.fragment.CalenderFragment;
 import ir.android.persiantask.ui.fragment.ProjectsFragment;
+import ir.android.persiantask.ui.fragment.ReminderFragment;
 import ir.android.persiantask.ui.fragment.SettingFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ArrayList<Fragment> fragList = new ArrayList<>();
         fragList.add(ProjectsFragment.newInstance(getString(R.string.Projects), R.color.white));
-        fragList.add(ProjectsFragment.newInstance(getString(R.string.Reminders), R.color.white));
+        fragList.add(ReminderFragment.newInstance(getString(R.string.Reminders), R.color.white));
         fragList.add(CalenderFragment.newInstance(getString(R.string.Calender), R.color.white));
         fragList.add(SettingFragment.newInstance(getString(R.string.Setting), R.color.white));
 

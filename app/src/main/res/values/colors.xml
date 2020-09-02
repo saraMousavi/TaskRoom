@@ -11,6 +11,7 @@
     <color name="cyan">#18CECF</color>
     <color name="pink">#FFDBD3</color>
     <color name="green">#32BD9F</color>
+    <color name="light_green">#85CB33</color>
     <color name="orange">#FFA78F</color>
 
 </resources>

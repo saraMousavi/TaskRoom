@@ -56,22 +56,23 @@ public class Reminders {
     private Integer reminders_crdate;
     @ColumnInfo(name = "reminders_repeatedtype")
     private Integer reminders_repeatedtype;
+    @ColumnInfo(name = "reminders_active")
+    private Integer reminders_active;
     @ColumnInfo(name = "label_id")
     private Integer label_id;
 
-    public Reminders(Integer reminders_update, Integer reminders_type, String reminders_comment, Integer reminders_priority, Integer reminders_upuser, Integer reminders_cruser, Integer reminders_isrepeated, String reminders_title, Integer reminders_time, String reminders_repeatedday, Integer reminders_crdate, Integer reminders_repeatedtype, Integer label_id) {
-        this.reminders_update = reminders_update;
+
+
+    public Reminders(Integer reminders_type, String reminders_comment, Integer reminders_priority, Integer reminders_isrepeated, String reminders_title, Integer reminders_time, String reminders_repeatedday, Integer reminders_repeatedtype,Integer reminders_active, Integer label_id) {
         this.reminders_type = reminders_type;
         this.reminders_comment = reminders_comment;
         this.reminders_priority = reminders_priority;
-        this.reminders_upuser = reminders_upuser;
-        this.reminders_cruser = reminders_cruser;
         this.reminders_isrepeated = reminders_isrepeated;
         this.reminders_title = reminders_title;
         this.reminders_time = reminders_time;
         this.reminders_repeatedday = reminders_repeatedday;
-        this.reminders_crdate = reminders_crdate;
         this.reminders_repeatedtype = reminders_repeatedtype;
+        this.reminders_active = reminders_active;
         this.label_id = label_id;
     }
 
@@ -177,6 +178,14 @@ public class Reminders {
 
     public Integer getReminders_repeatedtype() {
         return reminders_repeatedtype;
+    }
+
+    public Integer getReminders_active() {
+        return reminders_active;
+    }
+
+    public void setReminders_active(Integer reminders_active) {
+        this.reminders_active = reminders_active;
     }
 
     public void setLabel_id(Integer label_id) {

@@ -90,7 +90,6 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        System.out.println("mTasks.size() = " + mTasks.size());
         return mTasks.size();
     }
 

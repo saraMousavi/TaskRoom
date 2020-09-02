@@ -114,4 +114,9 @@
     <string name="share">اشتراک</string>
     <string name="versionapp">نسخه برنامه</string>
     <string name="versionappnum">1.0.0</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reminder">یادآور</string>
+    <string name="inactive">غیرفعال</string>
+    <string name="active">فعال</string>
 </resources>
