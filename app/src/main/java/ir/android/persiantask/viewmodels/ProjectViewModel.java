@@ -1,4 +1,4 @@
-package ir.android.persiantask.ui.activity.project;
+package ir.android.persiantask.viewmodels;
 
 import android.app.Application;
 

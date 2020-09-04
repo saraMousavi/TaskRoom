@@ -10,13 +10,11 @@ import androidx.room.PrimaryKey;
  * Room Table Builder
  * project table for save all project define with user that each project have multi task
  */
-@Entity(indices = {@Index("colors_id"),@Index("category_id")},
-        foreignKeys = {@ForeignKey(entity = Colors.class,
-        parentColumns = "colors_id",
-        childColumns = "colors_id"),
-        @ForeignKey(entity = Category.class,
-                parentColumns = "category_id",
-                childColumns = "category_id")}, tableName = "Projects")
+//indices = {@Index("category_id")},
+//        foreignKeys = {@ForeignKey(entity = Category.class,
+//        parentColumns = "category_id",
+//        childColumns = "category_id")},
+@Entity(tableName = "Projects")
 public class Projects {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "project_id")
@@ -38,15 +36,11 @@ public class Projects {
     @ColumnInfo(name = "projects_title")
     private String projects_title;
 
-    public Projects(Integer projects_crdate, Integer projects_iscompleted, Integer category_id, Integer projects_update, Integer projects_upuser, Integer colors_id, Integer projects_cruer, String projects_title) {
-        this.projects_crdate = projects_crdate;
+    public Projects(Integer projects_iscompleted, Integer category_id, String projects_title, Integer colors_id) {
         this.projects_iscompleted = projects_iscompleted;
         this.category_id = category_id;
-        this.projects_update = projects_update;
-        this.projects_upuser = projects_upuser;
-        this.colors_id = colors_id;
-        this.projects_cruer = projects_cruer;
         this.projects_title = projects_title;
+        this.colors_id = colors_id;
     }
 
     public void setProjects_crdate(Integer projects_crdate) {

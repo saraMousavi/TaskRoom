@@ -28,5 +28,5 @@ public interface ProjectsDao {
 
     @Query("SELECT * FROM Projects WHERE projects_cruer=:projects_cruer")
     LiveData<List<Projects>> getProjects(Integer projects_cruer);
-    
+
 }

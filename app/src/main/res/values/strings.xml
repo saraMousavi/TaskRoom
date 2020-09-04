@@ -119,4 +119,6 @@
     <string name="reminder">یادآور</string>
     <string name="inactive">غیرفعال</string>
     <string name="active">فعال</string>
+    <string name="successInsertProject">ثبت پروژه با موفقیت انجام شد.</string>
+    <string name="createNewTask">ایجاد کار جدید</string>
 </resources>

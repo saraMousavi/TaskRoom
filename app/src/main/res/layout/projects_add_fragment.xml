@@ -15,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/projectsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/projectTitle" />
@@ -26,12 +27,12 @@
         style="@style/appSpinner"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/insertProjectBtn"
         app:layout_constraintTop_toBottomOf="@+id/editText"
         android:layout_marginTop="12dp"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/insertProjectBtn"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:text="@string/insert"
