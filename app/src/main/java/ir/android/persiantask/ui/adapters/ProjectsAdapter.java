@@ -2,6 +2,7 @@ package ir.android.persiantask.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +12,37 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
+import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.ui.fragment.AddProjectBottomSheetFragment;
+import ir.android.persiantask.ui.fragment.TasksFragment;
+import ir.android.persiantask.viewmodels.TaskViewModel;
 
 public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHolder> {
     private ProjectsAdapter.OnItemClickListener listener;
     private final int VIEW_TYPE_ITEM = 0, VIEW_TYPE_ADD = 1;
     private FragmentManager mFragmentManager;
     private FragmentActivity mFragmentActivity;
+    private LifecycleOwner owner;
     private int clickedPosition = 0;
+    List<Fragment> fragments = new ArrayList<>();
+    List<String> fragmentTitle = new ArrayList<>();
+    List<Integer> fragmentId = new ArrayList<>();
 
     private static final DiffUtil.ItemCallback<Projects> DIFF_CALLBACK = new DiffUtil.ItemCallback<Projects>() {
         @Override
@@ -42,10 +58,11 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     };
 
 
-    public ProjectsAdapter(FragmentManager fragmentManager, FragmentActivity fragmentActivity) {
+    public ProjectsAdapter(FragmentManager fragmentManager, FragmentActivity fragmentActivity, LifecycleOwner owner) {
         super(DIFF_CALLBACK);
         mFragmentManager = fragmentManager;
         mFragmentActivity = fragmentActivity;
+        this.owner = owner;
     }
 
     public class AddViewHolder extends RecyclerView.ViewHolder {
@@ -103,10 +120,25 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     clickedPosition = position;
+                    listener.OnItemClick(getProjectAt(position));
                     notifyDataSetChanged();
                 }
             });
-            if(clickedPosition == position){
+
+            itemViewHolder.projectsBox.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AddProjectBottomSheetFragment addProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isEditProjects", true);
+                    bundle.putString("projects_title", getProjectAt(position).getProjects_title());
+                    addProjectBottomSheetFragment.setArguments(bundle);
+                    addProjectBottomSheetFragment.show(mFragmentManager, "");
+                    return false;
+                }
+            });
+
+            if (clickedPosition == position) {
                 itemViewHolder.projectsBox.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.dark_blue_corner_shape));
                 itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                 itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
@@ -117,6 +149,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
                 itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
             }
+            itemViewHolder.tasksNumVal.setText(String.valueOf(getProjectAt(position).getProjects_tasks_num()));
         } else if (holder instanceof AddViewHolder) {
             final AddViewHolder addViewHolder = (AddViewHolder) holder;
             addViewHolder.addPrjectIcon.setVisibility(View.VISIBLE);
@@ -124,6 +157,9 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     AddProjectBottomSheetFragment addProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isEditProjects", false);
+                    addProjectBottomSheetFragment.setArguments(bundle);
                     addProjectBottomSheetFragment.show(mFragmentManager, "");
                 }
             });
@@ -147,4 +183,5 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     public void setOnItemClickListener(ProjectsAdapter.OnItemClickListener listener) {
         this.listener = listener;
     }
+
 }

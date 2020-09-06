@@ -6,15 +6,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,13 +42,17 @@ import java.util.Objects;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
+import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.viewmodels.TaskViewModel;
 import kotlin.jvm.JvmStatic;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class ProjectsFragment extends Fragment implements AddProjectBottomSheetFragment.SubmitClickListener {
@@ -53,15 +64,17 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private int bgColorResId = R.color.white;
     private View inflatedView;
     private RecyclerView projectRecyclerView;
-    private RecyclerView taskRecyclerView;
-    private TasksAdapter taskAdapter;
     private ProjectsAdapter projectsAdapter;
     private CollapsingToolbarLayout toolBarLayout;
-    private FloatingActionButton addTaskBtn;
     private String selectedProjectTitle = "";
     private ProjectsFragmentBinding projectsFragmentBinding;
     private ProjectViewModel projectViewModel;
-    private TaskViewModel taskViewModel;
+    private Integer selectedProjectedID = 1;
+    private AppBarLayout mAppBarLayout;
+    private Button firstAddProjectBtn, firstAddTaskBtn;
+    private ConstraintLayout tasksEmptyPage, projectsEmptyPage;
+    private ImageView emptyTaskImage;
+    private List<Fragment> taskFragList;
 
 
     @Override
@@ -81,14 +94,85 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         projectsFragmentBinding = DataBindingUtil.inflate(
                 inflater, R.layout.projects_fragment, container, false);
         View view = projectsFragmentBinding.getRoot();
-        projectViewModel = ViewModelProviders.of(this).get(ProjectViewModel.class);
-        TasksViewModelFactory factory = new TasksViewModelFactory(getActivity().getApplication(), 1);
-        taskViewModel = ViewModelProviders.of(this, factory).get(TaskViewModel.class);
-        projectsFragmentBinding.setProjectsViewModel(projectViewModel);
-        projectsFragmentBinding.setTasksViewModel(taskViewModel);
         this.inflatedView = view;
+        init();
+        //show project horizontal recycler view
+        projectsRecyclerView();
+
+        //onclick event for each project recycler view item
+        projectRecyclerViewItemOnclick();
+
+        firstAddProjectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddProjectBottomSheetFragment addProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isEditProjects", false);
+                addProjectBottomSheetFragment.setArguments(bundle);
+                addProjectBottomSheetFragment.show(getChildFragmentManager(), "");
+            }
+        });
 
         return view;
+    }
+
+    /**
+     * onclick event for each project recycler view item
+     */
+    private void projectRecyclerViewItemOnclick() {
+        projectsAdapter.setOnItemClickListener(new ProjectsAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Projects projects) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment selectedFragment = taskFragList.get(projects.getProject_id() - 1);
+                ft.replace(R.id.taskFragmentContainer, selectedFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
+
+    }
+
+    /**
+     * show project data in horizontal recycler view
+     */
+    private void projectsRecyclerView() {
+        taskFragList = new ArrayList<>();
+        projectViewModel.getAllProjects().observe(this, new Observer<List<Projects>>() {
+            @Override
+            public void onChanged(List<Projects> projects) {
+
+                for (Projects project : projects) {
+                    TasksFragment tasksFragment = new TasksFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("projectID", project.getProject_id());
+                    tasksFragment.setArguments(bundle);
+                    taskFragList.add(tasksFragment);
+                }
+                if (projects.size() == 0) {
+                    projectsEmptyPage.setVisibility(View.VISIBLE);
+                    mAppBarLayout.setVisibility(View.GONE);
+                } else {
+                    //null added to list for add Btn at the end of recyclerview
+                    projects.add(null);
+                    projectsEmptyPage.setVisibility(View.GONE);
+                    mAppBarLayout.setVisibility(View.VISIBLE);
+                    projectRecyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (projectRecyclerView.findViewHolderForAdapterPosition(0) != null) {
+//                                Objects.requireNonNull(projectRecyclerView.findViewHolderForAdapterPosition(0)).itemView.performClick();
+                            }
+                        }
+                    }, 40);
+                }
+                projectsAdapter.submitList(projects);
+            }
+        });
+        projectRecyclerView.setAdapter(projectsAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        layoutManager.setReverseLayout(true);
+        projectRecyclerView.setLayoutManager(layoutManager);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -97,26 +181,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         super.onActivityCreated(savedInstanceState);
 
         this.inflatedView.setBackgroundColor(ContextCompat.getColor(Objects.requireNonNull(this.getContext()), this.bgColorResId));
-        init();
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
 
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-            }
-        }).attachToRecyclerView(taskRecyclerView);
-//        projectsAdapter.setOnItemClickListener(new ProjectsAdapter.OnItemClickListener() {
-//            @Override
-//            public void OnItemClick(Projects projects) {
-//
-//            }
-//        });
 
 //        taskAdapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener(){
 //            @Override
@@ -128,8 +194,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 //
 //            }
 //        });
-
-        AppBarLayout mAppBarLayout = (AppBarLayout) this.inflatedView.findViewById(R.id.app_bar);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -161,58 +225,28 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         return Companion.newInstance(title, bgColorId);
     }
 
+    /**
+     * initialize parameter and assign them to layout's element
+     */
     private void init() {
+        mAppBarLayout = (AppBarLayout) this.inflatedView.findViewById(R.id.app_bar);
+        ProjectsViewModelFactory factory = new ProjectsViewModelFactory(getActivity().getApplication(), null);
+        projectViewModel = ViewModelProviders.of(this, factory).get(ProjectViewModel.class);
+        projectsFragmentBinding.setProjectsViewModel(projectViewModel);
         projectRecyclerView = this.inflatedView.findViewById(R.id.projectRecyclerView);
-        ProjectsAdapter projectsAdapter = new ProjectsAdapter(getChildFragmentManager(), getActivity());
-        projectViewModel.getAllProjects().observe(this, new Observer<List<Projects>>() {
-            @Override
-            public void onChanged(List<Projects> projects) {
-                //null added to list for add Btn at the end of recyclerview
-                projects.add(null);
-                projectsAdapter.submitList(projects);
-            }
-        });
-        taskViewModel.getAllTasks().observe(this, new Observer<List<Tasks>>() {
-            @Override
-            public void onChanged(List<Tasks> tasks) {
-                taskAdapter.submitList(tasks);
-            }
-        });
-        projectRecyclerView.setAdapter(projectsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-        layoutManager.setReverseLayout(true);
-        projectRecyclerView.setLayoutManager(layoutManager);
+        firstAddProjectBtn = this.inflatedView.findViewById(R.id.firstAddProjectBtn);
+        projectsAdapter = new ProjectsAdapter(getChildFragmentManager(), getActivity(), this);
+        projectsEmptyPage = inflatedView.findViewById(R.id.projectsEmptyPage);
+        emptyTaskImage = inflatedView.findViewById(R.id.emptyTaskImage);
+        tasksEmptyPage = inflatedView.findViewById(R.id.tasksEmptyPage);
 
-        taskRecyclerView = this.inflatedView.findViewById(R.id.taskRecyclerView);
-        addTaskBtn = this.inflatedView.findViewById(R.id.addTaskBtn);
-
-        List<Tasks> tasks = new ArrayList<>();
-        Tasks task = new Tasks(1, 1, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task1 = new Tasks(1, 0, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task2 = new Tasks(1, 1, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task3 = new Tasks(1, 0, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task4 = new Tasks(1, 1, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        tasks.add(task);
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        tasks.add(task4);
-        taskAdapter = new TasksAdapter(getActivity(), tasks);
-        taskRecyclerView.setAdapter(taskAdapter);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskRecyclerView.setNestedScrollingEnabled(false);
 
         final Toolbar toolbar = (Toolbar) this.inflatedView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         toolBarLayout = (CollapsingToolbarLayout) this.inflatedView.findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle(" ");
-//        toolbar.hideOverflowMenu();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     @Override
     public void onClickSubmit(Projects projects) {

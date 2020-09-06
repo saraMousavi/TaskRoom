@@ -121,4 +121,6 @@
     <string name="active">فعال</string>
     <string name="successInsertProject">ثبت پروژه با موفقیت انجام شد.</string>
     <string name="createNewTask">ایجاد کار جدید</string>
+    <string name="successInsertTask">ثبت کار با موفقیت انجام شد.</string>
+    <string name="edit">ویرایش</string>
 </resources>

@@ -32,14 +32,29 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         View inflatedView = inflater.inflate(R.layout.projects_add_fragment, container, false);
         this.inflatedView = inflatedView;
         init();
-        insertProjectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Projects projects = new Projects(1,1,projectsTitle.getText().toString(), 1);
-                submitClickListener.onClickSubmit(projects);
-                dismiss();
-            }
-        });
+        Bundle bundle = getArguments();
+        if(bundle.getBoolean("isEditProjects")){
+            insertProjectBtn.setText(getString(R.string.edit));
+            projectsTitle.setText(bundle.getString("projects_title"));
+            insertProjectBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Projects projects = new Projects(1,1,projectsTitle.getText().toString(), 1, 0);
+                    submitClickListener.onClickSubmit(projects);
+                    dismiss();
+                }
+            });
+        } else {
+            insertProjectBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Projects projects = new Projects(1,1,projectsTitle.getText().toString(), 1, 0);
+                    // TODO: 9/5/2020 change insert to update
+                    submitClickListener.onClickSubmit(projects);
+                    dismiss();
+                }
+            });
+        }
         return inflatedView;
     }
 

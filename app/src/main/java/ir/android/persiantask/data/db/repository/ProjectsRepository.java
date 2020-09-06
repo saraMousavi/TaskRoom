@@ -14,11 +14,13 @@ import ir.android.persiantask.data.db.entity.Projects;
 public class ProjectsRepository {
     private ProjectsDao projectsDao;
     private LiveData<List<Projects>> allProjects;
+    private LiveData<Projects> projectByID;
 
-    public ProjectsRepository(Application application) {
+    public ProjectsRepository(Application application, Integer projectID) {
         PersianTaskDb persianTaskDb = PersianTaskDb.getInstance(application);
         projectsDao = persianTaskDb.projectsDao();
         allProjects = projectsDao.getAllProjects();
+        projectByID = projectsDao.getProjectsByID(projectID);
     }
 
     public void insert(Projects projects) {
@@ -35,6 +37,10 @@ public class ProjectsRepository {
 
     public LiveData<List<Projects>> getAllProjects() {
         return allProjects;
+    }
+
+    public LiveData<Projects> getProjectsByID() {
+        return projectByID;
     }
 
     private static class InsertProjectsAsyncTask extends AsyncTask<Projects, Void, Void> {

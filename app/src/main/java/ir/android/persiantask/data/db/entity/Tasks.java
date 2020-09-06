@@ -21,11 +21,11 @@ import androidx.room.PrimaryKey;
  * <p>
  * 'tasks_repeateddays' save all day that user choose in custom type and put them near each other with kama
  */
-@Entity(indices = {@Index("label_id"), @Index("projects_id")},
-        foreignKeys = {@ForeignKey(entity = Label.class,
-                parentColumns = "label_id",
-                childColumns = "label_id"),
-                @ForeignKey(entity = Projects.class,
+//@ForeignKey(entity = Label.class,
+//        parentColumns = "label_id",
+//        childColumns = "label_id"),
+@Entity(indices = {@Index("projects_id")},
+        foreignKeys = {@ForeignKey(entity = Projects.class,
                         parentColumns = "project_id",
                         childColumns = "projects_id")}, tableName = "Tasks")
 public class Tasks {

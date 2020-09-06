@@ -35,12 +35,15 @@ public class Projects {
     private Integer projects_cruer;
     @ColumnInfo(name = "projects_title")
     private String projects_title;
+    @ColumnInfo(name = "projects_tasks_num")
+    private Integer projects_tasks_num;
 
-    public Projects(Integer projects_iscompleted, Integer category_id, String projects_title, Integer colors_id) {
+    public Projects(Integer projects_iscompleted, Integer category_id, String projects_title, Integer colors_id, Integer projects_tasks_num) {
         this.projects_iscompleted = projects_iscompleted;
         this.category_id = category_id;
         this.projects_title = projects_title;
         this.colors_id = colors_id;
+        this.projects_tasks_num = projects_tasks_num;
     }
 
     public void setProjects_crdate(Integer projects_crdate) {
@@ -113,5 +116,13 @@ public class Projects {
 
     public String getProjects_title() {
         return projects_title;
+    }
+
+    public Integer getProjects_tasks_num() {
+        return projects_tasks_num;
+    }
+
+    public void setProjects_tasks_num(Integer projects_tasks_num) {
+        this.projects_tasks_num = projects_tasks_num;
     }
 }

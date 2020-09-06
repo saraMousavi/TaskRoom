@@ -101,7 +101,7 @@ public class CalenderFragment extends Fragment {
         tasks.add(task2);
         tasks.add(task3);
         tasks.add(task4);
-        taskAdapter = new TasksAdapter(getActivity(), tasks);
+        taskAdapter = new TasksAdapter(getActivity());
         taskRecyclerView.setAdapter(taskAdapter);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

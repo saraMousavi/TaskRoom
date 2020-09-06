@@ -14,11 +14,13 @@ import ir.android.persiantask.data.db.repository.ProjectsRepository;
 public class ProjectViewModel extends AndroidViewModel {
     private ProjectsRepository projectsRepository;
     private LiveData<List<Projects>> allProjects;
+    private LiveData<Projects> projectByID;
 
-    public ProjectViewModel(@NonNull Application application) {
+    public ProjectViewModel(@NonNull Application application, Integer projectID) {
         super(application);
-        projectsRepository = new ProjectsRepository(application);
+        projectsRepository = new ProjectsRepository(application, projectID);
         allProjects = projectsRepository.getAllProjects();
+        projectByID = projectsRepository.getProjectsByID();
     }
 
     public void insert(Projects projects){
@@ -35,5 +37,9 @@ public class ProjectViewModel extends AndroidViewModel {
 
     public LiveData<List<Projects>> getAllProjects(){
         return allProjects;
+    }
+
+    public LiveData<Projects> getProjectsByID(){
+        return projectByID;
     }
 }

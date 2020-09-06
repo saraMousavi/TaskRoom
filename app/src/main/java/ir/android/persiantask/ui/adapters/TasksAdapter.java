@@ -15,13 +15,11 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Tasks;
 
 public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
-    private List<Tasks> mTasks;
     private OnItemClickListener listener;
     private FragmentActivity mFragmentActivity;
 
@@ -39,9 +37,8 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     };
 
 
-    public TasksAdapter(FragmentActivity activity, List<Tasks> tasks) {
+    public TasksAdapter(FragmentActivity activity) {
         super(DIFF_CALLBACK);
-        mTasks = tasks;
         mFragmentActivity = activity;
     }
 
@@ -70,14 +67,14 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View taskView = inflater.inflate(R.layout.taks_item_recyclerview, parent, false);
+        View taskView = inflater.inflate(R.layout.tasks_item_recyclerview, parent, false);
         ViewHolder viewHolder = new ViewHolder(taskView);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Tasks tasks = mTasks.get(position);
+        Tasks tasks = getItem(position);
         holder.taskTitle.setText(tasks.getTasks_title());
         holder.tasksIsCompleted.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,10 +85,6 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return mTasks.size();
-    }
 
     public Tasks getTaskAt(int position) {
         return getItem(position);

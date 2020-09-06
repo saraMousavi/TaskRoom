@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="TaskViewModel"
+            type="ir.android.persiantask.viewmodels.TaskViewModel" />
+    </data>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/white_bg_corner_shape">
+        <include android:id="@+id/taskList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/tasks_fragment_full_list"/>
+
+        <include android:id="@+id/taskEmptyList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/tasks_fragment_empty_list"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
