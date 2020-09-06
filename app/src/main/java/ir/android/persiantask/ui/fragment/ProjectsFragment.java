@@ -7,29 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,23 +35,15 @@ import java.util.Objects;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
-import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
-import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
-import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
-import ir.android.persiantask.ui.adapters.TasksAdapter;
-import ir.android.persiantask.viewmodels.TaskViewModel;
 import kotlin.jvm.JvmStatic;
 
-import static android.app.Activity.RESULT_OK;
 
 
 public class ProjectsFragment extends Fragment implements AddProjectBottomSheetFragment.SubmitClickListener {
-    public static final int ADD_TASK_REQUEST = 1;
-    public static final int EDIT_TASK_REQUEST = 2;
     private static final String ARG_TITLE = "arg_title";
     private static final String ARG_BG_COLOR = "arg_bg_color";
     private String title = "Default title.";
@@ -69,11 +55,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private String selectedProjectTitle = "";
     private ProjectsFragmentBinding projectsFragmentBinding;
     private ProjectViewModel projectViewModel;
-    private Integer selectedProjectedID = 1;
     private AppBarLayout mAppBarLayout;
-    private Button firstAddProjectBtn, firstAddTaskBtn;
-    private ConstraintLayout tasksEmptyPage, projectsEmptyPage;
-    private ImageView emptyTaskImage;
+    private Button firstAddProjectBtn;
+    private ConstraintLayout projectsEmptyPage;
     private List<Fragment> taskFragList;
 
 
@@ -237,8 +221,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         firstAddProjectBtn = this.inflatedView.findViewById(R.id.firstAddProjectBtn);
         projectsAdapter = new ProjectsAdapter(getChildFragmentManager(), getActivity(), this);
         projectsEmptyPage = inflatedView.findViewById(R.id.projectsEmptyPage);
-        emptyTaskImage = inflatedView.findViewById(R.id.emptyTaskImage);
-        tasksEmptyPage = inflatedView.findViewById(R.id.tasksEmptyPage);
 
 
         final Toolbar toolbar = (Toolbar) this.inflatedView.findViewById(R.id.toolbar);
