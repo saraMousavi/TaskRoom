@@ -12,14 +12,16 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.data.db.entity.Category;
 
 public class SpinnerProjectCategoryAdapter extends ArrayAdapter<String> {
     private final LayoutInflater mInflater;
     private final Context mContext;
-    private final List<String> items;
+    private final List<Category> items;
     private final int mResource;
 
     public SpinnerProjectCategoryAdapter(@NonNull Context context, @LayoutRes int resource,
@@ -46,7 +48,7 @@ public class SpinnerProjectCategoryAdapter extends ArrayAdapter<String> {
         final View view = mInflater.inflate(mResource, parent, false);
 
         TextView prjCatTitle = (TextView) view.findViewById(R.id.prjCategoryTitle);
-        prjCatTitle.setText(items.get(position));
+        prjCatTitle.setText(items.get(position).getCategory_title());
 
         return view;
     }

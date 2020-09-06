@@ -231,10 +231,17 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
 
     @Override
-    public void onClickSubmit(Projects projects) {
-        projectViewModel.insert(projects);
+    public void onClickSubmit(Projects projects, boolean isEdit) {
+        String msg;
+        if(isEdit){
+            projectViewModel.update(projects);
+            msg = getString(R.string.successUpdateProject);
+        } else {
+            projectViewModel.insert(projects);
+            msg = getString(R.string.successInsertProject);
+        }
         Snackbar
-                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertProject), Snackbar.LENGTH_LONG)
+                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
                 .show();
     }
 

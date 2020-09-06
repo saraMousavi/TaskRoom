@@ -125,4 +125,6 @@
     <string name="edit">ویرایش</string>
     <string name="categoryTitle">عنوان دسته بندی</string>
     <string name="successInsertCategory">ثبت دسته بندی با موفقیت انجام شد.</string>
+    <string name="scientific">علمی</string>
+    <string name="successUpdateProject">ویرایش پروژه با موفقیت انجام شد.</string>
 </resources>

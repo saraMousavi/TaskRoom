@@ -33,4 +33,9 @@ public class Category {
   public Integer getCategory_id(){
    return category_id;
   }
+
+    @Override
+    public String toString() {
+        return category_title;
+    }
 }

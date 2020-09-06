@@ -30,8 +30,6 @@ import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.ui.fragment.AddProjectBottomSheetFragment;
-import ir.android.persiantask.ui.fragment.TasksFragment;
-import ir.android.persiantask.viewmodels.TaskViewModel;
 
 public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHolder> {
     private ProjectsAdapter.OnItemClickListener listener;
@@ -128,12 +126,14 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             itemViewHolder.projectsBox.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    AddProjectBottomSheetFragment addProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
+                    AddProjectBottomSheetFragment editProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("isEditProjects", true);
                     bundle.putString("projects_title", getProjectAt(position).getProjects_title());
-                    addProjectBottomSheetFragment.setArguments(bundle);
-                    addProjectBottomSheetFragment.show(mFragmentManager, "");
+                    bundle.putInt("category_id", getProjectAt(position).getCategory_id());
+                    bundle.putInt("project_id", getProjectAt(position).getProject_id());
+                    editProjectBottomSheetFragment.setArguments(bundle);
+                    editProjectBottomSheetFragment.show(mFragmentManager, "");
                     return false;
                 }
             });

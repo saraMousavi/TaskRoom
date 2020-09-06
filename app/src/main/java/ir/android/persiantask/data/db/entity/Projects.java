@@ -10,11 +10,11 @@ import androidx.room.PrimaryKey;
  * Room Table Builder
  * project table for save all project define with user that each project have multi task
  */
-//indices = {@Index("category_id")},
-//        foreignKeys = {@ForeignKey(entity = Category.class,
-//        parentColumns = "category_id",
-//        childColumns = "category_id")},
-@Entity(tableName = "Projects")
+
+@Entity(indices = {@Index("category_id")},
+        foreignKeys = {@ForeignKey(entity = Category.class,
+                parentColumns = "category_id",
+                childColumns = "category_id")}, tableName = "Projects")
 public class Projects {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "project_id")
