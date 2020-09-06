@@ -16,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,9 +25,8 @@ import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
-import ir.android.persiantask.data.db.entity.Tasks;
-import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.ui.fragment.AddProjectBottomSheetFragment;
+import ir.android.persiantask.utils.enums.CategoryType;
 
 public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHolder> {
     private ProjectsAdapter.OnItemClickListener listener;
@@ -113,6 +110,14 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             final Projects mProjects = getItem(position);
             itemViewHolder.projectsTitle.setText(mProjects.getProjects_title());
+            //show icon depend on category_id
+            if(getProjectAt(position).getCategory_id().equals(CategoryType.ART.getValue())){
+                itemViewHolder.prjCategory.setImageResource(R.drawable.ic_white_art);
+            } else if(getProjectAt(position).getCategory_id().equals(CategoryType.SPORT.getValue())){
+                itemViewHolder.prjCategory.setImageResource(R.drawable.ic_white_sports);
+            } else if(getProjectAt(position).getCategory_id().equals(CategoryType.SCIENTIFIC.getValue())){
+                itemViewHolder.prjCategory.setImageResource(R.drawable.ic_white_scientific);
+            }
 
             itemViewHolder.projectsBox.setOnClickListener(new View.OnClickListener() {
                 @Override
