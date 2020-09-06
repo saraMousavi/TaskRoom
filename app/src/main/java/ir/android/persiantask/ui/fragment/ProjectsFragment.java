@@ -30,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,10 +39,10 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
+import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import kotlin.jvm.JvmStatic;
-
 
 
 public class ProjectsFragment extends Fragment implements AddProjectBottomSheetFragment.SubmitClickListener {
@@ -58,7 +60,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private AppBarLayout mAppBarLayout;
     private Button firstAddProjectBtn;
     private ConstraintLayout projectsEmptyPage;
-    private List<Fragment> taskFragList;
+    private HashMap<Integer, Fragment> taskFragList;
 
 
     @Override
@@ -108,7 +110,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             @Override
             public void OnItemClick(Projects projects) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                Fragment selectedFragment = taskFragList.get(projects.getProject_id() - 1);
+                Fragment selectedFragment = taskFragList.get(projects.getProject_id());
                 ft.replace(R.id.taskFragmentContainer, selectedFragment);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -121,21 +123,21 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
      * show project data in horizontal recycler view
      */
     private void projectsRecyclerView() {
-        taskFragList = new ArrayList<>();
         projectViewModel.getAllProjects().observe(this, new Observer<List<Projects>>() {
             @Override
             public void onChanged(List<Projects> projects) {
-
+                taskFragList = new HashMap<>();
                 for (Projects project : projects) {
                     TasksFragment tasksFragment = new TasksFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("projectID", project.getProject_id());
                     tasksFragment.setArguments(bundle);
-                    taskFragList.add(tasksFragment);
+                    taskFragList.put(project.getProject_id(), tasksFragment);
                 }
                 if (projects.size() == 0) {
                     projectsEmptyPage.setVisibility(View.VISIBLE);
                     mAppBarLayout.setVisibility(View.GONE);
+                    taskFragList.clear();
                 } else {
                     //null added to list for add Btn at the end of recyclerview
                     projects.add(null);
@@ -167,17 +169,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         this.inflatedView.setBackgroundColor(ContextCompat.getColor(Objects.requireNonNull(this.getContext()), this.bgColorResId));
 
 
-
-//        taskAdapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener(){
-//            @Override
-//            public void OnItemClick(Tasks task) {
-//                Intent intent = new Intent(getActivity(), AddEditTaskActivity.class);
-//                intent.putExtra(AddEditTaskActivity.EXTRA_ID, task.getTasks_id());
-//                intent.putExtra(AddEditTaskActivity.EXTRA_NAME, task.getTasks_title());
-//                startActivityForResult(intent, EDIT_TASK_REQUEST);
-//
-//            }
-//        });
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -231,18 +222,39 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
 
     @Override
-    public void onClickSubmit(Projects projects, boolean isEdit) {
-        String msg;
-        if(isEdit){
-            projectViewModel.update(projects);
-            msg = getString(R.string.successUpdateProject);
-        } else {
-            projectViewModel.insert(projects);
-            msg = getString(R.string.successInsertProject);
+    public void onClickSubmit(Projects projects, ActionTypes actionTypes) {
+        String msg = "";
+        switch (actionTypes) {
+            case ADD:
+                projectViewModel.insert(projects);
+                msg = getString(R.string.successInsertProject);
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
+                        .show();
+                break;
+            case EDIT:
+                projectViewModel.update(projects);
+                msg = getString(R.string.successUpdateProject);
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
+                        .show();
+                break;
+            case DELETE:
+                msg = getString(R.string.successDeleteProject);
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+                snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //@TODO add timer for undo
+                        snackbar.dismiss();
+                    }
+                }).show();
+                projectViewModel.delete(projects);
+                taskFragList.remove(projects.getProject_id());
+                break;
         }
-        Snackbar
-                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
-                .show();
+
     }
 
     public static final class Companion {

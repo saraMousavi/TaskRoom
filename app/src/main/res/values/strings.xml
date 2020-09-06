@@ -127,4 +127,8 @@
     <string name="successInsertCategory">ثبت دسته بندی با موفقیت انجام شد.</string>
     <string name="scientific">علمی</string>
     <string name="successUpdateProject">ویرایش پروژه با موفقیت انجام شد.</string>
+    <string name="deletePrj">حذف پروژه</string>
+    <string name="successDeleteProject">حذف پروژه با موفقیت انجام شد.</string>
+    <string name="undo">بازگشت</string>
+    <string name="deleteProject">حذف پروژه</string>
 </resources>

@@ -26,6 +26,7 @@ import java.util.List;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
 import ir.android.persiantask.data.db.entity.Projects;
+import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.CategoryViewModel;
 
 public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
@@ -33,6 +34,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     private View inflatedView;
     private SubmitClickListener submitClickListener;
     private Button insertProjectBtn;
+    private Button deleteProjectBtn;
     private TextInputEditText projectsTitle;
     private Category selectedCategory;
 
@@ -45,6 +47,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         Bundle bundle = getArguments();
         if (bundle.getBoolean("isEditProjects")) {
             insertProjectBtn.setText(getString(R.string.edit));
+            deleteProjectBtn.setVisibility(View.VISIBLE);
             projectsTitle.setText(bundle.getString("projects_title"));
             CategoryViewModel categoryViewModel = new CategoryViewModel(getActivity().getApplication());
             categoryViewModel.getAllCategory().observe(this, new Observer<List<Category>>() {
@@ -69,7 +72,16 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
                 public void onClick(View v) {
                     Projects projects = new Projects(1, Math.toIntExact(projectCategory.getSelectedItemId()), projectsTitle.getText().toString(), 1, 0);
                     projects.setProject_id(bundle.getInt("project_id"));
-                    submitClickListener.onClickSubmit(projects, true);
+                    submitClickListener.onClickSubmit(projects, ActionTypes.EDIT);
+                    dismiss();
+                }
+            });
+            deleteProjectBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Projects projects = new Projects(0,0,"", 0, 0);
+                    projects.setProject_id(bundle.getInt("project_id"));
+                    submitClickListener.onClickSubmit(projects, ActionTypes.DELETE);
                     dismiss();
                 }
             });
@@ -79,7 +91,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
                 @Override
                 public void onClick(View v) {
                     Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, 0);
-                    submitClickListener.onClickSubmit(projects, false);
+                    submitClickListener.onClickSubmit(projects, ActionTypes.ADD);
                     dismiss();
                 }
             });
@@ -94,7 +106,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public interface SubmitClickListener {
-        void onClickSubmit(Projects projects, boolean isEdit);
+        void onClickSubmit(Projects projects, ActionTypes actionTypes);
     }
 
 
@@ -102,6 +114,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         insertProjectBtn = this.inflatedView.findViewById(R.id.insertProjectBtn);
         projectsTitle = this.inflatedView.findViewById(R.id.projectsTitle);
+        deleteProjectBtn = this.inflatedView.findViewById(R.id.deleteProjectBtn);
         CategoryViewModel categoryViewModel = new CategoryViewModel(getActivity().getApplication());
         categoryViewModel.getAllCategory().observe(this, new Observer<List<Category>>() {
             @Override
