@@ -11,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +38,10 @@ import java.util.List;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Subtasks;
+import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
+import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.TasksAddActivityBinding;
 import ir.android.persiantask.ui.adapters.SubTasksAdapter;
 import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
@@ -48,8 +52,10 @@ import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.calender.DatePickerDialog;
 import ir.android.persiantask.utils.calender.PersianCalendar;
 import ir.android.persiantask.utils.calender.TimePickerDialog;
+import ir.android.persiantask.utils.enums.ReminderType;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
+import ir.android.persiantask.viewmodels.TaskViewModel;
 
 public class AddEditTaskActivity extends AppCompatActivity implements
         TimePickerDialog.OnTimeSetListener
@@ -62,8 +68,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             "ir.android.data.db.entity.projects.id";
     public static final String EXTRA_NAME =
             "ir.android.data.db.entity.projects.title";
-    private TextInputEditText taskNameEdit;
-    private FloatingActionButton fabInsertTask;
+    private TextInputEditText taskNameEdit, tasksComment;
+    private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
             repeatTypeConstraint, priorityTypeContraint;
     private TextView startTextVal, endTextVal, repeatTypeVal, completedDate, priorityVal;
@@ -74,10 +80,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private SubTasksViewModel subTasksViewModel;
     private String datepickerVal;
     private ProjectViewModel projectViewModel;
+    private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
     private SharedPreferences sharedPreferences;
     private ImageView projectIcon, completeIcon;
     private Projects selectedProject;
+    private boolean isCompleted;
+    private String completedDateVal = "";
+    private RadioGroup reminderTypeGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +108,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 projectCategory.setAdapter(projectsArrayAdapter);
                 for (Projects project : projects) {
                     if (project.getProject_id() == sharedPreferences.getInt("selectedProjectID", 0)) {
+                        selectedProject = project;
                         projectCategory.post(new Runnable() {
                             @Override
                             public void run() {
@@ -137,7 +148,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         fabInsertTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SaveProject();
+                insertTasks();
+            }
+        });
+        fabInsertTask2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertTasks();
             }
         });
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -229,11 +246,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     completeIcon.setImageResource(R.drawable.ic_radio_button_checked_green);
                     completeIcon.setTag(R.drawable.ic_radio_button_checked_green);
                     completedDate.setVisibility(View.VISIBLE);
-                    completedDate.setText(getString(R.string.inDate) + " " + Init.getCurrentDate() + " " + getString(R.string.completed));
+                    isCompleted = true;
+                    completedDateVal = Init.getCurrentDate();
+                    completedDate.setText(getString(R.string.inDate) + " " + completedDateVal + " " + getString(R.string.completed));
                 } else {
                     completeIcon.setImageResource(R.drawable.ic_black_circle);
                     completeIcon.setTag(R.drawable.ic_black_circle);
                     completedDate.setVisibility(View.GONE);
+                    isCompleted = false;
                 }
             }
         });
@@ -251,8 +271,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(AddEditTaskActivity.this);
         fabInsertTask = findViewById(R.id.fabInsertTask);
+        fabInsertTask2 = findViewById(R.id.fabInsertTask2);
         insertSubtasksBtn = findViewById(R.id.insertSubtasksBtn);
         taskNameEdit = findViewById(R.id.taskNameEdit);
+        tasksComment = findViewById(R.id.tasksComment);
         startDateConstraint = findViewById(R.id.startDateConstraint);
         endDateConstraint = findViewById(R.id.endDateConstraint);
         startTextVal = findViewById(R.id.startTextVal);
@@ -270,12 +292,16 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         projectCategory = findViewById(R.id.projectCategory);
         reminderTime = findViewById(R.id.reminderTime);
         projectIcon = findViewById(R.id.projectIcon);
+        reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         completeIcon = findViewById(R.id.completeIcon);
         completeIcon.setTag(R.drawable.ic_black_circle);
-        SubTasksViewModelFactory factory = new SubTasksViewModelFactory(getApplication(), 1);
+        SubTasksViewModelFactory subtaskfactory = new SubTasksViewModelFactory(getApplication(), 1);
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
-        subTasksViewModel = ViewModelProviders.of(this, factory).get(SubTasksViewModel.class);
+
+        TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getInt("selectedProjectID", 0));
+        subTasksViewModel = ViewModelProviders.of(this, subtaskfactory).get(SubTasksViewModel.class);
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
+        taskViewModel = ViewModelProviders.of(this, taskFactory).get(TaskViewModel.class);
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_ID)) {
@@ -286,19 +312,28 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
     }
 
-    private void SaveProject() {
+    private void insertTasks() {
         String name = taskNameEdit.getText().toString();
         if (name.trim().isEmpty()) {
             Toast.makeText(this, "please insert name", Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_NAME, name);
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-        if (id != -1) {
-            intent.putExtra(EXTRA_ID, id);
+        Integer priorityIntVal = 0;
+        if (priorityVal.getText().toString().equals(getString(R.string.low))){
+            priorityIntVal = 1;
+        } else if(priorityVal.getText().toString().equals(getString(R.string.medium))){
+            priorityIntVal = 2;
+        } else if(priorityVal.getText().toString().equals(getString(R.string.high))) {
+            priorityIntVal = 3;
         }
-        setResult(RESULT_OK, intent);
+        RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
+        Tasks tasks = new Tasks(priorityIntVal, isCompleted ? 1 : 0, 0,
+                selectedProject.getProject_id(), name,
+                startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1 ,
+                reminderTime.getSelectedItemPosition(),repeatTypeVal.getText().toString(),
+                completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal,
+                1, tasksComment.getText().toString());
+        taskViewModel.insert(tasks);
         finish();
     }
 

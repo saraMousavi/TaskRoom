@@ -294,6 +294,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <RadioGroup
+                android:id="@+id/reminderTypeGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -516,7 +517,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/projectsTitle"
+                    android:id="@+id/tasksComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/addComment" />

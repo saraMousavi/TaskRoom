@@ -5,10 +5,10 @@ import android.content.res.Resources;
 import ir.android.persiantask.R;
 
 public enum PriorityType {
-    HIGH(Resources.getSystem().getString(R.string.high)),
-    MEDIUM(Resources.getSystem().getString(R.string.medium)),
+    NONEPRIORITY(Resources.getSystem().getString(R.string.nonePriority)),
     LOW(Resources.getSystem().getString(R.string.low)),
-    NONEPRIORITY(Resources.getSystem().getString(R.string.nonePriority));
+    MEDIUM(Resources.getSystem().getString(R.string.medium)),
+    HIGH(Resources.getSystem().getString(R.string.high));
 
     private String value;
     PriorityType(String value) {

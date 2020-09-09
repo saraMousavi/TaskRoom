@@ -91,16 +91,6 @@ public class CalenderFragment extends Fragment {
         taskRecyclerView = this.inflater.findViewById(R.id.taskRecyclerView);
         addTaskBtn = this.inflater.findViewById(R.id.addTaskBtn);
         List<Tasks> tasks = new ArrayList<>();
-        Tasks task = new Tasks(1, 1, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task1 = new Tasks(1, 0, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task2 = new Tasks(1, 1, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task3 = new Tasks(1, 0, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        Tasks task4 = new Tasks(1, 1, 1, 1, getString(R.string.task1), 0, 13990611, 0, 0, "", 13990614, 0, "");
-        tasks.add(task);
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(task3);
-        tasks.add(task4);
         taskAdapter = new TasksAdapter(getActivity());
         taskRecyclerView.setAdapter(taskAdapter);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

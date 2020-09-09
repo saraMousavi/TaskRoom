@@ -153,9 +153,6 @@ public class TasksFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
-            String taskName = data.getStringExtra(AddEditTaskActivity.EXTRA_NAME);
-            Tasks tasks = new Tasks(1, 1, 1, selectedProjectedID, taskName, 1, 1, 1, 1, "", 1, 1, "");
-            taskViewModel.insert(tasks);
             projectViewModel.getProjectsByID().observe(this, new Observer<Projects>() {
                 @Override
                 public void onChanged(Projects projects) {

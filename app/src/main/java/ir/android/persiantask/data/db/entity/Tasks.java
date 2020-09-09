@@ -8,15 +8,21 @@ import androidx.room.PrimaryKey;
 
 /**
  * Room Table Builder
+ * switch(tasks_priority){
+ *    case 0:none priority;break;
+ *    case 1:low;break;
+ *    case 2:medium;break;
+ *    case 3:high;break;
+ * }
  * if(tasks_iscompleted == 1) check complete checkbox else if(tasks_iscompleted == 0) uncheck complete checkbox
  * <p>
- * if (tasks_remindertype == 1) Alarm else if (tasks_remindertype == 2) Notification else none
+ * if (tasks_remindertype == 0) Push else if (tasks_remindertype == 1) Alarm else none
  * <p>
  * if(tasks_isrepeated ==0 ) only repeat once in reminders_time
  * switch(reminders_time)
- *  case 1:dont reminde me
- *  case 2:remind me in end date
- *  case 3:remind me in advance(repeatedtype)
+ *  case 0:dont reminde me
+ *  case 1:remind me in end date
+ *  case 2:remind me in advance(repeatedtype)
  * switch(tasks_repeatedtype)
  *  case 1:day;
  *  case 2:week;
@@ -46,10 +52,8 @@ public class Tasks {
     private Integer projects_id;
     @ColumnInfo(name = "tasks_title")
     private String tasks_title;
-    @ColumnInfo(name = "tasks_isrepeated")
-    private Integer tasks_isrepeated;
     @ColumnInfo(name = "tasks_startdate")
-    private Integer tasks_startdate;
+    private String tasks_startdate;
     @ColumnInfo(name = "tasks_remindertype")
     private Integer tasks_remindertype;
     @ColumnInfo(name = "tasks_remindertime")
@@ -57,20 +61,19 @@ public class Tasks {
     @ColumnInfo(name = "tasks_repeateddays")
     private String tasks_repeateddays;
     @ColumnInfo(name = "tasks_enddate")
-    private Integer tasks_enddate;
+    private String tasks_enddate;
     @ColumnInfo(name = "label_id")
     private Integer label_id;
     @ColumnInfo(name = "tasks_comment")
     private String tasks_comment;
 
 
-    public Tasks(Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype, Integer projects_id, String tasks_title, Integer tasks_isrepeated, Integer tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime, String tasks_repeateddays, Integer tasks_enddate, Integer label_id, String tasks_comment) {
+    public Tasks(Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype, Integer projects_id, String tasks_title, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime, String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment) {
         this.tasks_priority = tasks_priority;
         this.tasks_iscompleted = tasks_iscompleted;
         this.tasks_repeatedtype = tasks_repeatedtype;
         this.projects_id = projects_id;
         this.tasks_title = tasks_title;
-        this.tasks_isrepeated = tasks_isrepeated;
         this.tasks_startdate = tasks_startdate;
         this.tasks_remindertype = tasks_remindertype;
         this.tasks_remindertime = tasks_remindertime;
@@ -120,19 +123,11 @@ public class Tasks {
         return tasks_title;
     }
 
-    public void setTasks_isrepeated(Integer tasks_isrepeated) {
-        this.tasks_isrepeated = tasks_isrepeated;
-    }
-
-    public Integer getTasks_isrepeated() {
-        return tasks_isrepeated;
-    }
-
-    public void setTasks_startdate(Integer tasks_startdate) {
+    public void setTasks_startdate(String tasks_startdate) {
         this.tasks_startdate = tasks_startdate;
     }
 
-    public Integer getTasks_startdate() {
+    public String getTasks_startdate() {
         return tasks_startdate;
     }
 
@@ -168,11 +163,11 @@ public class Tasks {
         return tasks_repeateddays;
     }
 
-    public void setTasks_enddate(Integer tasks_enddate) {
+    public void setTasks_enddate(String tasks_enddate) {
         this.tasks_enddate = tasks_enddate;
     }
 
-    public Integer getTasks_enddate() {
+    public String getTasks_enddate() {
         return tasks_enddate;
     }
 

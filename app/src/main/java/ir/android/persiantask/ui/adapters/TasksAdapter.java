@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.utils.Init;
 
 public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     private OnItemClickListener listener;
@@ -43,13 +44,18 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView taskTitle;
-        public ImageView tasksIsCompleted;
+        public TextView taskTitle, tasks_enddate;
+        public ImageView tasksIsCompleted, reminder_time, reminder_type, tasks_comment;
 
         public ViewHolder(View itemView) {
             super(itemView);
             taskTitle = itemView.findViewById(R.id.tasks_title);
+            tasks_enddate = itemView.findViewById(R.id.tasks_enddate);
             tasksIsCompleted = itemView.findViewById(R.id.tasks_iscompleted);
+            tasksIsCompleted.setTag(1);
+            reminder_time = itemView.findViewById(R.id.reminder_time);
+            reminder_type = itemView.findViewById(R.id.reminder_type);
+            tasks_comment = itemView.findViewById(R.id.tasks_comment);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -76,13 +82,47 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Tasks tasks = getItem(position);
         holder.taskTitle.setText(tasks.getTasks_title());
+        if(tasks.getTasks_iscompleted() == 1){
+            holder.tasksIsCompleted.setImageResource(R.drawable.ic_radio_button_checked_green);
+            holder.tasksIsCompleted.setTag(R.drawable.ic_radio_button_checked_green);
+            holder.tasksIsCompleted.setVisibility(View.VISIBLE);
+            holder.taskTitle.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.tasks_enddate.setText(mFragmentActivity.getString(R.string.inDate) + " " + tasks.getTasks_enddate() +
+                    " " + mFragmentActivity.getString(R.string.completed));
+        } else {
+            holder.tasks_enddate.setText(tasks.getTasks_enddate());
+        }
+
         holder.tasksIsCompleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.tasksIsCompleted.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.ic_radio_button_checked_green));
-                holder.taskTitle.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                if((Integer) holder.tasksIsCompleted.getTag() != R.drawable.ic_radio_button_checked_green){
+                    holder.tasksIsCompleted.setImageResource(R.drawable.ic_radio_button_checked_green);
+                    holder.tasksIsCompleted.setTag(R.drawable.ic_radio_button_checked_green);
+                    holder.tasksIsCompleted.setVisibility(View.VISIBLE);
+                    holder.tasks_enddate.setText(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +
+                            " " + mFragmentActivity.getString(R.string.completed));
+                    holder.taskTitle.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    holder.tasksIsCompleted.setImageResource(R.drawable.ic_black_circle);
+                    holder.tasksIsCompleted.setTag(R.drawable.ic_black_circle);
+                    holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    holder.tasks_enddate.setText(tasks.getTasks_enddate());
+                }
             }
         });
+        //remind me in advance
+        if(tasks.getTasks_remindertime() == 2){
+            holder.reminder_time.setVisibility(View.VISIBLE);
+        }
+        //reminder type == alarm
+        if(tasks.getTasks_remindertype() == 1){
+            holder.reminder_type.setVisibility(View.VISIBLE);
+        }
+        //set comment for task
+        if(!tasks.getTasks_comment().isEmpty()){
+            holder.tasks_comment.setVisibility(View.VISIBLE);
+        }
     }
 
 

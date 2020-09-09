@@ -198,4 +198,6 @@
     <string name="medium">متوسط</string>
     <string name="low">پایین</string>
     <string name="nonePriority">بدون اولویت</string>
+    <string name="push">Push</string>
+    <string name="alarm">Alarm</string>
 </resources>
