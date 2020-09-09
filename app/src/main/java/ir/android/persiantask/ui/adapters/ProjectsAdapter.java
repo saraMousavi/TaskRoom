@@ -2,7 +2,9 @@ package ir.android.persiantask.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import java.util.List;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.ui.fragment.AddProjectBottomSheetFragment;
+import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.enums.CategoryType;
 
 public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHolder> {
@@ -33,11 +36,8 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     private final int VIEW_TYPE_ITEM = 0, VIEW_TYPE_ADD = 1;
     private FragmentManager mFragmentManager;
     private FragmentActivity mFragmentActivity;
-    private LifecycleOwner owner;
     private int clickedPosition = 0;
-    List<Fragment> fragments = new ArrayList<>();
-    List<String> fragmentTitle = new ArrayList<>();
-    List<Integer> fragmentId = new ArrayList<>();
+    private SharedPreferences sharedPreferences;
 
     private static final DiffUtil.ItemCallback<Projects> DIFF_CALLBACK = new DiffUtil.ItemCallback<Projects>() {
         @Override
@@ -57,7 +57,8 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
         super(DIFF_CALLBACK);
         mFragmentManager = fragmentManager;
         mFragmentActivity = fragmentActivity;
-        this.owner = owner;
+        this.sharedPreferences  = PreferenceManager
+                .getDefaultSharedPreferences(mFragmentActivity);
     }
 
     public class AddViewHolder extends RecyclerView.ViewHolder {
@@ -111,20 +112,17 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             final Projects mProjects = getItem(position);
             itemViewHolder.projectsTitle.setText(mProjects.getProjects_title());
             //show icon depend on category_id
-            if(getProjectAt(position).getCategory_id().equals(CategoryType.ART.getValue())){
-                itemViewHolder.prjCategory.setImageResource(R.drawable.ic_white_art);
-            } else if(getProjectAt(position).getCategory_id().equals(CategoryType.SPORT.getValue())){
-                itemViewHolder.prjCategory.setImageResource(R.drawable.ic_white_sports);
-            } else if(getProjectAt(position).getCategory_id().equals(CategoryType.SCIENTIFIC.getValue())){
-                itemViewHolder.prjCategory.setImageResource(R.drawable.ic_white_scientific);
-            }
-
+            Init.setProjectCategory(itemViewHolder.prjCategory, getProjectAt(position).getCategory_id(), true);
             itemViewHolder.projectsBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     clickedPosition = position;
                     listener.OnItemClick(getProjectAt(position));
                     notifyDataSetChanged();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove("selectedProjectID");
+                    editor.putInt("selectedProjectID", getProjectAt(position).getProject_id());
+                    editor.apply();
                 }
             });
 
@@ -157,7 +155,6 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             itemViewHolder.tasksNumVal.setText(String.valueOf(getProjectAt(position).getProjects_tasks_num()));
         } else if (holder instanceof AddViewHolder) {
             final AddViewHolder addViewHolder = (AddViewHolder) holder;
-            addViewHolder.addPrjectIcon.setVisibility(View.VISIBLE);
             addViewHolder.addProjects.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

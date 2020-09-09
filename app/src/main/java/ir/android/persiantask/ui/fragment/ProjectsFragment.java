@@ -1,13 +1,11 @@
 package ir.android.persiantask.ui.fragment;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,8 +27,6 @@ import com.google.android.material.snackbar.Snackbar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -39,9 +35,9 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
+import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
-import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import kotlin.jvm.JvmStatic;
 
 
@@ -147,7 +143,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                         @Override
                         public void run() {
                             if (projectRecyclerView.findViewHolderForAdapterPosition(0) != null) {
-//                                Objects.requireNonNull(projectRecyclerView.findViewHolderForAdapterPosition(0)).itemView.performClick();
+                                Objects.requireNonNull(projectRecyclerView.findViewHolderForAdapterPosition(0)).itemView.performClick();
                             }
                         }
                     }, 40);
@@ -167,8 +163,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         super.onActivityCreated(savedInstanceState);
 
         this.inflatedView.setBackgroundColor(ContextCompat.getColor(Objects.requireNonNull(this.getContext()), this.bgColorResId));
-
-
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;

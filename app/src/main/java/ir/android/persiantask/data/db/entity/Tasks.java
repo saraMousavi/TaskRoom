@@ -13,11 +13,15 @@ import androidx.room.PrimaryKey;
  * if (tasks_remindertype == 1) Alarm else if (tasks_remindertype == 2) Notification else none
  * <p>
  * if(tasks_isrepeated ==0 ) only repeat once in reminders_time
+ * switch(reminders_time)
+ *  case 1:dont reminde me
+ *  case 2:remind me in end date
+ *  case 3:remind me in advance(repeatedtype)
  * switch(tasks_repeatedtype)
- * case 1:day;
- * case 2:week;
- * case 3:month;
- * case 4:custom
+ *  case 1:day;
+ *  case 2:week;
+ *  case 3:month;
+ *  case 4:custom
  * <p>
  * 'tasks_repeateddays' save all day that user choose in custom type and put them near each other with kama
  */

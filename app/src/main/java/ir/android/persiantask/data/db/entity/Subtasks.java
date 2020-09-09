@@ -27,6 +27,12 @@ public class Subtasks {
     @ColumnInfo(name = "tasks_id")
     private Integer tasks_id;
 
+    public Subtasks(String subtasks_title, Integer subtasks_iscompleted, Integer tasks_id) {
+        this.subtasks_iscompleted = subtasks_iscompleted;
+        this.subtasks_title = subtasks_title;
+        this.tasks_id = tasks_id;
+    }
+
     public void setSubtasks_iscompleted(String subtasks_title, Integer subtasks_iscompleted) {
         this.subtasks_iscompleted = subtasks_iscompleted;
         this.subtasks_title = subtasks_title;

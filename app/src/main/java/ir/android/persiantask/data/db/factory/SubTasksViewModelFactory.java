@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
+
 public class SubTasksViewModelFactory implements ViewModelProvider.Factory {
 
     private Application mApplication;
@@ -20,6 +22,6 @@ public class SubTasksViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return null;// (T) new TasksViewModelFactory(mApplication, mTasksID);
+        return  (T) new SubTasksViewModel(mApplication, mTasksID);
     }
 }

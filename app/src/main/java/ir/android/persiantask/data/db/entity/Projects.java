@@ -125,4 +125,9 @@ public class Projects {
     public void setProjects_tasks_num(Integer projects_tasks_num) {
         this.projects_tasks_num = projects_tasks_num;
     }
+
+    @Override
+    public String toString() {
+        return projects_title;
+    }
 }

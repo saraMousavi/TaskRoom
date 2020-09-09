@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginBottom="6dp"
-            android:background="@drawable/orange_circle_shape"
+            android:background="@drawable/ic_fill_orange_circle_shape"
             android:contentDescription="@string/sports"
             android:src="@drawable/ic_white_art"
             app:layout_constraintBottom_toTopOf="@+id/projectsTitle"

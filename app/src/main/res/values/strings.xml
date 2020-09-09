@@ -131,4 +131,71 @@
     <string name="successDeleteProject">حذف پروژه با موفقیت انجام شد.</string>
     <string name="undo">بازگشت</string>
     <string name="deleteProject">حذف پروژه</string>
+    <string name="startDate">تاریخ شروع</string>
+    <string name="endDate">تاریخ پایان</string>
+    <string name="repeatType">زمان تکرار</string>
+    <string name="complete">تکمیل شود</string>
+    <string name="completed">تکمیل شد</string>
+    <string name="priority">اولویت</string>
+    <string name="addComment">"توضیحات "</string>
+    <string name="reminderType">نوع یادآوری</string>
+
+
+    <string name="mdtp_hour_picker_description" msgid="7586639618712934060">"لغزنده دایره‌ای ساعت"</string>
+    <!-- Accessibility announcement for hour circular picker [CHAR LIMIT=NONE] -->
+    <string name="mdtp_select_hours" msgid="7651068754188418859">"انتخاب ساعت"</string>
+    <!--
+         Content description for the minute selector in the time picker, which displays
+         selectable five-minute intervals along the inside edge of a circle, as in an analog clock.
+         [CHAR LIMIT=50]
+    -->
+    <string name="mdtp_minute_picker_description" msgid="6024811202872705251">"لغزنده دایره‌ای دقیقه"</string>
+    <!-- Accessibility announcement for minute circular picker [CHAR LIMIT=NONE] -->
+    <string name="mdtp_select_minutes" msgid="8327182090226828481">"انتخاب دقیقه"</string>
+    <!-- DO NOT TRANSLATE -->
+    <string name="mdtp_time_placeholder" translatable="false">--</string>
+    <!-- DO NOT TRANSLATE -->
+    <string name="mdtp_time_separator" translatable="false">:</string>
+    <!-- Accessibility announcement when a number that had been typed in is deleted [CHAR_LIMIT=NONE] -->
+    <string name="mdtp_deleted_key" msgid="6908431551612331381">حذف شد</string>
+    <string name="dueDate">موعد مقرر</string>
+    <string name="mdtp_item_is_selected" msgid="2674929164900463786">انتخاب شد</string>
+    <string name="mdtp_day_picker_description">Month grid of days</string>
+    <string name="mdtp_select_day">Select month and day</string>
+    <string name="mdtp_year_picker_description">Year list</string>
+    <string name="mdtp_select_year">Select year</string>
+
+    <string name="am_label">قبل‌ازظهر</string>
+    <string name="pm_label">بعدازظهر</string>
+    <string name="emptyList">هنوز چیزی ثبت نکرده اید</string>
+    <string name="daily">روزانه</string>
+    <string name="day">روز</string>
+    <string name="weekly">هفتگی</string>
+    <string name="week">هفته</string>
+    <string name="monthly">ماهانه</string>
+    <string name="month">ماه</string>
+    <string name="yearly">سالانه</string>
+    <string name="year">سال</string>
+    <string name="selectDays">انتخاب روز</string>
+    <string name="advance">پیشرفته</string>
+    <string name="repeat">تکرار</string>
+    <string name="saterday">شنبه</string>
+    <string name="sunday">یکشنبه</string>
+    <string name="monday">دوشنبه</string>
+    <string name="tuesday">سه شنبه</string>
+    <string name="wednesday">چهارشنبه</string>
+    <string name="thursday">پنج شنبه</string>
+    <string name="friday">جمعه</string>
+    <string name="cancel">انصراف</string>
+    <string name="ok">تایید</string>
+    <string name="addSubtasks">ثبت کار فرعی جدید</string>
+    <string name="dontRemind">یادآوری نشود.</string>
+    <string name="remindInEndDate">در تاریخ پایان یادآوری شود.</string>
+    <string name="remindInAdvance">در حالت پیشرفته یادآوری شود.</string>
+    <string name="each">هر</string>
+    <string name="inDate">"در تاریخ "</string>
+    <string name="high">بالا</string>
+    <string name="medium">متوسط</string>
+    <string name="low">پایین</string>
+    <string name="nonePriority">بدون اولویت</string>
 </resources>
