@@ -17,7 +17,7 @@ public class SubTasksViewModel extends AndroidViewModel {
     private SubtasksRepository subTasksRepository;
     private LiveData<List<Subtasks>> allSubTasks;
 
-    public SubTasksViewModel(@NonNull Application application, Integer taskID) {
+    public SubTasksViewModel(@NonNull Application application, Long taskID) {
         super(application);
         subTasksRepository = new SubtasksRepository(application, taskID);
         allSubTasks = subTasksRepository.getAllSubtasks();

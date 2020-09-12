@@ -41,7 +41,7 @@ import androidx.room.PrimaryKey;
 public class Tasks {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "tasks_id")
-    private Integer tasks_id;
+    private Long tasks_id;
     @ColumnInfo(name = "tasks_priority")
     private Integer tasks_priority;
     @ColumnInfo(name = "tasks_iscompleted")
@@ -68,7 +68,7 @@ public class Tasks {
     private String tasks_comment;
 
 
-    public Tasks(Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype, Integer projects_id, String tasks_title, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime, String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment) {
+    public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype, Integer projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime, String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment) {
         this.tasks_priority = tasks_priority;
         this.tasks_iscompleted = tasks_iscompleted;
         this.tasks_repeatedtype = tasks_repeatedtype;
@@ -139,11 +139,11 @@ public class Tasks {
         return tasks_remindertype;
     }
 
-    public void setTasks_id(Integer tasks_id) {
+    public void setTasks_id(Long tasks_id) {
         this.tasks_id = tasks_id;
     }
 
-    public Integer getTasks_id() {
+    public Long getTasks_id() {
         return tasks_id;
     }
 

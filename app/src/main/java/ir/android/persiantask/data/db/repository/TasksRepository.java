@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.data.db.dao.TasksDao;
 import ir.android.persiantask.data.db.database.PersianTaskDb;
@@ -21,8 +22,8 @@ public class TasksRepository {
         allTasks = tasksDao.getAllTasks(projectID);
     }
 
-    public void insert(Tasks tasks) {
-        new TasksRepository.InsertTasksAsyncTask(tasksDao).execute(tasks);
+    public Long insert(Tasks tasks) throws ExecutionException, InterruptedException {
+        return new TasksRepository.InsertTasksAsyncTask(tasksDao).execute(tasks).get();
     }
 
     public void update(Tasks tasks) {
@@ -37,7 +38,7 @@ public class TasksRepository {
         return allTasks;
     }
 
-    private static class InsertTasksAsyncTask extends AsyncTask<Tasks, Void, Void> {
+    private static class InsertTasksAsyncTask extends AsyncTask<Tasks, Void, Long> {
 
         private TasksDao tasksDao;
 
@@ -46,9 +47,8 @@ public class TasksRepository {
         }
 
         @Override
-        protected Void doInBackground(Tasks... tasks) {
-            tasksDao.insert(tasks[0]);
-            return null;
+        protected Long doInBackground(Tasks... tasks) {
+            return tasksDao.insert(tasks[0]);
         }
     }
 

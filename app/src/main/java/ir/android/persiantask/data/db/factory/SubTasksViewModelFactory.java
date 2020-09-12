@@ -11,10 +11,10 @@ import ir.android.persiantask.viewmodels.SubTasksViewModel;
 public class SubTasksViewModelFactory implements ViewModelProvider.Factory {
 
     private Application mApplication;
-    private Integer mTasksID;
+    private Long mTasksID;
 
 
-    public SubTasksViewModelFactory(Application application, Integer tasksID) {
+    public SubTasksViewModelFactory(Application application, Long tasksID) {
         mApplication = application;
         mTasksID = tasksID;
     }

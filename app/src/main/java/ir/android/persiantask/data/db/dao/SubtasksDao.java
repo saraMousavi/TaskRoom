@@ -26,5 +26,5 @@ public interface SubtasksDao {
     LiveData<List<Subtasks>> getAllSubtasks();
 
     @Query("SELECT * FROM Subtasks WHERE tasks_id=:tasks_id ORDER BY subtasks_id")
-    LiveData<List<Subtasks>> getAllSubtasks(Integer tasks_id);
+    LiveData<List<Subtasks>> getAllSubtasks(Long tasks_id);
 }

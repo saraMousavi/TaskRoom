@@ -2,7 +2,9 @@ package ir.android.persiantask.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +14,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Subtasks;
@@ -27,6 +32,8 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
     private final int VIEW_TYPE_ITEM = 0, VIEW_TYPE_ADD = 1;
     private SubTasksAddItemViewHolder subTasksAddItemViewHolder;
     private FragmentActivity mFragmentActivity;
+    private SharedPreferences sharedPreferences;
+    private SubTasksViewModel subTasksViewModel;
     private static final DiffUtil.ItemCallback<Subtasks> DIFF_CALLBACK = new DiffUtil.ItemCallback<Subtasks>() {
         @Override
         public boolean areItemsTheSame(@NonNull Subtasks oldItem, @NonNull Subtasks newItem) {
@@ -38,9 +45,12 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
             return oldItem.getSubtasks_title().equals(newItem.getSubtasks_title());
         }
     } ;
-    public SubTasksAdapter(FragmentActivity fragmentActivity){
+    public SubTasksAdapter(FragmentActivity fragmentActivity, SubTasksViewModel subTasksViewModel){
         super(DIFF_CALLBACK);
         this.mFragmentActivity = fragmentActivity;
+        this.subTasksViewModel = subTasksViewModel;
+        this.sharedPreferences  = PreferenceManager
+                .getDefaultSharedPreferences(mFragmentActivity);
     }
     @NonNull
     @Override
@@ -72,6 +82,15 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                 subTasksItemViewHolder.subtasksTitle.setPaintFlags(subTasksItemViewHolder.subtasksTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
             subTasksItemViewHolder.subtasksTitle.setText(subtasks.getSubtasks_title());
+            subTasksItemViewHolder.subtasksCompletedIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Subtasks newSubtasks = new Subtasks(subtasks.getSubtasks_title(), subtasks.getSubtasks_iscompleted() == 1 ? 0 : 1, subtasks.getTasks_id());
+                    newSubtasks.setSubtasks_id(subtasks.getSubtasks_id());
+                    subTasksViewModel.update(newSubtasks);
+                    notifyDataSetChanged();
+                }
+            });
         } else if(holder instanceof SubTasksAddItemViewHolder){
             subTasksAddItemViewHolder = (SubTasksAddItemViewHolder) holder;
             subTasksAddItemViewHolder.itemView.setVisibility(View.VISIBLE);
@@ -87,9 +106,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
             subTasksAddItemViewHolder.insertSubstasksIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Subtasks subtasks = new Subtasks(subTasksAddItemViewHolder.addNewSubtasks.getText().toString(), 0, 1);
-                    SubTasksViewModelFactory factory = new SubTasksViewModelFactory(mFragmentActivity.getApplication(), 1);
-                    SubTasksViewModel subTasksViewModel = ViewModelProviders.of(mFragmentActivity, factory).get(SubTasksViewModel.class);
+                    Subtasks subtasks = new Subtasks(subTasksAddItemViewHolder.addNewSubtasks.getText().toString(), 0, sharedPreferences.getLong("tempTaskID", 0));
                     subTasksViewModel.insert(subtasks);
                 }
             });

@@ -204,7 +204,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         projectsFragmentBinding.setProjectsViewModel(projectViewModel);
         projectRecyclerView = this.inflatedView.findViewById(R.id.projectRecyclerView);
         firstAddProjectBtn = this.inflatedView.findViewById(R.id.firstAddProjectBtn);
-        projectsAdapter = new ProjectsAdapter(getChildFragmentManager(), getActivity(), this);
+        projectsAdapter = new ProjectsAdapter(getChildFragmentManager(), getActivity());
         projectsEmptyPage = inflatedView.findViewById(R.id.projectsEmptyPage);
 
 

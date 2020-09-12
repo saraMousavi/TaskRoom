@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +41,7 @@ import ir.android.persiantask.viewmodels.TaskViewModel;
 
 import static android.app.Activity.RESULT_OK;
 
-public class TasksFragment extends Fragment {
+public class TasksFragment extends Fragment{
 
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
@@ -97,6 +100,15 @@ public class TasksFragment extends Fragment {
             }
         });
 
+        taskAdapter.setOnItemClickListener(new TasksAdapter.SwitchContentListener() {
+            @Override
+            public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
         return view;
     }
 
@@ -113,7 +125,7 @@ public class TasksFragment extends Fragment {
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskRecyclerView = this.inflatedView.findViewById(R.id.taskRecyclerView);
         firstAddTaskBtn = this.inflatedView.findViewById(R.id.firstAddTaskBtn);
-        taskAdapter = new TasksAdapter(getActivity());
+        taskAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         addTaskBtn = this.inflatedView.findViewById(R.id.addTaskBtn);
     }
 
@@ -144,7 +156,7 @@ public class TasksFragment extends Fragment {
             }
         });
         taskRecyclerView.setAdapter(taskAdapter);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        taskRecyclerView.setLayoutManager(new RollingLayoutManager(getContext()));
         taskRecyclerView.setNestedScrollingEnabled(false);
 
     }
@@ -166,4 +178,5 @@ public class TasksFragment extends Fragment {
                     .show();
         }
     }
+
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.repository.TasksRepository;
@@ -21,8 +22,8 @@ public class TaskViewModel extends AndroidViewModel {
         allTasks = tasksRepository.getAllTasks();
     }
 
-    public void insert(Tasks tasks){
-        tasksRepository.insert(tasks);
+    public Long insert(Tasks tasks) throws ExecutionException, InterruptedException {
+        return tasksRepository.insert(tasks);
     }
 
     public void update(Tasks tasks){

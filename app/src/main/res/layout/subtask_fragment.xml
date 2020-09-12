@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="SubTaskViewModel"
+            type="ir.android.persiantask.viewmodels.SubTasksViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp">
+        <LinearLayout
+            android:id="@+id/subtaskListLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/subtaskItemRecyclerView">
+            <ImageView
+                android:id="@+id/expandItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arraw_down"
+                app:layout_constraintEnd_toStartOf="@+id/tasks_comment"
+                app:layout_constraintTop_toTopOf="@+id/guideline3"/>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/subtaskItemRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/subtaskListLine"
+            tools:listitem="@layout/subtasks_item_recyclerview"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

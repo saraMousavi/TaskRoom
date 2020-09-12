@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
@@ -52,7 +53,6 @@ import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.calender.DatePickerDialog;
 import ir.android.persiantask.utils.calender.PersianCalendar;
 import ir.android.persiantask.utils.calender.TimePickerDialog;
-import ir.android.persiantask.utils.enums.ReminderType;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
@@ -77,7 +77,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private ImageButton insertSubtasksBtn;
     private RecyclerView subtaskRecyclerView;
     private TasksAddActivityBinding tasksAddActivityBinding;
-    private SubTasksViewModel subTasksViewModel;
     private String datepickerVal;
     private ProjectViewModel projectViewModel;
     private TaskViewModel taskViewModel;
@@ -88,15 +87,33 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private boolean isCompleted;
     private String completedDateVal = "";
     private RadioGroup reminderTypeGroup;
+    private Long tempTaskID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
         onClickListener();
-        initRecyclerViews();
         initSpinners();
     }
+
+    private void insertTempTask() {
+        Tasks tasks = new Tasks("", 0, 0, 0,
+                selectedProject.getProject_id() , "", 0, 0,
+                "", "", 0, "");
+        try {
+            tempTaskID = taskViewModel.insert(tasks);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("tempTaskID");
+            editor.putLong("tempTaskID",tempTaskID);
+            editor.apply();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void initSpinners() {
         projectViewModel.getAllProjects().observe(this, new Observer<List<Projects>>() {
@@ -116,6 +133,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                                 Init.setProjectCategory(projectIcon, project.getCategory_id(), false);
                             }
                         });
+                        //for inserting subtask we need task foreign key
+                        insertTempTask();
+                        initRecyclerViews();
                     }
                 }
             }
@@ -132,7 +152,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
 
     private void initRecyclerViews() {
-        SubTasksAdapter subTasksAdapter = new SubTasksAdapter(AddEditTaskActivity.this);
+        SubTasksViewModelFactory factory = new SubTasksViewModelFactory(getApplication(), tempTaskID);
+        SubTasksViewModel subTasksViewModel = ViewModelProviders.of(this, factory).get(SubTasksViewModel.class);
+        SubTasksAdapter subTasksAdapter = new SubTasksAdapter(AddEditTaskActivity.this, subTasksViewModel);
         subTasksViewModel.getAllSubtasks().observe(this, new Observer<List<Subtasks>>() {
             @Override
             public void onChanged(List<Subtasks> subtasks) {
@@ -295,11 +317,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         completeIcon = findViewById(R.id.completeIcon);
         completeIcon.setTag(R.drawable.ic_black_circle);
-        SubTasksViewModelFactory subtaskfactory = new SubTasksViewModelFactory(getApplication(), 1);
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
 
         TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getInt("selectedProjectID", 0));
-        subTasksViewModel = ViewModelProviders.of(this, subtaskfactory).get(SubTasksViewModel.class);
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskViewModel = ViewModelProviders.of(this, taskFactory).get(TaskViewModel.class);
 
@@ -327,13 +347,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             priorityIntVal = 3;
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
-        Tasks tasks = new Tasks(priorityIntVal, isCompleted ? 1 : 0, 0,
-                selectedProject.getProject_id(), name,
-                startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1 ,
-                reminderTime.getSelectedItemPosition(),repeatTypeVal.getText().toString(),
-                completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal,
-                1, tasksComment.getText().toString());
-        taskViewModel.insert(tasks);
+        //@TODO get repeat type val from bottom sheet
+        Tasks tasks = new Tasks(name, priorityIntVal, isCompleted ? 1: 0, 0, selectedProject.getProject_id(),
+                startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1, reminderTime.getSelectedItemPosition(),
+                repeatTypeVal.getText().toString(), completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1, tasksComment.getText().toString());
+        tasks.setTasks_id(tempTaskID);
+        taskViewModel.update(tasks);
         finish();
     }
 

@@ -15,7 +15,7 @@ public class SubtasksRepository {
     private SubtasksDao subtasksDao;
     private LiveData<List<Subtasks>> allSubtasks;
 
-    public SubtasksRepository(Application application, Integer tasksID) {
+    public SubtasksRepository(Application application, Long tasksID) {
         PersianTaskDb persianTaskDb = PersianTaskDb.getInstance(application);
         subtasksDao = persianTaskDb.subtasksDao();
         allSubtasks = subtasksDao.getAllSubtasks(tasksID);

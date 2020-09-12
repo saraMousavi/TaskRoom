@@ -53,7 +53,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     };
 
 
-    public ProjectsAdapter(FragmentManager fragmentManager, FragmentActivity fragmentActivity, LifecycleOwner owner) {
+    public ProjectsAdapter(FragmentManager fragmentManager, FragmentActivity fragmentActivity) {
         super(DIFF_CALLBACK);
         mFragmentManager = fragmentManager;
         mFragmentActivity = fragmentActivity;

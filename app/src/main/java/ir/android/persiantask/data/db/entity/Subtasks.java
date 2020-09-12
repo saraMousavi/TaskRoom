@@ -25,9 +25,9 @@ public class Subtasks {
     @ColumnInfo(name = "subtasks_title")
     private String subtasks_title;
     @ColumnInfo(name = "tasks_id")
-    private Integer tasks_id;
+    private Long tasks_id;
 
-    public Subtasks(String subtasks_title, Integer subtasks_iscompleted, Integer tasks_id) {
+    public Subtasks(String subtasks_title, Integer subtasks_iscompleted, Long tasks_id) {
         this.subtasks_iscompleted = subtasks_iscompleted;
         this.subtasks_title = subtasks_title;
         this.tasks_id = tasks_id;
@@ -62,11 +62,11 @@ public class Subtasks {
         return subtasks_id;
     }
 
-    public void setTasks_id(Integer tasks_id) {
+    public void setTasks_id(Long tasks_id) {
         this.tasks_id = tasks_id;
     }
 
-    public Integer getTasks_id() {
+    public Long getTasks_id() {
         return tasks_id;
     }
 }

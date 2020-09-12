@@ -29,6 +29,7 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import kotlin.jvm.JvmStatic;
 
 public class CalenderFragment extends Fragment {
@@ -91,9 +92,9 @@ public class CalenderFragment extends Fragment {
         taskRecyclerView = this.inflater.findViewById(R.id.taskRecyclerView);
         addTaskBtn = this.inflater.findViewById(R.id.addTaskBtn);
         List<Tasks> tasks = new ArrayList<>();
-        taskAdapter = new TasksAdapter(getActivity());
-        taskRecyclerView.setAdapter(taskAdapter);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        taskAdapter = new TasksAdapter(getActivity(), getFragmentManager());
+//        taskRecyclerView.setAdapter(taskAdapter);
+//        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
 
