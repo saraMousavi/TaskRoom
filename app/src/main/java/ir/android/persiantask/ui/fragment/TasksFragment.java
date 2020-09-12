@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,16 +26,20 @@ import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
+import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
+import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.TasksFragmentBinding;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
 
 import static android.app.Activity.RESULT_OK;
@@ -78,7 +83,22 @@ public class TasksFragment extends Fragment{
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Tasks selectedTask = taskAdapter.getTaskAt(viewHolder.getAdapterPosition());
+                SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTask.getTasks_id());
+                SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
+                subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
+                    @Override
+                    public void onChanged(List<Subtasks> subtasks) {
+                        for (Subtasks subtask: subtasks){
+                            subTasksViewModel.delete(subtask);
+                        }
+                        taskViewModel.delete(selectedTask);
+                    }
+                });
 
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
+                        .show();
             }
         }).attachToRecyclerView(taskRecyclerView);
 

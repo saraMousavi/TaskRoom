@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.ui.fragment.SubTaskFragment;
 import ir.android.persiantask.utils.Init;
@@ -145,6 +146,10 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                 taskClickListener.editTask(tasks);
             }
         });
+    }
+
+    public Tasks getTaskAt(int position) {
+        return getItem(position);
     }
 
     private void fragmentJump(Tasks tasks, int newContainerID) {
