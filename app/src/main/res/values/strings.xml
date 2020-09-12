@@ -201,4 +201,5 @@
     <string name="push">Push</string>
     <string name="alarm">Alarm</string>
     <string name="successDeleteTask">کار مورد نظر با موفقیت حذف شد.</string>
+    <string name="successDeleteSubTask">کار فرعی مورد نظر با موفقیت حذف شد.</string>
 </resources>

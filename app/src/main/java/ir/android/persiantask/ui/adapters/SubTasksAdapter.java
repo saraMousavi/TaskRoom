@@ -1,6 +1,5 @@
 package ir.android.persiantask.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
@@ -13,18 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Subtasks;
-import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 
@@ -91,6 +87,33 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                     notifyDataSetChanged();
                 }
             });
+            subTasksItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    subTasksItemViewHolder.editSubtasksEditText.setText(subtasks.getSubtasks_title());
+                    subTasksItemViewHolder.editSubtaskConstarintLayout.setVisibility(View.VISIBLE);
+                    subTasksItemViewHolder.subtaskRow.setVisibility(View.GONE);
+                    subTasksItemViewHolder.editSubstasksIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Subtasks subtask = new Subtasks(subTasksItemViewHolder.editSubtasksEditText.getText().toString(),
+                                    subtasks.getSubtasks_iscompleted(), subtasks.getTasks_id());
+                            subtask.setSubtasks_id(subtasks.getSubtasks_id());
+                            subTasksViewModel.update(subtask);
+                            notifyDataSetChanged();
+                            subTasksItemViewHolder.editSubtaskConstarintLayout.setVisibility(View.GONE);
+                            subTasksItemViewHolder.subtaskRow.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    subTasksItemViewHolder.removeEditRow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            subTasksItemViewHolder.editSubtaskConstarintLayout.setVisibility(View.GONE);
+                            subTasksItemViewHolder.subtaskRow.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            });
         } else if(holder instanceof SubTasksAddItemViewHolder){
             subTasksAddItemViewHolder = (SubTasksAddItemViewHolder) holder;
             subTasksAddItemViewHolder.itemView.setVisibility(View.VISIBLE);
@@ -98,7 +121,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     //@TODO add animation
-                    View parentView = (View) subTasksAddItemViewHolder.itemView.getParent();
+                    View parentView = (View) subTasksAddItemViewHolder.itemView;
                     parentView.setVisibility(View.GONE);
                 }
             });
@@ -127,9 +150,17 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
     public class SubTasksItemViewHolder extends RecyclerView.ViewHolder{
         ImageView subtasksCompletedIcon;
         TextView subtasksTitle;
+        ConstraintLayout editSubtaskConstarintLayout, subtaskRow;
+        EditText editSubtasksEditText;
+        ImageView editSubstasksIcon, removeEditRow;
         public SubTasksItemViewHolder(@NonNull View itemView) {
             super(itemView);
             subtasksCompletedIcon = itemView.findViewById(R.id.subtasksCompletedIcon);
+            editSubtaskConstarintLayout = itemView.findViewById(R.id.editSubtaskConstarintLayout);
+            subtaskRow = itemView.findViewById(R.id.subtaskRow);
+            editSubtasksEditText = itemView.findViewById(R.id.editSubtasksEditText);
+            editSubstasksIcon = itemView.findViewById(R.id.editSubstasksIcon);
+            removeEditRow = itemView.findViewById(R.id.removeEditRow);
             subtasksTitle = itemView.findViewById(R.id.subtasksTitle);
         }
     }
@@ -144,5 +175,9 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
             addNewSubtasks = itemView.findViewById(R.id.addNewSubtasks);
             insertSubstasksIcon = itemView.findViewById(R.id.insertSubstasksIcon);
         }
+    }
+
+    public Subtasks getSubTaskAt(int position){
+        return getItem(position);
     }
 }
