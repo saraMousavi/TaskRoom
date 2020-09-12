@@ -73,19 +73,21 @@ public class SubTaskFragment extends Fragment {
         subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
             @Override
             public void onChanged(List<Subtasks> subtasks) {
-                int subtaskLineWidth = subtaskListLine.getWidth()/subtasks.size();
-                for (Subtasks subtask: subtasks){
-                    View line = new View(getActivity());
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(subtaskLineWidth, 2);
-                    params.setMargins(3,0,3,0);
-                    line.setLayoutParams(params);
-                    if(subtask.getSubtasks_iscompleted() == 1){
-                        line.setBackground(getResources().getDrawable(R.color.colorAccent));
-                    } else {
-                        line.setBackground(getResources().getDrawable(R.color.grey_inactive));
-                    }
+                if(subtasks.size()> 0) {
+                    int subtaskLineWidth = subtaskListLine.getWidth() / subtasks.size();
+                    for (Subtasks subtask : subtasks) {
+                        View line = new View(getActivity());
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(subtaskLineWidth, 2);
+                        params.setMargins(3, 0, 3, 0);
+                        line.setLayoutParams(params);
+                        if (subtask.getSubtasks_iscompleted() == 1) {
+                            line.setBackground(getResources().getDrawable(R.color.colorAccent));
+                        } else {
+                            line.setBackground(getResources().getDrawable(R.color.grey_inactive));
+                        }
 
-                    subtaskListLine.addView(line);
+                        subtaskListLine.addView(line);
+                    }
                 }
                 subtasks.add(null);
                 subTasksAdapter.submitList(subtasks);

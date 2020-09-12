@@ -26,7 +26,7 @@ import ir.android.persiantask.viewmodels.TaskViewModel;
 
 public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     private FragmentActivity mFragmentActivity;
-    private SwitchContentListener switchContentListener;
+    private TaskClickListener taskClickListener;
     private TaskViewModel taskViewModel;
 
     private static final DiffUtil.ItemCallback<Tasks> DIFF_CALLBACK = new DiffUtil.ItemCallback<Tasks>() {
@@ -139,6 +139,12 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         int newContainerID = View.generateViewId();
         holder.subtaskConstarint.setId(newContainerID);
         fragmentJump(tasks, newContainerID);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                taskClickListener.editTask(tasks);
+            }
+        });
     }
 
     private void fragmentJump(Tasks tasks, int newContainerID) {
@@ -146,15 +152,16 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         Bundle bundle = new Bundle();
         bundle.putLong("taskID", tasks.getTasks_id());
         subTaskFragment.setArguments(bundle);
-        switchContentListener.switchContent(newContainerID, subTaskFragment);
+        taskClickListener.switchContent(newContainerID, subTaskFragment);
     }
 
-    public interface SwitchContentListener{
+    public interface TaskClickListener {
         void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment);
+        void editTask(Tasks tasks);
     }
 
-    public void setOnItemClickListener(SwitchContentListener listener) {
-        this.switchContentListener = listener;
+    public void setOnItemClickListener(TaskClickListener listener) {
+        this.taskClickListener = listener;
     }
 
 }

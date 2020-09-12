@@ -1,10 +1,15 @@
 package ir.android.persiantask.data.db.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
 
 /**
  * Room Table Builder
@@ -38,7 +43,7 @@ import androidx.room.PrimaryKey;
         foreignKeys = {@ForeignKey(entity = Projects.class,
                         parentColumns = "project_id",
                         childColumns = "projects_id")}, tableName = "Tasks")
-public class Tasks {
+public class Tasks implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "tasks_id")
     private Long tasks_id;
@@ -68,7 +73,9 @@ public class Tasks {
     private String tasks_comment;
 
 
-    public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype, Integer projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime, String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment) {
+    public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype,
+                 Integer projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime,
+                 String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment) {
         this.tasks_priority = tasks_priority;
         this.tasks_iscompleted = tasks_iscompleted;
         this.tasks_repeatedtype = tasks_repeatedtype;
@@ -186,4 +193,5 @@ public class Tasks {
     public String getTasks_comment() {
         return tasks_comment;
     }
+
 }

@@ -64,10 +64,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         , TasksRepeatDayBottomSheetFragment.RepeatDayClickListener
         , TasksRepeatPeriodBottomSheetFragment.RepeatPeriodClickListener
         , TasksPriorityTypeBottomSheetFragment.PriorityTypeClickListener {
-    public static final String EXTRA_ID =
-            "ir.android.data.db.entity.projects.id";
-    public static final String EXTRA_NAME =
-            "ir.android.data.db.entity.projects.title";
     private TextInputEditText taskNameEdit, tasksComment;
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
@@ -88,6 +84,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private String completedDateVal = "";
     private RadioGroup reminderTypeGroup;
     private Long tempTaskID;
+    private boolean isEditActivity = false;
+    private Tasks clickedTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +97,17 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     private void insertTempTask() {
         Tasks tasks = new Tasks("", 0, 0, 0,
-                selectedProject.getProject_id() , "", 0, 0,
+                selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "");
         try {
-            tempTaskID = taskViewModel.insert(tasks);
+            if (isEditActivity) {
+                tempTaskID = clickedTask.getTasks_id();
+            } else {
+                tempTaskID = taskViewModel.insert(tasks);
+            }
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove("tempTaskID");
-            editor.putLong("tempTaskID",tempTaskID);
+            editor.putLong("tempTaskID", tempTaskID);
             editor.apply();
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -264,7 +266,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                if((Integer) completeIcon.getTag() != R.drawable.ic_radio_button_checked_green){
+                if ((Integer) completeIcon.getTag() != R.drawable.ic_radio_button_checked_green) {
                     completeIcon.setImageResource(R.drawable.ic_radio_button_checked_green);
                     completeIcon.setTag(R.drawable.ic_radio_button_checked_green);
                     completedDate.setVisibility(View.VISIBLE);
@@ -324,33 +326,68 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         taskViewModel = ViewModelProviders.of(this, taskFactory).get(TaskViewModel.class);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_ID)) {
-            setTitle("Edit Project");
-            taskNameEdit.setText(intent.getStringExtra(EXTRA_NAME));
-        } else {
-            setTitle("Add Project");
+
+        if (intent.hasExtra("clickedTask")) {
+            clickedTask = (Tasks) intent.getExtras().getSerializable("clickedTask");
+            editableTaskFields();
         }
     }
 
-    private void insertTasks() {
-        String name = taskNameEdit.getText().toString();
-        if (name.trim().isEmpty()) {
-            Toast.makeText(this, "please insert name", Toast.LENGTH_SHORT).show();
-            return;
+    private void editableTaskFields() {
+        taskNameEdit.setText(clickedTask.getTasks_title());
+        startTextVal.setText(clickedTask.getTasks_startdate());
+        endTextVal.setText(clickedTask.getTasks_enddate());
+        endTextVal.setVisibility(View.VISIBLE);
+        System.out.println("clickedTask.getTasks_remindertime() = " + clickedTask.getTasks_remindertime());
+        reminderTime.post(new Runnable() {
+            @Override
+            public void run() {
+                reminderTime.setSelection(clickedTask.getTasks_remindertime());
+            }
+        });
+        System.out.println("clickedTask.getTasks_remindertype() = " + clickedTask.getTasks_remindertype());
+        ((RadioButton) reminderTypeGroup.getChildAt(clickedTask.getTasks_remindertype())).setChecked(true);
+        repeatTypeVal.setVisibility(View.VISIBLE);
+        repeatTypeVal.setText(clickedTask.getTasks_repeateddays());
+        if (clickedTask.getTasks_iscompleted() == 1) {
+            completeIcon.setImageResource(R.drawable.ic_radio_button_checked_green);
+            completeIcon.setTag(R.drawable.ic_radio_button_checked_green);
+            completedDate.setVisibility(View.VISIBLE);
+            isCompleted = true;
+            completedDate.setText(clickedTask.getTasks_enddate());
         }
+        priorityVal.setVisibility(View.VISIBLE);
+        String priorityStringVal = getString(R.string.nonePriority);
+        if (clickedTask.getTasks_priority() == 1) {
+            priorityStringVal = getString(R.string.low);
+        } else if (clickedTask.getTasks_priority() == 2) {
+            priorityStringVal = getString(R.string.medium);
+        } else if (clickedTask.getTasks_priority() == 3) {
+            priorityStringVal = getString(R.string.high);
+        }
+        priorityVal.setText(priorityStringVal);
+        tasksComment.setText(clickedTask.getTasks_comment());
+        isEditActivity = true;
+    }
+
+    private void insertTasks() {
         Integer priorityIntVal = 0;
-        if (priorityVal.getText().toString().equals(getString(R.string.low))){
+        if (priorityVal.getText().toString().equals(getString(R.string.low))) {
             priorityIntVal = 1;
-        } else if(priorityVal.getText().toString().equals(getString(R.string.medium))){
+        } else if (priorityVal.getText().toString().equals(getString(R.string.medium))) {
             priorityIntVal = 2;
-        } else if(priorityVal.getText().toString().equals(getString(R.string.high))) {
+        } else if (priorityVal.getText().toString().equals(getString(R.string.high))) {
             priorityIntVal = 3;
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
-        Tasks tasks = new Tasks(name, priorityIntVal, isCompleted ? 1: 0, 0, selectedProject.getProject_id(),
-                startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1, reminderTime.getSelectedItemPosition(),
-                repeatTypeVal.getText().toString(), completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1, tasksComment.getText().toString());
+        System.out.println("reminderTime.getSelectedItemPosition() = " + reminderTime.getSelectedItemPosition());
+        Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
+                selectedProject.getProject_id(), startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1,
+                reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
+                completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
+                tasksComment.getText().toString());
+        System.out.println("tasks.getTasks_remindertype() = " + tasks.getTasks_remindertype());
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
         finish();
@@ -406,7 +443,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     @Override
     public void onClickPriorityType(String priorityType, boolean isGone) {
-        if(isGone){
+        if (isGone) {
             priorityVal.setVisibility(View.GONE);
         } else {
             priorityVal.setVisibility(View.VISIBLE);

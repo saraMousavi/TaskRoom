@@ -2,6 +2,7 @@ package ir.android.persiantask.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,12 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,8 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
-import org.jetbrains.annotations.NotNull;
-
+import java.io.Serializable;
 import java.util.List;
 
 import ir.android.persiantask.R;
@@ -100,13 +98,22 @@ public class TasksFragment extends Fragment{
             }
         });
 
-        taskAdapter.setOnItemClickListener(new TasksAdapter.SwitchContentListener() {
+        taskAdapter.setOnItemClickListener(new TasksAdapter.TaskClickListener() {
             @Override
             public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
                 ft.addToBackStack(null);
                 ft.commit();
+            }
+
+            @Override
+            public void editTask(Tasks tasks) {
+                Intent intent = new Intent(getActivity(), AddEditTaskActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("clickedTask", (Serializable) tasks);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, EDIT_TASK_REQUEST);
             }
         });
         return view;
@@ -168,7 +175,6 @@ public class TasksFragment extends Fragment{
             projectViewModel.getProjectsByID().observe(this, new Observer<Projects>() {
                 @Override
                 public void onChanged(Projects projects) {
-
                     projects.setProjects_tasks_num(tasksNum);
                     projectViewModel.update(projects);
                 }
