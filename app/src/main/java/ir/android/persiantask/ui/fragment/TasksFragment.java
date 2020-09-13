@@ -99,6 +99,10 @@ public class TasksFragment extends Fragment{
                         taskViewModel.delete(selectedTask);
                     }
                 });
+                Projects projects = selectedProject;
+                projects.setProjects_tasks_num(tasksNum - 1);
+                projects.setProject_id(selectedProject.getProject_id());
+                projectViewModel.update(projects);
 
                 Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
