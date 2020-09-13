@@ -198,7 +198,7 @@ public class TasksFragment extends Fragment{
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
             Projects projects = selectedProject;
-            projects.setProjects_tasks_num(tasksNum + 1);
+            projects.setProjects_tasks_num(tasksNum);
             projects.setProject_id(selectedProject.getProject_id());
             projectViewModel.update(projects);
             Snackbar

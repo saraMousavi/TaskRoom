@@ -97,6 +97,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         init();
         onClickListener();
         initSpinners();
+        //for inserting subtask we need task foreign key
+        insertTempTask();
+        initRecyclerViews();
     }
 
     private void insertTempTask() {
@@ -129,9 +132,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 ArrayAdapter<Projects> projectsArrayAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, spinnerArray);
                 projectCategory.setAdapter(projectsArrayAdapter);
-                Gson gson = new Gson();
-                String projectJson = sharedPreferences.getString("selectedProject", "");
-                selectedProject = gson.fromJson(projectJson, Projects.class);
                 projectCategory.post(new Runnable() {
                     @Override
                     public void run() {
@@ -139,9 +139,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         Init.setProjectCategory(projectIcon, selectedProject.getCategory_id(), false);
                     }
                 });
-                //for inserting subtask we need task foreign key
-                insertTempTask();
-                initRecyclerViews();
             }
         });
         ArrayList<String> remindTimeArray = new ArrayList<>();
@@ -312,6 +309,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         tasksAddActivityBinding = DataBindingUtil.setContentView(AddEditTaskActivity.this, R.layout.tasks_add_activity);
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(AddEditTaskActivity.this);
+        Gson gson = new Gson();
+        String projectJson = sharedPreferences.getString("selectedProject", "");
+        selectedProject = gson.fromJson(projectJson, Projects.class);
         fabInsertTask = findViewById(R.id.fabInsertTask);
         fabInsertTask2 = findViewById(R.id.fabInsertTask2);
         insertSubtasksBtn = findViewById(R.id.insertSubtasksBtn);
@@ -356,14 +356,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         startTextVal.setText(clickedTask.getTasks_startdate());
         endTextVal.setText(clickedTask.getTasks_enddate());
         endTextVal.setVisibility(View.VISIBLE);
-        System.out.println("clickedTask.getTasks_remindertime() = " + clickedTask.getTasks_remindertime());
         reminderTime.post(new Runnable() {
             @Override
             public void run() {
                 reminderTime.setSelection(clickedTask.getTasks_remindertime());
             }
         });
-        System.out.println("clickedTask.getTasks_remindertype() = " + clickedTask.getTasks_remindertype());
         ((RadioButton) reminderTypeGroup.getChildAt(clickedTask.getTasks_remindertype())).setChecked(true);
         repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(clickedTask.getTasks_repeateddays());
@@ -399,13 +397,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
-        System.out.println("reminderTime.getSelectedItemPosition() = " + reminderTime.getSelectedItemPosition());
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1,
                 reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
                 tasksComment.getText().toString());
-        System.out.println("tasks.getTasks_remindertype() = " + tasks.getTasks_remindertype());
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
         setResult(RESULT_OK);
