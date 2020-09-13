@@ -23,6 +23,7 @@
 
     <style name="appSpinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/white_spinner_corner_shape</item>
+        <item name="android:layoutDirection">rtl</item>
     </style>
 
 
