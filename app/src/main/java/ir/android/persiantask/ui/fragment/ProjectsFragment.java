@@ -1,7 +1,9 @@
 package ir.android.persiantask.ui.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +38,7 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
+import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
@@ -50,13 +54,13 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private RecyclerView projectRecyclerView;
     private ProjectsAdapter projectsAdapter;
     private CollapsingToolbarLayout toolBarLayout;
-    private String selectedProjectTitle = "";
     private ProjectsFragmentBinding projectsFragmentBinding;
     private ProjectViewModel projectViewModel;
     private AppBarLayout mAppBarLayout;
     private Button firstAddProjectBtn;
     private ConstraintLayout projectsEmptyPage;
     private HashMap<Integer, Fragment> taskFragList;
+    private  SharedPreferences sharedPreferences;
 
 
     @Override
@@ -80,10 +84,18 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         init();
         //show project horizontal recycler view
         projectsRecyclerView();
-
         //onclick event for each project recycler view item
         projectRecyclerViewItemOnclick();
 
+        onClickListener();
+
+        return view;
+    }
+
+    /**
+     * this function only invoke when user want to insert first project
+     */
+    private void onClickListener() {
         firstAddProjectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,12 +106,12 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 addProjectBottomSheetFragment.show(getChildFragmentManager(), "");
             }
         });
-
-        return view;
     }
 
     /**
      * onclick event for each project recycler view item
+     * for show the list of selected project's tasks in different
+     * fragment
      */
     private void projectRecyclerViewItemOnclick() {
         projectsAdapter.setOnItemClickListener(new ProjectsAdapter.OnItemClickListener() {
@@ -172,8 +184,12 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
+                System.out.println("appBarLayout = " + appBarLayout);
                 if (scrollRange + verticalOffset == 0) {
-                    toolBarLayout.setTitle(selectedProjectTitle);
+                    Gson gson = new Gson();
+                    String projectJson = sharedPreferences.getString("selectedProject", "");
+                    Projects selectedProject = gson.fromJson(projectJson, Projects.class);
+                    toolBarLayout.setTitle(selectedProject.getProjects_title());
                     isShow = true;
                 } else if (isShow) {
                     toolBarLayout.setTitle(" ");
@@ -198,6 +214,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
      * initialize parameter and assign them to layout's element
      */
     private void init() {
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
         mAppBarLayout = (AppBarLayout) this.inflatedView.findViewById(R.id.app_bar);
         ProjectsViewModelFactory factory = new ProjectsViewModelFactory(getActivity().getApplication(), null);
         projectViewModel = ViewModelProviders.of(this, factory).get(ProjectViewModel.class);

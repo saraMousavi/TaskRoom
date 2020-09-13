@@ -32,6 +32,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -129,19 +130,19 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         android.R.layout.simple_spinner_dropdown_item, spinnerArray);
                 projectCategory.setAdapter(projectsArrayAdapter);
                 for (Projects project : projects) {
-                    if (project.getProject_id() == sharedPreferences.getInt("selectedProjectID", 0)) {
-                        selectedProject = project;
-                        projectCategory.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                projectCategory.setSelection(projects.indexOf(project));
-                                Init.setProjectCategory(projectIcon, project.getCategory_id(), false);
-                            }
-                        });
-                        //for inserting subtask we need task foreign key
-                        insertTempTask();
-                        initRecyclerViews();
-                    }
+                    Gson gson = new Gson();
+                    String projectJson = sharedPreferences.getString("selectedProject", "");
+                    selectedProject = gson.fromJson(projectJson, Projects.class);
+                    projectCategory.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            projectCategory.setSelection(projects.indexOf(selectedProject));
+                            Init.setProjectCategory(projectIcon, selectedProject.getCategory_id(), false);
+                        }
+                    });
+                    //for inserting subtask we need task foreign key
+                    insertTempTask();
+                    initRecyclerViews();
                 }
             }
         });

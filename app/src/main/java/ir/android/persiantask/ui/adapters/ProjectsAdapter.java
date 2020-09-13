@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,8 +122,10 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                     listener.OnItemClick(getProjectAt(position));
                     notifyDataSetChanged();
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.remove("selectedProjectID");
-                    editor.putInt("selectedProjectID", getProjectAt(position).getProject_id());
+                    Gson gson = new Gson();
+                    String jsonProject = gson.toJson(getProjectAt(position));
+                    editor.remove("selectedProject");
+                    editor.putString("selectedProject", jsonProject);
                     editor.apply();
                 }
             });

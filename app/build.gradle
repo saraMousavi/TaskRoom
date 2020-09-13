@@ -82,6 +82,9 @@ dependencies {
     //RollingLayoutManager
     implementation 'com.github.VRGsoftUA:RollingLayoutManager:1.0'
 
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+
 
 }
 configurations.all {

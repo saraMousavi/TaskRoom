@@ -19,7 +19,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         JodaTimeAndroid.init(this);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "samim_fd.ttf");
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/samim_fd.ttf");
         CategoryViewModel categoryViewModel = new CategoryViewModel(this);
         categoryViewModel.getAllCategory().observeForever(new Observer<List<Category>>() {
             @Override
