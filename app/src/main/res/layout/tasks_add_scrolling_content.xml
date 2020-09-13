@@ -225,7 +225,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/fifthRow"
+            android:id="@+id/reminderTimeConstraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -234,7 +234,8 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/endDateConstraint"
-            tools:ignore="MissingConstraints">
+            tools:ignore="MissingConstraints"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/reminderTimeIcon"
@@ -263,7 +264,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/sixthRow"
+            android:id="@+id/reminderTypeConstraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -271,8 +272,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fifthRow"
-            tools:ignore="MissingConstraints">
+            app:layout_constraintTop_toBottomOf="@+id/reminderTimeConstraint"
+            tools:ignore="MissingConstraints"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/reminderTypeIcon"
@@ -330,8 +332,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sixthRow"
-            tools:ignore="MissingConstraints">
+            app:layout_constraintTop_toBottomOf="@+id/reminderTypeConstraint"
+            tools:ignore="MissingConstraints"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/repeatIcon"

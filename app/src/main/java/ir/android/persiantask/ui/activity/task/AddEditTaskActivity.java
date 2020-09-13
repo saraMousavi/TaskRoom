@@ -71,7 +71,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TextInputEditText taskNameEdit, tasksComment;
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
-            repeatTypeConstraint, priorityTypeContraint, subTaskTitle;
+            repeatTypeConstraint, priorityTypeContraint, subTaskTitle,
+            reminderTimeConstraint, reminderTypeConstraint;
     private TextView startTextVal, endTextVal, repeatTypeVal, completedDate, priorityVal;
     private AppBarLayout mAppBarLayout;
     private ImageButton insertSubtasksBtn;
@@ -132,8 +133,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 ArrayAdapter<Projects> projectsArrayAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, spinnerArray);
                 projectCategory.setAdapter(projectsArrayAdapter);
-                for(Projects project : projects){
-                    if(project.getProject_id() == selectedProject.getProject_id()){
+                for (Projects project : projects) {
+                    if (project.getProject_id() == selectedProject.getProject_id()) {
                         selectedProject = project;
                         projectCategory.post(new Runnable() {
                             @Override
@@ -327,6 +328,36 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 tasksPriorityTypeBottomSheetFragment.show(getSupportFragmentManager(), "Priority_Type");
             }
         });
+        /**
+         * toggle visibility of reminder type and repeat type view on reminder time(zamanhaye yadavari) change selection
+         */
+        reminderTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        reminderTypeConstraint.setVisibility(View.GONE);
+                        repeatTypeConstraint.setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        repeatTypeConstraint.setVisibility(View.GONE);
+                        break;
+                    case 2:
+                        reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        repeatTypeConstraint.setVisibility(View.VISIBLE);
+                        Snackbar
+                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG)
+                                .show();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void init() {
@@ -350,6 +381,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
         completedDate = findViewById(R.id.completedDate);
         priorityVal = findViewById(R.id.priorityVal);
+        reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);
+        reminderTypeConstraint = findViewById(R.id.reminderTypeConstraint);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         subfirstRow = findViewById(R.id.subfirstRow);
         repeatTypeConstraint = findViewById(R.id.repeatTypeConstraint);
@@ -460,6 +493,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         } else if (view.getTag().equals("endTimePickerDialog")) {
             endTextVal.setText(datepickerVal);
             endTextVal.setVisibility(View.VISIBLE);
+            reminderTimeConstraint.setVisibility(View.VISIBLE);
         }
     }
 
