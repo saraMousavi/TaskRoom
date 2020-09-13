@@ -61,21 +61,10 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             taskTitle = itemView.findViewById(R.id.tasks_title);
             tasks_enddate = itemView.findViewById(R.id.tasks_enddate);
             tasksIsCompleted = itemView.findViewById(R.id.tasks_iscompleted);
-            tasksIsCompleted.setTag(1);
             reminder_time = itemView.findViewById(R.id.reminder_time);
             reminder_type = itemView.findViewById(R.id.reminder_type);
             tasks_comment = itemView.findViewById(R.id.tasks_comment);
             subtaskConstarint = itemView.findViewById(R.id.subtaskConstarint);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-//                    if (listener != null && position != RecyclerView.NO_POSITION) {
-//                        listener.OnItemClick(getItem(position));
-//                    }
-                }
-            });
         }
     }
 
@@ -93,17 +82,9 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Tasks tasks = getItem(position);
         holder.taskTitle.setText(tasks.getTasks_title());
-        if(tasks.getTasks_iscompleted() == 1){
-            holder.tasksIsCompleted.setImageResource(R.drawable.ic_radio_button_checked_green);
-            holder.tasksIsCompleted.setTag(R.drawable.ic_radio_button_checked_green);
-            holder.tasksIsCompleted.setVisibility(View.VISIBLE);
-            holder.taskTitle.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            holder.tasksIsCompleted.setImageResource(R.drawable.ic_radio_button_unchecked_black);
-            holder.tasksIsCompleted.setTag(R.drawable.ic_radio_button_unchecked_black);
-            holder.tasksIsCompleted.setVisibility(View.VISIBLE);
-            holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-        }
+
+        Init.toggleCompleteCircle(holder.taskTitle, holder.tasksIsCompleted, tasks.getTasks_iscompleted());
+
         holder.tasks_enddate.setText(tasks.getTasks_enddate());
 
         holder.tasksIsCompleted.setOnClickListener(new View.OnClickListener() {

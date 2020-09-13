@@ -13,35 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+<!--        this view visible when the list of projects is empty-->
+        <include android:visibility="gone"
             android:id="@+id/projectsEmptyPage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="350dp"
-                android:layout_height="430dp"
-                android:src="@drawable/empty_project_page"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/firstAddProjectBtn"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/colorAccent"
-                android:text="@string/createNewProject"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            layout="@layout/projects_fragment_empty_list"/>
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"

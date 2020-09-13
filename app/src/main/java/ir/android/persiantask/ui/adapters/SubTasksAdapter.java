@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
+import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 
 public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHolder> implements AddEditTaskActivity.ClickAddSubTaskListener {
@@ -70,13 +71,8 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
         if(holder instanceof SubTasksItemViewHolder) {
             SubTasksItemViewHolder subTasksItemViewHolder = (SubTasksItemViewHolder) holder;
             Subtasks subtasks = getItem(position);
-            if (subtasks.getSubtasks_iscompleted() == 1) {
-                subTasksItemViewHolder.subtasksCompletedIcon.setImageResource(R.drawable.ic_radio_button_checked_green);
-                subTasksItemViewHolder.subtasksTitle.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                subTasksItemViewHolder.subtasksCompletedIcon.setImageResource(R.drawable.ic_orange_circle);
-                subTasksItemViewHolder.subtasksTitle.setPaintFlags(subTasksItemViewHolder.subtasksTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            }
+            Init.toggleCompleteCircle(subTasksItemViewHolder.subtasksTitle, subTasksItemViewHolder.subtasksCompletedIcon, subtasks.getSubtasks_iscompleted());
+
             subTasksItemViewHolder.subtasksTitle.setText(subtasks.getSubtasks_title());
             subTasksItemViewHolder.subtasksCompletedIcon.setOnClickListener(new View.OnClickListener() {
                 @Override

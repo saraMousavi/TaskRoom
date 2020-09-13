@@ -44,13 +44,14 @@ import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import kotlin.jvm.JvmStatic;
 
-
+/**
+ * this fragment show when the project icon in bubble navigation clicking
+ */
 public class ProjectsFragment extends Fragment implements AddProjectBottomSheetFragment.SubmitClickListener {
     private static final String ARG_TITLE = "arg_title";
     private static final String ARG_BG_COLOR = "arg_bg_color";
-    private String title = "Default title.";
     private int bgColorResId = R.color.white;
-    private View inflatedView;
+    private View inflatedView, projectsEmptyPage;
     private RecyclerView projectRecyclerView;
     private ProjectsAdapter projectsAdapter;
     private CollapsingToolbarLayout toolBarLayout;
@@ -58,9 +59,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private ProjectViewModel projectViewModel;
     private AppBarLayout mAppBarLayout;
     private Button firstAddProjectBtn;
-    private ConstraintLayout projectsEmptyPage;
     private HashMap<Integer, Fragment> taskFragList;
-    private  SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
 
     @Override
@@ -69,7 +69,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
         Bundle arguments = this.getArguments();
         if (arguments != null) {
-            this.title = arguments.getString(ARG_TITLE);
             this.bgColorResId = arguments.getInt(ARG_BG_COLOR);
         }
     }
