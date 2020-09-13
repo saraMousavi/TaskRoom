@@ -40,4 +40,12 @@
         <item name="android:background">@drawable/white_bg_corner_shape</item>
     </style>
 
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
 </resources>

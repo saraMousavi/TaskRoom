@@ -37,6 +37,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:hint="@string/taskTitle"
+                    android:layoutDirection="rtl"
+                    style="@style/TextInputLayoutStyle"
                     android:textColorHint="@color/white"
                     app:boxBackgroundColor="@color/colorPrimary">
 
@@ -44,6 +46,7 @@
                         android:id="@+id/taskNameEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textCursorDrawable="@null"
                         android:textColor="@color/white" />
                 </com.google.android.material.textfield.TextInputLayout>
 
