@@ -1,8 +1,10 @@
 package ir.android.persiantask.ui.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
@@ -51,7 +54,7 @@ public class TasksFragment extends Fragment{
     private TasksFragmentBinding tasksFragmentBinding;
     private TaskViewModel taskViewModel;
     private ProjectViewModel projectViewModel;
-    private Integer selectedProjectedID;
+    private Projects selectedProject;
     private View inflatedView;
     private RecyclerView taskRecyclerView;
     private TasksAdapter taskAdapter;
@@ -60,6 +63,7 @@ public class TasksFragment extends Fragment{
     private TasksViewModelFactory factory;
     private ProjectsViewModelFactory projectFactory;
     private Integer tasksNum;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -140,14 +144,13 @@ public class TasksFragment extends Fragment{
     }
 
     private void init() {
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.containsKey("projectID")) {
-                selectedProjectedID = bundle.getInt("projectID");
-            }
-        }
-        factory = new TasksViewModelFactory(getActivity().getApplication(), selectedProjectedID);
-        projectFactory = new ProjectsViewModelFactory(getActivity().getApplication(), selectedProjectedID);
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+        Gson gson = new Gson();
+        String projectJson = sharedPreferences.getString("selectedProject", "");
+        selectedProject = gson.fromJson(projectJson, Projects.class);
+        factory = new TasksViewModelFactory(getActivity().getApplication(), selectedProject.getProject_id());
+        projectFactory = new ProjectsViewModelFactory(getActivity().getApplication(), selectedProject.getProject_id());
         taskViewModel = ViewModelProviders.of(this, factory).get(TaskViewModel.class);
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskRecyclerView = this.inflatedView.findViewById(R.id.taskRecyclerView);
@@ -194,13 +197,10 @@ public class TasksFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
-            projectViewModel.getProjectsByID().observe(this, new Observer<Projects>() {
-                @Override
-                public void onChanged(Projects projects) {
-                    projects.setProjects_tasks_num(tasksNum);
-                    projectViewModel.update(projects);
-                }
-            });
+            Projects projects = selectedProject;
+            projects.setProjects_tasks_num(tasksNum + 1);
+            projects.setProject_id(selectedProject.getProject_id());
+            projectViewModel.update(projects);
             Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG)
                     .show();
