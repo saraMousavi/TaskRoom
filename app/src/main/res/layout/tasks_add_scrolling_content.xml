@@ -15,7 +15,7 @@
         android:padding="32dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/firstRow"
+            android:id="@+id/subTaskTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layoutDirection="rtl"
@@ -56,7 +56,7 @@
             android:layoutDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/firstRow"
+            app:layout_constraintTop_toBottomOf="@id/subTaskTitle"
             android:visibility="gone"
             tools:ignore="MissingConstraints">
             <androidx.recyclerview.widget.RecyclerView

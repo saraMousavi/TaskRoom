@@ -71,7 +71,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TextInputEditText taskNameEdit, tasksComment;
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
-            repeatTypeConstraint, priorityTypeContraint;
+            repeatTypeConstraint, priorityTypeContraint, subTaskTitle;
     private TextView startTextVal, endTextVal, repeatTypeVal, completedDate, priorityVal;
     private AppBarLayout mAppBarLayout;
     private ImageButton insertSubtasksBtn;
@@ -250,8 +250,26 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 datePickerDialog.show(getSupportFragmentManager(), "endDatepickerdialog");
             }
         });
-
+        /**
+         * show and hide add row for add new sub task
+         */
         insertSubtasksBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (subfirstRow.getVisibility() == View.GONE) {
+                    subfirstRow.setVisibility(View.VISIBLE);
+                    ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
+                    addRow.setVisibility(View.VISIBLE);
+                } else {
+                    ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
+                    addRow.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        /**
+         * show and hide the sub task list
+         */
+        subTaskTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (subfirstRow.getVisibility() == View.VISIBLE) {
@@ -336,6 +354,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         subfirstRow = findViewById(R.id.subfirstRow);
         repeatTypeConstraint = findViewById(R.id.repeatTypeConstraint);
         priorityTypeContraint = findViewById(R.id.priorityTypeContraint);
+        subTaskTitle = findViewById(R.id.subTaskTitle);
         subtaskRecyclerView = findViewById(R.id.subtaskRecyclerView);
         projectCategory = findViewById(R.id.projectCategory);
         reminderTime = findViewById(R.id.reminderTime);
