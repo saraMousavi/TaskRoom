@@ -132,13 +132,19 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 ArrayAdapter<Projects> projectsArrayAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, spinnerArray);
                 projectCategory.setAdapter(projectsArrayAdapter);
-                projectCategory.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        projectCategory.setSelection(projects.indexOf(selectedProject));
-                        Init.setProjectCategory(projectIcon, selectedProject.getCategory_id(), false);
+                for(Projects project : projects){
+                    if(project.getProject_id() == selectedProject.getProject_id()){
+                        selectedProject = project;
+                        projectCategory.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                projectCategory.setSelection(projects.indexOf(selectedProject));
+                                Init.setProjectCategory(projectIcon, selectedProject.getCategory_id(), false);
+                            }
+                        });
                     }
-                });
+                }
+
             }
         });
         ArrayList<String> remindTimeArray = new ArrayList<>();

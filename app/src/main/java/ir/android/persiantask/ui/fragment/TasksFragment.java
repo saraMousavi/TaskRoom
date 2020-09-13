@@ -44,7 +44,9 @@ import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
+import kotlinx.coroutines.scheduling.Task;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class TasksFragment extends Fragment{
@@ -208,6 +210,12 @@ public class TasksFragment extends Fragment{
             Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG)
                     .show();
+        } else if(requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED){
+            Tasks tasks = new Tasks("", 0,0,0,
+                    selectedProject.getProject_id(),"",0,0,
+                    "","",0,"");
+            tasks.setTasks_id(sharedPreferences.getLong("tempTaskID", 0));
+            taskViewModel.delete(tasks);
         }
     }
 
