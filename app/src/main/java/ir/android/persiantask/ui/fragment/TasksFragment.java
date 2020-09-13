@@ -153,7 +153,7 @@ public class TasksFragment extends Fragment{
         taskRecyclerView = this.inflatedView.findViewById(R.id.taskRecyclerView);
         firstAddTaskBtn = this.inflatedView.findViewById(R.id.firstAddTaskBtn);
         taskAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
-        addTaskBtn = this.inflatedView.findViewById(R.id.addTaskBtn);
+        addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
     }
 
 
@@ -175,9 +175,11 @@ public class TasksFragment extends Fragment{
                 if (tasksNum == 0) {
                     taskList.setVisibility(View.GONE);
                     taskEmptyList.setVisibility(View.VISIBLE);
+                    addTaskBtn.setVisibility(View.GONE);
                 } else {
                     taskList.setVisibility(View.VISIBLE);
                     taskEmptyList.setVisibility(View.GONE);
+                    addTaskBtn.setVisibility(View.VISIBLE);
                 }
                 taskAdapter.submitList(tasks);
             }

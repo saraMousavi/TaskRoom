@@ -84,9 +84,21 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/taskFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="-20dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addTaskBtn"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="bottom|start"
+            android:src="@drawable/ic_add"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -184,7 +184,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                System.out.println("appBarLayout = " + appBarLayout);
                 if (scrollRange + verticalOffset == 0) {
                     Gson gson = new Gson();
                     String projectJson = sharedPreferences.getString("selectedProject", "");

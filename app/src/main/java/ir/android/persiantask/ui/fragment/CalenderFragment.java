@@ -90,7 +90,7 @@ public class CalenderFragment extends Fragment {
 
     private void init(){
         taskRecyclerView = this.inflater.findViewById(R.id.taskRecyclerView);
-        addTaskBtn = this.inflater.findViewById(R.id.addTaskBtn);
+        addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
         List<Tasks> tasks = new ArrayList<>();
 //        taskAdapter = new TasksAdapter(getActivity(), getFragmentManager());
 //        taskRecyclerView.setAdapter(taskAdapter);

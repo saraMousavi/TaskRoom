@@ -8,7 +8,6 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
         android:background="@drawable/white_bg_corner_shape">
         <include android:id="@+id/taskList"
             android:layout_width="match_parent"
