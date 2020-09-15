@@ -138,7 +138,9 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         Bundle bundle = new Bundle();
         bundle.putLong("taskID", tasks.getTasks_id());
         subTaskFragment.setArguments(bundle);
-        taskClickListener.switchContent(newContainerID, subTaskFragment);
+        if(taskClickListener != null) {
+            taskClickListener.switchContent(newContainerID, subTaskFragment);
+        }
     }
 
     public interface TaskClickListener {

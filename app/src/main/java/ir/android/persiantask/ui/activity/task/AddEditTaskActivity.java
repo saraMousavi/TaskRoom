@@ -469,7 +469,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         datepickerVal = "";
-        datepickerVal += year + "/" + monthOfYear + "/" + dayOfMonth;
+        datepickerVal += year + "/"
+                + (monthOfYear < 10 ? "0" + monthOfYear : monthOfYear)
+                + "/" + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
         GregorianCalendar galena = new GregorianCalendar();
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
                 AddEditTaskActivity.this,

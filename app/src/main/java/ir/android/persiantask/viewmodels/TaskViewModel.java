@@ -14,11 +14,12 @@ import ir.android.persiantask.data.db.repository.TasksRepository;
 
 public class TaskViewModel extends AndroidViewModel {
     private TasksRepository tasksRepository;
-    private LiveData<List<Tasks>> allTasks;
+    private LiveData<List<Tasks>> allProjectsTasks, allTasks;
 
     public TaskViewModel(@NonNull Application application, Integer projectID) {
         super(application);
         tasksRepository = new TasksRepository(application, projectID);
+        allProjectsTasks = tasksRepository.getAllProjectsTasks();
         allTasks = tasksRepository.getAllTasks();
     }
 
@@ -34,7 +35,11 @@ public class TaskViewModel extends AndroidViewModel {
         tasksRepository.delete(tasks);
     }
 
-    public LiveData<List<Tasks>> getAllTasks(){
+    public LiveData<List<Tasks>> getAllProjectsTasks(){
+        return allProjectsTasks;
+    }
+
+    public LiveData<List<Tasks>> getAllTasks() {
         return allTasks;
     }
 }

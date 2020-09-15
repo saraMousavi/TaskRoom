@@ -14,12 +14,13 @@ import ir.android.persiantask.data.db.entity.Tasks;
 
 public class TasksRepository {
     private TasksDao tasksDao;
-    private LiveData<List<Tasks>> allTasks;
+    private LiveData<List<Tasks>> allProjectsTasks, allTasks;
 
     public TasksRepository(Application application, Integer projectID) {
         PersianTaskDb persianTaskDb = PersianTaskDb.getInstance(application);
         tasksDao = persianTaskDb.tasksDao();
-        allTasks = tasksDao.getAllTasks(projectID);
+        allProjectsTasks = tasksDao.getAllTasks(projectID);
+        allTasks = tasksDao.getAllTasks();
     }
 
     public Long insert(Tasks tasks) throws ExecutionException, InterruptedException {
@@ -32,6 +33,10 @@ public class TasksRepository {
 
     public void delete(Tasks tasks) {
         new TasksRepository.DeleteProjectAsyncTask(tasksDao).execute(tasks);
+    }
+
+    public LiveData<List<Tasks>> getAllProjectsTasks() {
+        return allProjectsTasks;
     }
 
     public LiveData<List<Tasks>> getAllTasks() {

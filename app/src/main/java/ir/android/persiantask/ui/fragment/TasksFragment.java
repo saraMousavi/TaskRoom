@@ -3,13 +3,11 @@ package ir.android.persiantask.ui.fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +27,6 @@ import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
@@ -44,7 +41,6 @@ import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
-import kotlinx.coroutines.scheduling.Task;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -170,7 +166,7 @@ public class TasksFragment extends Fragment{
      * show tasks data depend on selected project in vertical recyclerview
      */
     private void tasksRecyclerView() {
-        taskViewModel.getAllTasks().observe(this, new Observer<List<Tasks>>() {
+        taskViewModel.getAllProjectsTasks().observe(this, new Observer<List<Tasks>>() {
             @Override
             public void onChanged(List<Tasks> tasks) {
                 try {

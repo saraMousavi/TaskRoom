@@ -12,6 +12,11 @@
         <item name="colorControlActivated">@color/light_green</item>
     </style>
 
+    <style name="AppThemeCalender" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/dark_grey</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
