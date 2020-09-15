@@ -96,6 +96,9 @@ public class Init {
      * @return
      */
     public static Integer integerFormatFromStringDate(String dateTime) {
+        if(dateTime.isEmpty()){
+            return 0;
+        }
         return Integer.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "").substring(0 , 8));
     }
 

@@ -203,4 +203,5 @@
     <string name="successDeleteTask">کار مورد نظر با موفقیت حذف شد.</string>
     <string name="successDeleteSubTask">کار فرعی مورد نظر با موفقیت حذف شد.</string>
     <string name="chooseadvancerepeattype">در قسمت زمان تکرار می توانید زمان های یادآوری را انتخاب نمایید.</string>
+    <string name="task">کار</string>
 </resources>

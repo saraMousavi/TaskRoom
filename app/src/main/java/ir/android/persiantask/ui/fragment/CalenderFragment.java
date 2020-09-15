@@ -9,6 +9,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,14 +51,19 @@ public class CalenderFragment extends Fragment {
     private View inflater;
     private PersianHorizontalExpCalendar persianHorizontalExpCalendar;
     private RecyclerView taskRecyclerView;
-    private TasksAdapter taskAdapter;
     private FloatingActionButton addTaskBtn;
+    private LinearLayout fab1, fab2;
     private CollapsingToolbarLayout toolBarLayout;
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
     private TasksViewModelFactory factory;
     private TaskViewModel taskViewModel;
     private TasksAdapter tasksAdapter;
+    private TextView taskText, reminderText;
+
+    //boolean flag to know if main FAB is in open or closed state.
+    private boolean fabExpanded = false;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,8 +117,11 @@ public class CalenderFragment extends Fragment {
         addTaskBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddEditTaskActivity.class);
-                startActivityForResult(intent, ADD_TASK_REQUEST);
+                if (fabExpanded == true){
+                    closeSubMenusFab();
+                } else {
+                    openSubMenusFab();
+                }
             }
         });
 
@@ -137,11 +147,18 @@ public class CalenderFragment extends Fragment {
 
     private void init() {
         taskRecyclerView = this.inflater.findViewById(R.id.taskRecyclerView);
-        addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
+        addTaskBtn = this.inflater.findViewById(R.id.addTaskBtn);
         factory = new TasksViewModelFactory(getActivity().getApplication(), null);
         taskViewModel = ViewModelProviders.of(CalenderFragment.this, factory).get(TaskViewModel.class);
         tasksAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        fab1 =  this.inflater.findViewById(R.id.fab1);
+        fab2 =  this.inflater.findViewById(R.id.fab2);
+        taskText =  this.inflater.findViewById(R.id.taskText);
+        reminderText =  this.inflater.findViewById(R.id.reminderText);
+
+        //Only main FAB is visible in the beginning
+        closeSubMenusFab();
     }
 
 
@@ -182,5 +199,24 @@ public class CalenderFragment extends Fragment {
                         .setstroke(2, Color.parseColor("#E89314"))
                         .setTextColor(Color.parseColor("#E88C02")))
                 .updateMarks();
+    }
+
+    private void closeSubMenusFab(){
+        fab1.animate().translationY(0);
+        fab2.animate().translationY(0);
+        taskText.setVisibility(View.GONE);
+        reminderText.setVisibility(View.GONE);
+        addTaskBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_add));
+        fabExpanded = false;
+    }
+
+    //Opens FAB submenus
+    private void openSubMenusFab(){
+        fabExpanded=true;
+        fab1.animate().translationY(-getResources().getDimension(R.dimen.fab_margin));
+        fab2.animate().translationY(-getResources().getDimension(R.dimen.fab_margin2));
+        taskText.setVisibility(View.VISIBLE);
+        reminderText.setVisibility(View.VISIBLE);
+        addTaskBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_close));
     }
 }
