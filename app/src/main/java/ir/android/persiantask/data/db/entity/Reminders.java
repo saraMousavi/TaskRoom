@@ -6,14 +6,19 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 /**
  * Room Table Builder
  * Reminders table for save all reminder that don't need define in project
  * and it save separate from Projects tab
  * <p>
- * if (reminders_type == 1) Alarm else if (reminders_type == 2) Notification else none
+ * if (reminders_type == 0) Push else if (reminders_type == 1) Alarm else none
  * <p>
- * if(reminders_isrepeated ==0 ) only repeat once in reminders_time
+ * switch(reminders_time)
+ * case 0:dont reminde me
+ * case 1:remind me in end date
+ * case 2:remind me in advance(repeatedtype)
  * switch(reminders_repeatedtype)
  * case 1:day;
  * case 2:week;
@@ -23,12 +28,8 @@ import androidx.room.PrimaryKey;
  * 'reminders_repeatedday' save all day that user choose in custom type and put them near each other with kama
  */
 
-@Entity(indices = {@Index("label_id")},
-        foreignKeys = @ForeignKey(entity = Label.class,
-        parentColumns = "label_id",
-        childColumns = "label_id"),
-        tableName = "Reminders")
-public class Reminders {
+@Entity(tableName = "Reminders")
+public class Reminders implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "reminders_id")
     private Integer reminders_id;
@@ -44,8 +45,6 @@ public class Reminders {
     private Integer reminders_upuser;
     @ColumnInfo(name = "reminders_cruser")
     private Integer reminders_cruser;
-    @ColumnInfo(name = "reminders_isrepeated")
-    private Integer reminders_isrepeated;
     @ColumnInfo(name = "reminders_title")
     private String reminders_title;
     @ColumnInfo(name = "reminders_time")
@@ -62,12 +61,12 @@ public class Reminders {
     private Integer label_id;
 
 
-
-    public Reminders(Integer reminders_type, String reminders_comment, Integer reminders_priority, Integer reminders_isrepeated, String reminders_title, Integer reminders_time, String reminders_repeatedday, Integer reminders_repeatedtype,Integer reminders_active, Integer label_id) {
+    public Reminders(Integer reminders_type, String reminders_comment, Integer reminders_priority,
+                     String reminders_title, Integer reminders_time, String reminders_repeatedday,
+                     Integer reminders_repeatedtype, Integer reminders_active, Integer label_id) {
         this.reminders_type = reminders_type;
         this.reminders_comment = reminders_comment;
         this.reminders_priority = reminders_priority;
-        this.reminders_isrepeated = reminders_isrepeated;
         this.reminders_title = reminders_title;
         this.reminders_time = reminders_time;
         this.reminders_repeatedday = reminders_repeatedday;
@@ -130,14 +129,6 @@ public class Reminders {
 
     public Integer getReminders_cruser() {
         return reminders_cruser;
-    }
-
-    public void setReminders_isrepeated(Integer reminders_isrepeated) {
-        this.reminders_isrepeated = reminders_isrepeated;
-    }
-
-    public Integer getReminders_isrepeated() {
-        return reminders_isrepeated;
     }
 
     public void setReminders_title(String reminders_title) {

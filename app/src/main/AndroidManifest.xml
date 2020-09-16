@@ -26,6 +26,9 @@
             android:name=".ui.activity.task.AddEditTaskActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ui.activity.reminder.AddEditReminderActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.activity.category.CategoryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

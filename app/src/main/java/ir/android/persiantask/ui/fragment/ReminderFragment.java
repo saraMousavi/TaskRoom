@@ -1,23 +1,47 @@
 package ir.android.persiantask.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Reminders;
+import ir.android.persiantask.data.db.entity.Subtasks;
+import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
+import ir.android.persiantask.databinding.ReminderFragmentBinding;
+import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
+import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.ReminderAdapter;
+import ir.android.persiantask.ui.adapters.TasksAdapter;
+import ir.android.persiantask.viewmodels.ReminderViewModel;
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +60,12 @@ public class ReminderFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private Integer mParam2;
+    private ReminderViewModel reminderViewModel;
+    private ReminderFragmentBinding reminderFragmentBinding;
+    private ReminderAdapter reminderAdapter;
+    private FloatingActionButton addReminderBtn;
+    public static final int ADD_REMINDER_REQUEST = 1;
+    public static final int EDIT_REMINDER_REQUEST = 2;
 
     public ReminderFragment() {
         // Required empty public constructor
@@ -71,22 +101,89 @@ public class ReminderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View inflaterView = inflater.inflate(R.layout.reminder_fragment, container, false);
-        this.inflaterView = inflaterView;
+        reminderFragmentBinding = DataBindingUtil.inflate(
+                inflater, R.layout.reminder_fragment, container, false);
+        View view = reminderFragmentBinding.getRoot();
+        this.inflaterView = view;
         init();
+        initRecyclerView();
+        onClickListener();
+        onTouchListener();
+
         return inflaterView;
+    }
+
+    private void onTouchListener() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Reminders selectedReminder = reminderAdapter.getReminderAt(viewHolder.getAdapterPosition());
+                reminderViewModel.delete(selectedReminder);
+
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteReminder), Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        }).attachToRecyclerView(reminderRecyclerView);
+
+    }
+
+    private void onClickListener() {
+        addReminderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddEditReminderActivity.class);
+                startActivityForResult(intent, ADD_REMINDER_REQUEST);
+            }
+        });
+
+        reminderAdapter.setOnItemClickListener(new ReminderAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Reminders reminders) {
+                Intent intent = new Intent(getActivity(), AddEditReminderActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("clickedReminder", (Serializable) reminders);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, EDIT_REMINDER_REQUEST);
+            }
+        });
+    }
+
+    private void initRecyclerView() {
+        reminderAdapter = new ReminderAdapter(getActivity());
+        reminderViewModel.getAllReminders().observe(this, new Observer<List<Reminders>>() {
+            @Override
+            public void onChanged(List<Reminders> reminders) {
+                reminderAdapter.submitList(reminders);
+                reminderRecyclerView.setAdapter(reminderAdapter);
+            }
+        });
+
     }
 
     private void init() {
         reminderRecyclerView = this.inflaterView.findViewById(R.id.reminderRecyclerView);
-        List<Reminders> remindersList = new ArrayList<>();
-        Reminders reminders = new Reminders(1, "", 1, 1, getString(R.string.reminder), 1, "", 1, 1, 1);
-        for(int i = 0 ; i < 10 ; i++){
-            remindersList.add(reminders);
-        }
-        ReminderAdapter reminderAdapter = new ReminderAdapter(getActivity(), remindersList);
-        reminderRecyclerView.setAdapter(reminderAdapter);
         reminderRecyclerView.setLayoutManager(new RollingLayoutManager(getContext()));
+        reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        reminderFragmentBinding.setReminderViewModel(reminderViewModel);
+        addReminderBtn = this.inflaterView.findViewById(R.id.addReminderBtn);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_OK) {
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
+                    .show();
+        } else if(requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED){
+        }
+    }
+
 }

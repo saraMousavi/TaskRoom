@@ -24,7 +24,6 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
 
 public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.ViewHolder> {
-    private List<Reminders> mReminders;
     private ReminderAdapter.OnItemClickListener listener;
     private FragmentActivity mFragmentActivity;
 
@@ -42,9 +41,8 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     };
 
 
-    public ReminderAdapter(FragmentActivity activity, List<Reminders> Reminders) {
+    public ReminderAdapter(FragmentActivity activity) {
         super(DIFF_CALLBACK);
-        mReminders = Reminders;
         mFragmentActivity = activity;
     }
 
@@ -80,19 +78,14 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull final ReminderAdapter.ViewHolder holder, int position) {
-        Reminders Reminders = mReminders.get(position);
-        holder.remindersTitle.setText(Reminders.getReminders_title());
+        Reminders reminder = getItem(position);
+        holder.remindersTitle.setText(reminder.getReminders_title());
         holder.remindersActive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mReminders.size();
     }
 
     public Reminders getReminderAt(int position) {

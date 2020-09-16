@@ -1,19 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragment.ReminderFragment"
-    android:paddingTop="32dp"
-    android:paddingRight="6dp"
-    android:paddingLeft="6dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="ReminderViewModel"
+            type="ir.android.persiantask.viewmodels.ReminderViewModel" />
+    </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reminderRecyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:paddingLeft="6dp"
+        android:paddingTop="32dp"
+        android:paddingRight="6dp"
+        android:layoutDirection="rtl"
+        tools:context=".ui.fragment.ReminderFragment">
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reminderRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="16dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addReminderBtn"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </FrameLayout>
+</layout>
