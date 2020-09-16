@@ -17,6 +17,12 @@
         android:layoutDirection="rtl"
         tools:context=".ui.fragment.ReminderFragment">
 
+        <include android:visibility="gone"
+            android:id="@+id/remindersEmptyPage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/reminders_fragment_empty_list"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reminderRecyclerView"
             android:layout_width="match_parent"

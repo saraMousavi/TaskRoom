@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -64,6 +65,7 @@ public class ReminderFragment extends Fragment {
     private ReminderFragmentBinding reminderFragmentBinding;
     private ReminderAdapter reminderAdapter;
     private FloatingActionButton addReminderBtn;
+    private Button firstAddReminderBtn;
     public static final int ADD_REMINDER_REQUEST = 1;
     public static final int EDIT_REMINDER_REQUEST = 2;
 
@@ -143,6 +145,14 @@ public class ReminderFragment extends Fragment {
             }
         });
 
+        firstAddReminderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddEditReminderActivity.class);
+                startActivityForResult(intent, ADD_REMINDER_REQUEST);
+            }
+        });
+
         reminderAdapter.setOnItemClickListener(new ReminderAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(Reminders reminders) {
@@ -160,6 +170,16 @@ public class ReminderFragment extends Fragment {
         reminderViewModel.getAllReminders().observe(this, new Observer<List<Reminders>>() {
             @Override
             public void onChanged(List<Reminders> reminders) {
+                View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
+                if (reminders.size() == 0) {
+                    remindersEmptyPage.setVisibility(View.VISIBLE);
+                    reminderRecyclerView.setVisibility(View.GONE);
+                    addReminderBtn.setVisibility(View.GONE);
+                } else {
+                    remindersEmptyPage.setVisibility(View.GONE);
+                    reminderRecyclerView.setVisibility(View.VISIBLE);
+                    addReminderBtn.setVisibility(View.VISIBLE);
+                }
                 reminderAdapter.submitList(reminders);
                 reminderRecyclerView.setAdapter(reminderAdapter);
             }
@@ -173,6 +193,7 @@ public class ReminderFragment extends Fragment {
         reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
         reminderFragmentBinding.setReminderViewModel(reminderViewModel);
         addReminderBtn = this.inflaterView.findViewById(R.id.addReminderBtn);
+        firstAddReminderBtn = this.inflaterView.findViewById(R.id.firstAddReminderBtn);
     }
 
     @Override
@@ -182,7 +203,7 @@ public class ReminderFragment extends Fragment {
             Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
                     .show();
-        } else if(requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED){
+        } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
         }
     }
 
