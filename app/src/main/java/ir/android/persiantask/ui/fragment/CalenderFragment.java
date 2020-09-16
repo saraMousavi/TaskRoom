@@ -17,8 +17,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,20 +37,24 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
+import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
+import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
 import kotlin.jvm.JvmStatic;
 
@@ -95,6 +101,7 @@ public class CalenderFragment extends Fragment {
         init();
         markDaysThatHaveTask();
         onClickListener();
+        onTouchListener();
         persianHorizontalExpCalendar = (PersianHorizontalExpCalendar) this.inflater.findViewById(R.id.persianCalendar);
         persianHorizontalExpCalendar.setTodayButtonTextSize(10);
         persianHorizontalExpCalendar.performClick();
@@ -148,6 +155,42 @@ public class CalenderFragment extends Fragment {
         return view;
     }
 
+    private void onTouchListener() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Tasks selectedTask = tasksAdapter.getTaskAt(viewHolder.getAdapterPosition());
+                SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTask.getTasks_id());
+                SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
+                subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
+                    @Override
+                    public void onChanged(List<Subtasks> subtasks) {
+                        for (Subtasks subtask: subtasks){
+                            subTasksViewModel.delete(subtask);
+                        }
+                        taskViewModel.delete(selectedTask);
+                    }
+                });
+                Projects projects = selectedProject;
+                projects.setProjects_tasks_num(projects.getProjects_tasks_num() - 1);
+                projects.setProject_id(selectedProject.getProject_id());
+                //@TODO bellow function don't work
+                projectViewModel.update(projects);
+                persianHorizontalExpCalendar.updateMarks();
+
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        }).attachToRecyclerView(taskRecyclerView);
+    }
+
     private void onClickListener() {
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +204,24 @@ public class CalenderFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddEditReminderActivity.class);
                 startActivityForResult(intent, ADD_REMINDER_REQUEST);
+            }
+        });
+        tasksAdapter.setOnItemClickListener(new TasksAdapter.TaskClickListener() {
+            @Override
+            public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+
+            @Override
+            public void editTask(Tasks tasks) {
+                Intent intent = new Intent(getActivity(), AddEditTaskActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("clickedTask", (Serializable) tasks);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, EDIT_TASK_REQUEST);
             }
         });
     }
