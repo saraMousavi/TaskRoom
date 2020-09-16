@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
