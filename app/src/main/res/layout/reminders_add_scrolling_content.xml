@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/reminderType"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@+id/guideline13"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -168,7 +168,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/repeatType"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="?colorPrimary" />
 
                 <TextView
                     android:id="@+id/repeatTypeVal"
@@ -214,7 +214,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/active"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@id/guideline15"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -270,7 +270,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/priority"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="?colorPrimary" />
 
                 <TextView
                     android:id="@+id/priorityVal"

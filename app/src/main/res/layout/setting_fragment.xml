@@ -12,7 +12,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:background="@color/colorPrimary"
+            android:background="?colorPrimary"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout

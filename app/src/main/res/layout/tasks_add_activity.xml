@@ -40,7 +40,7 @@
                     android:layoutDirection="rtl"
                     style="@style/TextInputLayoutStyle"
                     android:textColorHint="@color/white"
-                    app:boxBackgroundColor="@color/colorPrimary">
+                    app:boxBackgroundColor="?colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/taskNameEdit"

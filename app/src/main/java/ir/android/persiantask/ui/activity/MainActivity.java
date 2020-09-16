@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setMasterTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ArrayList<Fragment> fragList = new ArrayList<>();
@@ -61,5 +64,36 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(position, true);
             }
         });
+
+    }
+
+    public void setMasterTheme() {
+        switch (getFlag()) {
+            case 2:
+                setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                setTheme(R.style.AppTheme6);
+                break;
+            default:
+                setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag() {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        return sharedpreferences.getInt("theme", 1);
     }
 }

@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:padding="16dp"
-                app:contentScrim="?attr/colorPrimary"
+                app:contentScrim="?colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
@@ -40,7 +40,7 @@
                     android:layoutDirection="rtl"
                     style="@style/TextInputLayoutStyle"
                     android:textColorHint="@color/white"
-                    app:boxBackgroundColor="@color/colorPrimary">
+                    app:boxBackgroundColor="?colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/reminderNameEdit"

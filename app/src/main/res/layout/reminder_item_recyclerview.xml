@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:text="12:30"
-        android:textColor="@color/colorAccent"
+        android:textColor="?colorAccent"
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintBottom_toBottomOf="parent"/>
