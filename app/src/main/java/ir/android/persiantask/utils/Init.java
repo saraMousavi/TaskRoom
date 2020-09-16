@@ -126,6 +126,9 @@ public class Init {
      * @return
      */
     public static DateTime convertIntegerToDateTime(Integer integerTime) {
+        if(integerTime < 1000000){
+            return null;
+        }
         int year = integerTime / 10000;
         int month = (integerTime % 10000) / 100;
         int day = integerTime % 100;

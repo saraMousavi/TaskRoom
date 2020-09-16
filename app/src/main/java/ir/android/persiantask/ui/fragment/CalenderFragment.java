@@ -1,9 +1,11 @@
 package ir.android.persiantask.ui.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.mohamadian.persianhorizontalexpcalendar.PersianHorizontalExpCalendar;
 import com.mohamadian.persianhorizontalexpcalendar.enums.PersianCustomMarks;
 import com.mohamadian.persianhorizontalexpcalendar.enums.PersianViewPagerType;
@@ -36,13 +40,20 @@ import java.util.Date;
 import java.util.List;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
+import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.utils.Init;
+import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
 import kotlin.jvm.JvmStatic;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class CalenderFragment extends Fragment {
     private static final String ARG_TITLE = "arg_title";
@@ -56,10 +67,16 @@ public class CalenderFragment extends Fragment {
     private CollapsingToolbarLayout toolBarLayout;
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
+    public static final int ADD_REMINDER_REQUEST = 1;
+    public static final int EDIT_REMINDER_REQUEST = 2;
     private TasksViewModelFactory factory;
     private TaskViewModel taskViewModel;
     private TasksAdapter tasksAdapter;
     private TextView taskText, reminderText;
+    private Projects selectedProject;
+    private SharedPreferences sharedPreferences;
+    private ProjectsViewModelFactory projectFactory;
+    private ProjectViewModel projectViewModel;
 
     //boolean flag to know if main FAB is in open or closed state.
     private boolean fabExpanded = false;
@@ -77,8 +94,10 @@ public class CalenderFragment extends Fragment {
         this.inflater = view;
         init();
         markDaysThatHaveTask();
+        onClickListener();
         persianHorizontalExpCalendar = (PersianHorizontalExpCalendar) this.inflater.findViewById(R.id.persianCalendar);
         persianHorizontalExpCalendar.setTodayButtonTextSize(10);
+        persianHorizontalExpCalendar.performClick();
         persianHorizontalExpCalendar.setPersianHorizontalExpCalListener(new PersianHorizontalExpCalendar.PersianHorizontalExpCalListener() {
             @Override
             public void onCalendarScroll(DateTime dateTime) {
@@ -117,7 +136,7 @@ public class CalenderFragment extends Fragment {
         addTaskBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (fabExpanded == true){
+                if (fabExpanded == true) {
                     closeSubMenusFab();
                 } else {
                     openSubMenusFab();
@@ -129,6 +148,23 @@ public class CalenderFragment extends Fragment {
         return view;
     }
 
+    private void onClickListener() {
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddEditTaskActivity.class);
+                startActivityForResult(intent, ADD_TASK_REQUEST);
+            }
+        });
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddEditReminderActivity.class);
+                startActivityForResult(intent, ADD_REMINDER_REQUEST);
+            }
+        });
+    }
+
     /**
      * mark days that have task(day that are between start date and end date of the task)
      */
@@ -137,7 +173,7 @@ public class CalenderFragment extends Fragment {
             @Override
             public void onChanged(List<Tasks> tasks) {
                 for (Tasks task : tasks) {
-                    for(int i = Init.integerFormatFromStringDate(task.getTasks_startdate()); i <= Init.integerFormatFromStringDate(task.getTasks_enddate()) ; i++){
+                    for (int i = Init.integerFormatFromStringDate(task.getTasks_startdate()); i <= Init.integerFormatFromStringDate(task.getTasks_enddate()); i++) {
                         markSomeDays(Init.convertIntegerToDateTime(i));
                     }
                 }
@@ -146,16 +182,24 @@ public class CalenderFragment extends Fragment {
     }
 
     private void init() {
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+        Gson gson = new Gson();
+        String projectJson = sharedPreferences.getString("selectedProject", "");
+        selectedProject = gson.fromJson(projectJson, Projects.class);
+        projectFactory = new ProjectsViewModelFactory(getActivity().getApplication(), selectedProject.getProject_id());
+        projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
+
         taskRecyclerView = this.inflater.findViewById(R.id.taskRecyclerView);
         addTaskBtn = this.inflater.findViewById(R.id.addTaskBtn);
         factory = new TasksViewModelFactory(getActivity().getApplication(), null);
         taskViewModel = ViewModelProviders.of(CalenderFragment.this, factory).get(TaskViewModel.class);
         tasksAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        fab1 =  this.inflater.findViewById(R.id.fab1);
-        fab2 =  this.inflater.findViewById(R.id.fab2);
-        taskText =  this.inflater.findViewById(R.id.taskText);
-        reminderText =  this.inflater.findViewById(R.id.reminderText);
+        fab1 = this.inflater.findViewById(R.id.fab1);
+        fab2 = this.inflater.findViewById(R.id.fab2);
+        taskText = this.inflater.findViewById(R.id.taskText);
+        reminderText = this.inflater.findViewById(R.id.reminderText);
 
         //Only main FAB is visible in the beginning
         closeSubMenusFab();
@@ -201,7 +245,7 @@ public class CalenderFragment extends Fragment {
                 .updateMarks();
     }
 
-    private void closeSubMenusFab(){
+    private void closeSubMenusFab() {
         fab1.animate().translationY(0);
         fab2.animate().translationY(0);
         taskText.setVisibility(View.GONE);
@@ -211,12 +255,39 @@ public class CalenderFragment extends Fragment {
     }
 
     //Opens FAB submenus
-    private void openSubMenusFab(){
-        fabExpanded=true;
+    private void openSubMenusFab() {
+        fabExpanded = true;
         fab1.animate().translationY(-getResources().getDimension(R.dimen.fab_margin));
         fab2.animate().translationY(-getResources().getDimension(R.dimen.fab_margin2));
         taskText.setVisibility(View.VISIBLE);
         reminderText.setVisibility(View.VISIBLE);
         addTaskBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_close));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_OK) {
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
+                    .show();
+        } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
+        }
+        if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
+            Projects projects = selectedProject;
+            projects.setProjects_tasks_num(selectedProject.getProjects_tasks_num() + 1);
+            projects.setProject_id(selectedProject.getProject_id());
+            projectViewModel.update(projects);
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG)
+                    .show();
+        } else if(requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED){
+            Tasks tasks = new Tasks("", 0,0,0,
+                    selectedProject.getProject_id(),"",0,0,
+                    "","",0,"");
+            tasks.setTasks_id(sharedPreferences.getLong("tempTaskID", 0));
+            taskViewModel.delete(tasks);
+        }
+        closeSubMenusFab();
     }
 }
