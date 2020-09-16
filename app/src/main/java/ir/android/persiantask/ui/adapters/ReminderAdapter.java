@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -22,10 +23,12 @@ import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
+import ir.android.persiantask.viewmodels.ReminderViewModel;
 
 public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.ViewHolder> {
     private ReminderAdapter.OnItemClickListener listener;
     private FragmentActivity mFragmentActivity;
+    private ReminderViewModel reminderViewModel;
 
     private static final DiffUtil.ItemCallback<Reminders> DIFF_CALLBACK = new DiffUtil.ItemCallback<Reminders>() {
         @Override
@@ -41,19 +44,23 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     };
 
 
-    public ReminderAdapter(FragmentActivity activity) {
+    public ReminderAdapter(FragmentActivity activity, ReminderViewModel reminderViewModel) {
         super(DIFF_CALLBACK);
         mFragmentActivity = activity;
+        this.reminderViewModel = reminderViewModel;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView remindersTitle;
+        public TextView remindersTitle, tasks_remindertime;
         public SwitchCompat remindersActive;
+        public ImageView reminderComment;
 
         public ViewHolder(View itemView) {
             super(itemView);
             remindersTitle = itemView.findViewById(R.id.reminders_title);
+            tasks_remindertime = itemView.findViewById(R.id.tasks_remindertime);
             remindersActive = itemView.findViewById(R.id.reminders_active);
+            reminderComment = itemView.findViewById(R.id.reminderComment);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -80,10 +87,20 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     public void onBindViewHolder(@NonNull final ReminderAdapter.ViewHolder holder, int position) {
         Reminders reminder = getItem(position);
         holder.remindersTitle.setText(reminder.getReminders_title());
-        holder.remindersActive.setOnClickListener(new View.OnClickListener() {
+        holder.remindersActive.setChecked(reminder.getReminders_active() == 1 ? true : false);
+        holder.tasks_remindertime.setText(reminder.getReminders_time());
+        if (reminder.getReminders_comment().isEmpty()) {
+            holder.reminderComment.setVisibility(View.GONE);
+        } else {
+            holder.reminderComment.setVisibility(View.VISIBLE);
+        }
+        holder.remindersActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                reminder.setReminders_active(isChecked ? 1 : 0);
+                reminder.setReminders_id(reminder.getReminders_id());
+                reminderViewModel.update(reminder);
+                notifyDataSetChanged();
             }
         });
     }

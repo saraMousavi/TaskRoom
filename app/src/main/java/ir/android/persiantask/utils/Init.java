@@ -57,7 +57,7 @@ public class Init {
         int value = galena.get(Calendar.HOUR) % 12;
         return persianCalendar.getPersianYear() + "/"
                 + (persianCalendar.getPersianMonth() < 10 ? "0" + persianCalendar.getPersianMonth() : persianCalendar.getPersianMonth()) + "/"
-                + (persianCalendar.getPersianDay() < 10  ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
+                + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
                 + " "
                 + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))
                 + ":"
@@ -66,7 +66,22 @@ public class Init {
     }
 
     /**
+     * current time with format dot
+     *
+     * @return
+     */
+    public static String getCurrentTime() {
+        GregorianCalendar galena = new GregorianCalendar();
+        int value = galena.get(Calendar.HOUR) % 12;
+        return  LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))
+                + ":"
+                + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
+                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE)));
+    }
+
+    /**
      * convert date time to string with slash and :
+     *
      * @param dateTime
      * @return
      */
@@ -79,6 +94,7 @@ public class Init {
 
     /**
      * convert date time to integer
+     *
      * @param dateTime
      * @return
      */
@@ -92,26 +108,28 @@ public class Init {
 
     /**
      * convert string date with slash and : to integer
+     *
      * @param dateTime
      * @return
      */
     public static Integer integerFormatFromStringDate(String dateTime) {
-        if(dateTime.isEmpty()){
+        if (dateTime.isEmpty()) {
             return 0;
         }
-        return Integer.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "").substring(0 , 8));
+        return Integer.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "").substring(0, 8));
     }
 
     /**
      * convert integer date to date time type
+     *
      * @param integerTime
      * @return
      */
-    public static DateTime convertIntegerToDateTime(Integer integerTime){
+    public static DateTime convertIntegerToDateTime(Integer integerTime) {
         int year = integerTime / 10000;
-        int month  = (integerTime % 10000) / 100;
+        int month = (integerTime % 10000) / 100;
         int day = integerTime % 100;
-        return  new DateTime(year, month, day, 1, 1);
+        return new DateTime(year, month, day, 1, 1);
     }
 
     /**

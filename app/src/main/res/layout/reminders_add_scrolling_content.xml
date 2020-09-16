@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="rtl"
+    android:paddingBottom="50dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/reminders_add_activity"
-    android:paddingBottom="50dp">
+    tools:showIn="@layout/reminders_add_activity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,6 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,11 +42,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@+id/guideline10"
                 app:layout_constraintTop_toTopOf="parent">
+
                 <TextView
                     android:id="@+id/startText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/startDate" />
+                    android:text="@string/reminderTime" />
 
                 <TextView
                     android:id="@+id/startTextVal"
@@ -55,7 +57,6 @@
                     android:text=""
                     android:textColor="@color/lightcolorPrimary" />
             </LinearLayout>
-
 
 
             <androidx.constraintlayout.widget.Guideline
@@ -72,106 +73,6 @@
                 app:barrierDirection="top" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/endDateConstraint"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/startDateConstraint"
-            tools:ignore="MissingConstraints">
-
-            <ImageView
-                android:id="@+id/endIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_date"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="@+id/guideline11"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/endText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/endDate" />
-
-                <TextView
-                    android:id="@+id/endTextVal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="8dp"
-                    android:visibility="gone"
-                    android:text=""
-                    android:textColor="@color/lightcolorPrimary" />
-
-            </LinearLayout>
-
-
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="28dp" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="top" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/reminderTimeConstraint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/endDateConstraint"
-            tools:ignore="MissingConstraints"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/reminderTimeIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_reminder"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/reminderTime"
-                style="@style/appSpinner"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="@+id/guideline12" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="28dp" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reminderTypeConstraint"
@@ -182,9 +83,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reminderTimeConstraint"
-            tools:ignore="MissingConstraints"
-            android:visibility="gone">
+            app:layout_constraintTop_toBottomOf="@+id/startDateConstraint"
+            tools:ignore="MissingConstraints">
 
             <ImageView
                 android:id="@+id/reminderTypeIcon"
@@ -243,8 +143,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminderTypeConstraint"
-            tools:ignore="MissingConstraints"
-            android:visibility="gone">
+            tools:ignore="MissingConstraints">
 
             <ImageView
                 android:id="@+id/repeatIcon"
@@ -256,7 +155,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -264,6 +162,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@+id/guideline14"
                 app:layout_constraintTop_toTopOf="parent">
+
                 <TextView
                     android:id="@+id/repeatType"
                     android:layout_width="wrap_content"
@@ -277,8 +176,8 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:visibility="gone"
-                    android:textColor="@color/lightcolorPrimary" />
+                    android:textColor="@color/lightcolorPrimary"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
@@ -301,40 +200,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/repeatTypeConstraint"
             tools:ignore="MissingConstraints">
-
             <ImageView
-                android:id="@+id/completeIcon"
+                android:id="@+id/activeIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_black_circle"
+                android:src="@drawable/ic_black_reminder_active"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/activeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:text="@string/active"
+                android:textColor="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guideline15"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintRight_toRightOf="@id/guideline15"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/completedText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/complete"
-                    android:textColor="@color/colorPrimary" />
-
-                <TextView
-                    android:id="@+id/completedDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="8dp"
-                    android:text=""
-                    android:visibility="gone"
-                    android:textColor="@color/lightcolorPrimary" />
-            </LinearLayout>
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/reminders_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:switchMinWidth="56dp"
+                android:textOff="@string/inactive"
+                android:textOn="@string/active" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline15"
@@ -387,8 +278,8 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:visibility="gone"
-                    android:textColor="@color/lightcolorPrimary" />
+                    android:textColor="@color/lightcolorPrimary"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
@@ -399,6 +290,7 @@
                 app:layout_constraintGuide_begin="28dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tenththRow"
             android:layout_width="match_parent"
@@ -425,8 +317,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toRightOf="@id/guideline17"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@id/guideline17"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -446,8 +338,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.core.widget.NestedScrollView>

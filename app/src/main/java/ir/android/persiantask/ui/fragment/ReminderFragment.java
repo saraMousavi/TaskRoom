@@ -156,7 +156,7 @@ public class ReminderFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        reminderAdapter = new ReminderAdapter(getActivity());
+        reminderAdapter = new ReminderAdapter(getActivity(), reminderViewModel);
         reminderViewModel.getAllReminders().observe(this, new Observer<List<Reminders>>() {
             @Override
             public void onChanged(List<Reminders> reminders) {

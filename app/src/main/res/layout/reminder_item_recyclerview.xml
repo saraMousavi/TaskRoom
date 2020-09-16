@@ -21,15 +21,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <TextView
-        android:id="@+id/tasks_enddate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1398/06/06"
-        android:textColor="@color/colorAccent"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="@id/guideline4"
-        app:layout_constraintTop_toBottomOf="@id/guideline3" />
 
     <TextView
         android:id="@+id/tasks_remindertime"
@@ -39,33 +30,27 @@
         android:text="12:30"
         android:textColor="@color/colorAccent"
         android:textSize="11sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tasks_enddate"
-        app:layout_constraintStart_toEndOf="@+id/tasks_enddate" />
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ImageView
         android:id="@+id/repeatedIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_repeat"
+        android:src="@drawable/ic_orange_repeat"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="6dp" />
 
     <ImageView
-        android:id="@+id/alarmIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_orange_alarm"
-        app:layout_constraintEnd_toStartOf="@+id/repeatedIcon"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:layout_editor_absoluteX="6dp" />
-    <ImageView
+        android:id="@+id/reminderComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_orange_comment"
-        app:layout_constraintEnd_toStartOf="@+id/alarmIcon"
+        app:layout_constraintEnd_toStartOf="@+id/repeatedIcon"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:layout_editor_absoluteX="6dp" />
+        tools:layout_editor_absoluteX="6dp"
+        android:visibility="gone"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"

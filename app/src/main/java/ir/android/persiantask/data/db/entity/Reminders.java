@@ -15,10 +15,7 @@ import java.io.Serializable;
  * <p>
  * if (reminders_type == 0) Push else if (reminders_type == 1) Alarm else none
  * <p>
- * switch(reminders_time)
- * case 0:dont reminde me
- * case 1:remind me in end date
- * case 2:remind me in advance(repeatedtype)
+ * reminder_time ---? hour and minute of reminder
  * switch(reminders_repeatedtype)
  * case 1:day;
  * case 2:week;
@@ -47,8 +44,6 @@ public class Reminders implements Serializable {
     private Integer reminders_cruser;
     @ColumnInfo(name = "reminders_title")
     private String reminders_title;
-    @ColumnInfo(name = "reminders_time")
-    private Integer reminders_time;
     @ColumnInfo(name = "reminders_repeatedday")
     private String reminders_repeatedday;
     @ColumnInfo(name = "reminders_crdate")
@@ -57,21 +52,23 @@ public class Reminders implements Serializable {
     private Integer reminders_repeatedtype;
     @ColumnInfo(name = "reminders_active")
     private Integer reminders_active;
+    @ColumnInfo(name = "reminders_time")
+    private String reminders_time;
     @ColumnInfo(name = "label_id")
     private Integer label_id;
 
 
-    public Reminders(Integer reminders_type, String reminders_comment, Integer reminders_priority,
-                     String reminders_title, Integer reminders_time, String reminders_repeatedday,
+    public Reminders(Integer reminders_type, String reminders_comment, String reminders_time, Integer reminders_priority,
+                     String reminders_title, String reminders_repeatedday,
                      Integer reminders_repeatedtype, Integer reminders_active, Integer label_id) {
         this.reminders_type = reminders_type;
         this.reminders_comment = reminders_comment;
         this.reminders_priority = reminders_priority;
         this.reminders_title = reminders_title;
-        this.reminders_time = reminders_time;
         this.reminders_repeatedday = reminders_repeatedday;
         this.reminders_repeatedtype = reminders_repeatedtype;
         this.reminders_active = reminders_active;
+        this.reminders_time = reminders_time;
         this.label_id = label_id;
     }
 
@@ -93,6 +90,14 @@ public class Reminders implements Serializable {
 
     public void setReminders_comment(String reminders_comment) {
         this.reminders_comment = reminders_comment;
+    }
+
+    public String getReminders_time() {
+        return reminders_time;
+    }
+
+    public void setReminders_time(String reminders_time) {
+        this.reminders_time = reminders_time;
     }
 
     public String getReminders_comment() {
@@ -139,13 +144,6 @@ public class Reminders implements Serializable {
         return reminders_title;
     }
 
-    public void setReminders_time(Integer reminders_time) {
-        this.reminders_time = reminders_time;
-    }
-
-    public Integer getReminders_time() {
-        return reminders_time;
-    }
 
     public void setReminders_repeatedday(String reminders_repeatedday) {
         this.reminders_repeatedday = reminders_repeatedday;
