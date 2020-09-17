@@ -3,6 +3,8 @@ package ir.android.persiantask.ui.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -14,24 +16,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.ui.fragment.AddProjectBottomSheetFragment;
 import ir.android.persiantask.utils.Init;
-import ir.android.persiantask.utils.enums.CategoryType;
 
 public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHolder> {
     private ProjectsAdapter.OnItemClickListener listener;
@@ -146,7 +142,10 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             });
 
             if (clickedPosition == position) {
-                itemViewHolder.projectsBox.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.dark_blue_corner_shape));
+                TypedArray array = mFragmentActivity.getTheme().obtainStyledAttributes(getAppThemeStyle(), new int[] {R.attr.selectedBox});
+                int attrResourceId = array.getResourceId(0, 0);
+                Drawable drawable = mFragmentActivity.getResources().getDrawable(attrResourceId);
+                itemViewHolder.projectsBox.setBackground(drawable);
                 itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                 itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                 itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
@@ -188,6 +187,30 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
 
     public void setOnItemClickListener(ProjectsAdapter.OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public int getAppThemeStyle() {
+        switch (getFlag()) {
+            case 2:
+                return R.style.AppTheme2;
+            case 3:
+                return R.style.AppTheme3;
+            case 4:
+                return R.style.AppTheme4;
+            case 5:
+                return R.style.AppTheme5;
+            case 6:
+                return R.style.AppTheme6;
+            default:
+                return R.style.AppTheme;
+        }
+    }
+
+
+    public Integer getFlag() {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(mFragmentActivity);
+        return sharedpreferences.getInt("theme", 1);
     }
 
 }

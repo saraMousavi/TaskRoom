@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="fontFamily">@font/samim_fd</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme1</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
@@ -16,6 +17,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme1</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="fontFamily">@font/samim_fd</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
@@ -26,6 +28,7 @@
     <style name="AppTheme2" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary2</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme2</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent2</item>
         <item name="fontFamily">@font/samim_fd</item>
@@ -37,6 +40,7 @@
     <style name="AppTheme3" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary3</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme3</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent3</item>
         <item name="fontFamily">@font/samim_fd</item>
@@ -48,6 +52,7 @@
     <style name="AppTheme4" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary4</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme4</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent4</item>
         <item name="fontFamily">@font/samim_fd</item>
@@ -60,6 +65,7 @@
     <style name="AppTheme5" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary5</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme5</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent5</item>
         <item name="fontFamily">@font/samim_fd</item>
@@ -71,6 +77,7 @@
     <style name="AppTheme6" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary6</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape_theme6</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent6</item>
         <item name="fontFamily">@font/samim_fd</item>
