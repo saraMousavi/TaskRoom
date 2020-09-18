@@ -209,4 +209,6 @@
     <string name="successDeleteReminder">یادآور مورد نظر با موفقیت حذف گردید</string>
     <string name="reminderTime">زمان یادآور</string>
     <string name="createNewReminder">ایجاد یادآور جدید</string>
+    <string name="taskList">لیست کارها</string>
+    <string name="reminderList">لیست یادآورها</string>
 </resources>

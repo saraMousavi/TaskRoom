@@ -155,7 +155,7 @@ public class TasksFragment extends Fragment{
         projectFactory = new ProjectsViewModelFactory(getActivity().getApplication(), selectedProject.getProject_id());
         taskViewModel = ViewModelProviders.of(this, factory).get(TaskViewModel.class);
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
-        taskRecyclerView = this.inflatedView.findViewById(R.id.taskRecyclerView);
+        taskRecyclerView = this.inflatedView.findViewById(R.id.recyclerView);
         firstAddTaskBtn = this.inflatedView.findViewById(R.id.firstAddTaskBtn);
         taskAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
