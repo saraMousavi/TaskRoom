@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -19,12 +20,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.utils.Init;
 
 
 public class TimePickerDialog extends DialogFragment implements RadialPickerLayout.OnValueSelectedListener {
@@ -194,6 +200,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -222,6 +229,18 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
         Button mCancelButton = view.findViewById(R.id.cancel);
         mOkButton.setTypeface(TypefaceHelper.get(activity, fontName));
         mCancelButton.setTypeface(TypefaceHelper.get(activity, fontName));
+        RelativeLayout mdtpHeader = view.findViewById(R.id.time_display);
+        Map<View, Boolean> viewMap = new HashMap<>();
+        List<Map<View, Boolean>> viewList = new ArrayList<>();
+        viewMap.put(mdtpHeader, false);
+        viewList.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(mOkButton, true);
+        viewList.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(mCancelButton, true);
+        viewList.add(viewMap);
+        Init.setViewBackgroundDependOnTheme(viewList, getContext());
         mHourView.setTypeface(TypefaceHelper.get(activity, fontName));
         mMinuteView.setTypeface(TypefaceHelper.get(activity, fontName));
         mAmPmTextView.setTypeface(TypefaceHelper.get(activity, fontName));

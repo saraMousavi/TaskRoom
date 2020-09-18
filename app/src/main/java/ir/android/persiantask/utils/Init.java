@@ -1,15 +1,26 @@
 package ir.android.persiantask.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Paint;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+
+import com.google.android.material.appbar.AppBarLayout;
 
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.utils.calender.LanguageUtils;
@@ -73,7 +84,7 @@ public class Init {
     public static String getCurrentTime() {
         GregorianCalendar galena = new GregorianCalendar();
         int value = galena.get(Calendar.HOUR) % 12;
-        return  LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))
+        return LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))
                 + ":"
                 + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
                 galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE)));
@@ -126,7 +137,7 @@ public class Init {
      * @return
      */
     public static DateTime convertIntegerToDateTime(Integer integerTime) {
-        if(integerTime < 1000000){
+        if (integerTime < 1000000) {
             return null;
         }
         int year = integerTime / 10000;
@@ -150,5 +161,76 @@ public class Init {
             isCompletedIcon.setImageResource(R.drawable.ic_orange_circle);
             title.setPaintFlags(title.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void setViewBackgroundDependOnTheme(List<Map<View, Boolean>> views, Context context) {
+
+        for (Map<View, Boolean> view : views) {
+            for (Map.Entry<View, Boolean> entry : view.entrySet()) {
+                switch (getFlag(context)) {
+                    case 2:
+                        //if isPrimary
+                        if (entry.getValue()) {
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary2)));
+                        } else {
+                            //if isAccent
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent2)));
+                        }
+                        break;
+                    case 3:
+                        //if isPrimary
+                        if (entry.getValue()) {
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary3)));
+                        } else {
+                            //if isAccent
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent3)));
+                        }
+                        break;
+                    case 4:
+                        //if isPrimary
+                        if (entry.getValue()) {
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary4)));
+                        } else {
+                            //if isAccent
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent4)));
+                        }
+                        break;
+                    case 5:
+                        //if isPrimary
+                        if (entry.getValue()) {
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary5)));
+                        } else {
+                            //if isAccent
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent5)));
+                        }
+                        break;
+                    case 6:
+                        //if isPrimary
+                        if (entry.getValue()) {
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary6)));
+                        } else {
+                            //if isAccent
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent6)));
+                        }
+                        break;
+                    default:
+                        //if isPrimary
+                        if (entry.getValue()) {
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
+                        } else {
+                            //if isAccent
+                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    public static Integer getFlag(Context context) {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharedpreferences.getInt("theme", 1);
     }
 }

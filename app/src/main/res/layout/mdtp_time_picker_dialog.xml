@@ -10,8 +10,7 @@
         android:id="@+id/time_display_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="?colorPrimary" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/time_picker_header"
@@ -25,7 +24,7 @@
             android:padding="8dp"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:background="@color/mdtp_accent_color_dark"/>
+            android:background="?colorPrimary"/>
 
         <include
             layout="@layout/mdtp_time_header_label"

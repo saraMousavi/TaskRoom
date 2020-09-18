@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -37,7 +36,9 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.R;
@@ -92,6 +93,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private boolean isEditActivity = false;
     private Tasks clickedTask;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -360,6 +362,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         tasksAddActivityBinding = DataBindingUtil.setContentView(AddEditTaskActivity.this, R.layout.tasks_add_activity);
         this.sharedPreferences = PreferenceManager
@@ -407,6 +410,20 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             clickedTask = (Tasks) intent.getExtras().getSerializable("clickedTask");
             editableTaskFields();
         }
+        List<Map<View, Boolean>> views = new ArrayList<>();
+        Map<View, Boolean> viewMap = new HashMap<>();
+        viewMap.put(mAppBarLayout, true);
+        views.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(taskNameEdit, true);
+        views.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(fabInsertTask, false);
+        views.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(fabInsertTask2, false);
+        views.add(viewMap);
+        Init.setViewBackgroundDependOnTheme(views, AddEditTaskActivity.this);
     }
 
     private void editableTaskFields() {

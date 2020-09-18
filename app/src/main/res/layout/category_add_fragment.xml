@@ -25,6 +25,7 @@
     <Button
         android:id="@+id/insertCategoryBtn"
         android:layout_width="0dp"
+        android:backgroundTint="?colorPrimary"
         android:layout_height="60dp"
         android:text="@string/insert"
         android:layout_marginTop="12dp"

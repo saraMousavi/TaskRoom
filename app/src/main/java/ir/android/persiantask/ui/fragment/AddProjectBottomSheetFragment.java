@@ -21,11 +21,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
 import ir.android.persiantask.data.db.entity.Projects;
+import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.CategoryViewModel;
 
@@ -38,6 +41,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     private TextInputEditText projectsTitle;
     private Category selectedCategory;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,6 +114,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         insertProjectBtn = this.inflatedView.findViewById(R.id.insertProjectBtn);
@@ -135,6 +140,12 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
 
             }
         });
+
+        List<Map<View, Boolean>> views = new ArrayList<>();
+        Map<View, Boolean> viewMap = new HashMap<>();
+        viewMap.put(insertProjectBtn, true);
+        views.add(viewMap);
+        Init.setViewBackgroundDependOnTheme(views, getContext());
 
 
     }

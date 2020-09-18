@@ -2,6 +2,7 @@ package ir.android.persiantask.ui.activity.reminder;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SwitchCompat;
@@ -27,10 +29,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
 import ir.android.persiantask.databinding.RemindersAddActivityBinding;
+import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
@@ -63,6 +69,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private Reminders clickedReminder;
     private SwitchCompat reminders_active;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +163,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         remindersAddActivityBinding = DataBindingUtil.setContentView(AddEditReminderActivity.this, R.layout.reminders_add_activity);
         this.sharedPreferences = PreferenceManager
@@ -186,6 +194,20 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             clickedReminder = (Reminders) intent.getExtras().getSerializable("clickedReminder");
             editableRemindersFields();
         }
+        List<Map<View, Boolean>> views = new ArrayList<>();
+        Map<View, Boolean> viewMap = new HashMap<>();
+        viewMap.put(mAppBarLayout, true);
+        views.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(reminderNameEdit, true);
+        views.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(fabInsertReminders, false);
+        views.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(fabInsertReminders2, false);
+        views.add(viewMap);
+        Init.setViewBackgroundDependOnTheme(views, AddEditReminderActivity.this);
     }
 
     private void editableRemindersFields() {

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +19,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.utils.Init;
 
 
 public class DatePickerDialog extends DialogFragment implements
@@ -185,6 +192,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -202,6 +210,18 @@ public class DatePickerDialog extends DialogFragment implements
         Button cancelButton = view.findViewById(R.id.cancel);
         okButton.setTypeface(TypefaceHelper.get(activity, fontName));
         cancelButton.setTypeface(TypefaceHelper.get(activity, fontName));
+        LinearLayout mdtpHeader = view.findViewById(R.id.day_picker_selected_date_layout);
+        Map<View, Boolean> viewMap = new HashMap<>();
+        List<Map<View, Boolean>> viewList = new ArrayList<>();
+        viewMap.put(mdtpHeader, false);
+        viewList.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(okButton, true);
+        viewList.add(viewMap);
+        viewMap = new HashMap<>();
+        viewMap.put(cancelButton, true);
+        viewList.add(viewMap);
+        Init.setViewBackgroundDependOnTheme(viewList, getContext());
         if (mDayOfWeekTextView != null) {
             mDayOfWeekTextView.setTypeface(TypefaceHelper.get(activity, fontName));
         }
