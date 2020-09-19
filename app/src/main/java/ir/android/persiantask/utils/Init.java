@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
-import com.google.android.material.appbar.AppBarLayout;
-
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
@@ -232,5 +230,53 @@ public class Init {
         SharedPreferences sharedpreferences = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return sharedpreferences.getInt("theme", 1);
+    }
+
+    public static void setBackgroundRightHeaderButton(Context context, TextView textView){
+        textView.setTextColor(context.getResources().getColor(R.color.white));
+        switch (getFlag(context)){
+            case 2:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme2));
+                break;
+            case 3:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme3));
+                break;
+            case 4:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme4));
+                break;
+            case 5:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme5));
+                break;
+            case 6:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme6));
+                break;
+            default:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme1));
+                break;
+        }
+    }
+
+    public static void setBackgroundLeftHeaderButton(Context context, TextView textView){
+        textView.setTextColor(context.getResources().getColor(R.color.white));
+        switch (getFlag(context)){
+            case 2:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme2));
+                break;
+            case 3:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme3));
+                break;
+            case 4:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme4));
+                break;
+            case 5:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme5));
+                break;
+            case 6:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme6));
+                break;
+            default:
+                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme1));
+                break;
+        }
     }
 }
