@@ -211,4 +211,7 @@
     <string name="createNewReminder">ایجاد یادآور جدید</string>
     <string name="taskList">لیست کارها</string>
     <string name="reminderList">لیست یادآورها</string>
+    <string name="hello_alarm">hello_alarm</string>
+    <string name="job_service_notification">job_service_notification</string>
+    <string name="notification_channel_description">notification_channel_description</string>
 </resources>

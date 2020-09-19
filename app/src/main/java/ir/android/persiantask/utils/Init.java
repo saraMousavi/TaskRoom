@@ -1,5 +1,8 @@
 package ir.android.persiantask.utils;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -21,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.ui.services.AlarmJobService;
 import ir.android.persiantask.utils.calender.LanguageUtils;
 import ir.android.persiantask.utils.calender.PersianCalendar;
 import ir.android.persiantask.utils.enums.CategoryType;
@@ -232,9 +236,9 @@ public class Init {
         return sharedpreferences.getInt("theme", 1);
     }
 
-    public static void setBackgroundRightHeaderButton(Context context, TextView textView){
+    public static void setBackgroundRightHeaderButton(Context context, TextView textView) {
         textView.setTextColor(context.getResources().getColor(R.color.white));
-        switch (getFlag(context)){
+        switch (getFlag(context)) {
             case 2:
                 textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme2));
                 break;
@@ -256,9 +260,9 @@ public class Init {
         }
     }
 
-    public static void setBackgroundLeftHeaderButton(Context context, TextView textView){
+    public static void setBackgroundLeftHeaderButton(Context context, TextView textView) {
         textView.setTextColor(context.getResources().getColor(R.color.white));
-        switch (getFlag(context)){
+        switch (getFlag(context)) {
             case 2:
                 textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme2));
                 break;
@@ -277,6 +281,39 @@ public class Init {
             default:
                 textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme1));
                 break;
+        }
+    }
+
+    /**
+     * onClick method that schedules the jobs based on the parameters set.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void scheduleJob(JobScheduler mScheduler, String pkg, int deadline) {
+
+        int selectedNetworkOption = JobInfo.NETWORK_TYPE_NONE;
+
+
+        ComponentName serviceName = new ComponentName(pkg,
+                AlarmJobService.class.getName());
+        JobInfo.Builder builder = new JobInfo.Builder(0, serviceName)
+                .setRequiredNetworkType(selectedNetworkOption)
+                .setRequiresDeviceIdle(true);
+
+        builder.setOverrideDeadline(deadline * 1000);
+
+        JobInfo myJobInfo = builder.build();
+        mScheduler.schedule(myJobInfo);
+    }
+
+    /**
+     * onClick method for cancelling all existing jobs.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void cancelJobs(JobScheduler mScheduler) {
+
+        if (mScheduler != null) {
+            mScheduler.cancelAll();
+            mScheduler = null;
         }
     }
 }

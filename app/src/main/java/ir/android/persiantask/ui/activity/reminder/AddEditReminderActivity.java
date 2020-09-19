@@ -1,5 +1,6 @@
 package ir.android.persiantask.ui.activity.reminder;
 
+import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -68,6 +69,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private boolean isEditActivity = false, isActive = false;
     private Reminders clickedReminder;
     private SwitchCompat reminders_active;
+    private JobScheduler mScheduler;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -187,6 +189,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         priorityTypeContraint = findViewById(R.id.priorityTypeContraint);
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         reminders_active = findViewById(R.id.reminders_active);
+        mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
 
         Intent intent = getIntent();
 
@@ -215,6 +218,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         isEditActivity = true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void insertReminder() {
         Integer priorityIntVal = 0;
         if (priorityVal.getText().toString().equals(getString(R.string.low))) {
@@ -236,6 +240,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         } else {
             reminderViewModel.insert(reminders);
         }
+        Init.scheduleJob(mScheduler, getPackageName(), 10);
 
         setResult(RESULT_OK);
         finish();

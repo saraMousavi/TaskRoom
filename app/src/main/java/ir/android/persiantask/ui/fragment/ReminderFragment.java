@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -24,22 +23,14 @@ import com.google.android.material.snackbar.Snackbar;
 import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import ir.android.persiantask.R;
-import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Reminders;
-import ir.android.persiantask.data.db.entity.Subtasks;
-import ir.android.persiantask.data.db.entity.Tasks;
-import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.databinding.ReminderFragmentBinding;
 import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
-import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.ReminderAdapter;
-import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.viewmodels.ReminderViewModel;
-import ir.android.persiantask.viewmodels.SubTasksViewModel;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -68,6 +59,7 @@ public class ReminderFragment extends Fragment {
     private Button firstAddReminderBtn;
     public static final int ADD_REMINDER_REQUEST = 1;
     public static final int EDIT_REMINDER_REQUEST = 2;
+    private static final int SET_ALARM_PERMISION = 200;
 
     public ReminderFragment() {
         // Required empty public constructor

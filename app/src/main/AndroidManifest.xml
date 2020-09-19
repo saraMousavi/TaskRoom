@@ -3,6 +3,8 @@
     package="ir.android.persiantask">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".ui.activity.MyApplication"
@@ -13,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.theme.ThemeActivity"></activity>
+        <activity android:name=".ui.activity.theme.ThemeActivity" />
         <activity
             android:name=".ui.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -33,6 +35,14 @@
         <activity
             android:name=".ui.activity.category.CategoryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.activity.AlarmActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".ui.services.AlarmJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:enabled="true" />
     </application>
 
 </manifest>
