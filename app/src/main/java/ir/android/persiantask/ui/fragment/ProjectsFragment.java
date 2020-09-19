@@ -264,6 +264,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 taskFragList.remove(projects.getProject_id());
                 break;
         }
+        projectsAdapter.notifyDataSetChanged();
 
     }
 

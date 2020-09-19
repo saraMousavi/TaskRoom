@@ -39,7 +39,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     private Button insertProjectBtn;
     private Button deleteProjectBtn;
     private TextInputEditText projectsTitle;
-    private Category selectedCategory;
+    private Category selectedCategory = null;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -62,6 +62,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
                             projectCategory.post(new Runnable() {
                                 @Override
                                 public void run() {
+                                    selectedCategory = category;
                                     projectCategory.setSelection(categories.indexOf(category));
                                 }
                             });
@@ -74,7 +75,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
-                    Projects projects = new Projects(1, Math.toIntExact(projectCategory.getSelectedItemId()), projectsTitle.getText().toString(), 1, 0);
+                    Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, 0);
                     projects.setProject_id(bundle.getInt("project_id"));
                     submitClickListener.onClickSubmit(projects, ActionTypes.EDIT);
                     dismiss();
