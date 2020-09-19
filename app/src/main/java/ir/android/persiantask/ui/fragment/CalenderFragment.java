@@ -326,7 +326,7 @@ public class CalenderFragment extends Fragment {
         Gson gson = new Gson();
         String projectJson = sharedPreferences.getString("selectedProject", "");
         selectedProject = gson.fromJson(projectJson, Projects.class);
-        projectFactory = new ProjectsViewModelFactory(getActivity().getApplication(), selectedProject.getProject_id());
+        projectFactory = new ProjectsViewModelFactory(getActivity().getApplication(), selectedProject == null ? null : selectedProject.getProject_id());
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
 
         recyclerView = this.inflater.findViewById(R.id.recyclerView);
