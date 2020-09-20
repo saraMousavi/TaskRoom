@@ -4,14 +4,28 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/helloAlarm"
+    <ImageView
+        android:id="@+id/alarmIcon"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="32dp"
+        android:src="@drawable/alarm_fire"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/alarm_active"/>
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/alarm_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_alarm"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textOff="@string/inactive"
+        android:textOn="@string/active"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarmIcon"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
