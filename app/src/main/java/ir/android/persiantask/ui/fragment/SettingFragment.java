@@ -27,7 +27,7 @@ public class SettingFragment extends Fragment {
     private static final String ARG_BG_COLOR = "arg_bg_color";
     private CollapsingToolbarLayout toolBarLayout;
     private View inflatedView;
-    private LinearLayout projectCategory, themeFragment;
+    private LinearLayout projectCategory, themeFragment, shareApp;
 
     @Nullable
     @Override
@@ -82,12 +82,22 @@ public class SettingFragment extends Fragment {
                 startActivity(themeActivity);
             }
         });
+        shareApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
     }
 
     private void init() {
         toolBarLayout = (CollapsingToolbarLayout) this.inflatedView.findViewById(R.id.toolbar_layout);
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         themeFragment = this.inflatedView.findViewById(R.id.themeFragment);
+        shareApp = this.inflatedView.findViewById(R.id.shareApp);
     }
 
     @JvmStatic

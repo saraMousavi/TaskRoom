@@ -169,6 +169,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintGuide_begin="250dp" />
                 <LinearLayout
+                    android:id="@+id/shareApp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
