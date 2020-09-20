@@ -94,12 +94,14 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private void onClickListener() {
         fabInsertReminders.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 insertReminder();
             }
         });
         fabInsertReminders2.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 insertReminder();
@@ -240,8 +242,8 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         } else {
             reminderViewModel.insert(reminders);
         }
-        Init.scheduleJob(mScheduler, getPackageName(), 10);
-
+        int diff = Integer.valueOf(datepickerVal.replaceAll(":", "")) - Integer.valueOf(Init.getCurrentTime().replaceAll(":", ""));
+        Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(), diff * 60);
         setResult(RESULT_OK);
         finish();
     }

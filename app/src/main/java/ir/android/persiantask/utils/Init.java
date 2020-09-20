@@ -288,14 +288,14 @@ public class Init {
      * onClick method that schedules the jobs based on the parameters set.
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void scheduleJob(JobScheduler mScheduler, String pkg, int deadline) {
+    public static void scheduleJob(JobScheduler mScheduler, String pkg, int jobId,  int deadline) {
 
         int selectedNetworkOption = JobInfo.NETWORK_TYPE_NONE;
 
 
         ComponentName serviceName = new ComponentName(pkg,
                 AlarmJobService.class.getName());
-        JobInfo.Builder builder = new JobInfo.Builder(0, serviceName)
+        JobInfo.Builder builder = new JobInfo.Builder(jobId, serviceName)
                 .setRequiredNetworkType(selectedNetworkOption)
                 .setRequiresDeviceIdle(true);
 
@@ -310,7 +310,6 @@ public class Init {
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void cancelJobs(JobScheduler mScheduler) {
-
         if (mScheduler != null) {
             mScheduler.cancelAll();
             mScheduler = null;

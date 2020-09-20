@@ -24,6 +24,8 @@ import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -47,6 +49,7 @@ public class AlarmJobService extends JobService {
             "primary_notification_channel";
     // Notification manager.
     NotificationManager mNotifyManager;
+    public static Ringtone ringtone;
 
     /**
      * Called by the system once it determines it is time to run the job.
@@ -92,6 +95,8 @@ public class AlarmJobService extends JobService {
             //deprecated in API 26
             v.vibrate(500);
         }
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+        ringtone.play();
         return false;
     }
 
@@ -106,8 +111,15 @@ public class AlarmJobService extends JobService {
      */
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
+        ringtone.stop();
         return false;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
 
     /**
      * Creates a Notification channel, for OREO and higher.
