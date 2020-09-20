@@ -29,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ArrayList<Fragment> fragList = new ArrayList<>();
-        fragList.add(ProjectsFragment.newInstance(getString(R.string.Projects), R.color.white));
-        fragList.add(ReminderFragment.newInstance(getString(R.string.Reminders), R.color.white));
-        fragList.add(CalenderFragment.newInstance(getString(R.string.Calender), R.color.white));
         fragList.add(SettingFragment.newInstance(getString(R.string.Setting), R.color.white));
+        fragList.add(CalenderFragment.newInstance(getString(R.string.Calender), R.color.white));
+        fragList.add(ReminderFragment.newInstance(getString(R.string.Reminders), R.color.white));
+        fragList.add(ProjectsFragment.newInstance(getString(R.string.Projects), R.color.white));
 
         MainAdapter pagerAdapter = new MainAdapter(fragList, getSupportFragmentManager());
 

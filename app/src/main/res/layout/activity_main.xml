@@ -25,18 +25,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/l_item_home"
+            android:id="@+id/l_item_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_active="true"
             app:bt_colorActive="@color/white"
             app:bt_colorInactive="@color/grey_inactive"
-            app:bt_icon="@drawable/ic_home"
+            app:bt_icon="@drawable/ic_setting"
             app:bt_shape="@drawable/transition_background_drawable_home"
-            app:bt_title="@string/Projects" />
-
+            app:bt_title="@string/Setting" />
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/l_item_profile_list"
             android:layout_width="wrap_content"
@@ -46,7 +43,6 @@
             app:bt_icon="@drawable/ic_calendar"
             app:bt_shape="@drawable/transition_background_drawable_home"
             app:bt_title="@string/Calender" />
-
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/l_item_search"
             android:layout_width="wrap_content"
@@ -61,14 +57,16 @@
 
 
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/l_item_notification"
+            android:id="@+id/l_item_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bt_colorActive="@color/white"
             app:bt_colorInactive="@color/grey_inactive"
-            app:bt_icon="@drawable/ic_setting"
+            app:bt_icon="@drawable/ic_home"
+            app:bt_active="true"
             app:bt_shape="@drawable/transition_background_drawable_home"
-            app:bt_title="@string/Setting" />
+            app:bt_title="@string/Projects" />
+
 
     </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
 
