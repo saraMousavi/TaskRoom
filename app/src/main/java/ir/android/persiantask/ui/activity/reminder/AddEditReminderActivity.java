@@ -240,11 +240,12 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         if (isEditActivity) {
             reminders.setReminders_id(clickedReminder.getReminders_id());
             reminderViewModel.update(reminders);
+            //@TODO update jobinfo
         } else {
             reminderViewModel.insert(reminders);
+            int diff = Integer.valueOf(datepickerVal.replaceAll(":", "")) - Integer.valueOf(Init.getCurrentTime().replaceAll(":", ""));
+            Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(), diff * 60);
         }
-        int diff = Integer.valueOf(datepickerVal.replaceAll(":", "")) - Integer.valueOf(Init.getCurrentTime().replaceAll(":", ""));
-        Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(), diff * 60);
         setResult(RESULT_OK);
         finish();
     }

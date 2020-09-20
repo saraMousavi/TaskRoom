@@ -36,12 +36,18 @@ import java.util.Objects;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
+import ir.android.persiantask.data.db.entity.Subtasks;
+import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
+import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
+import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
+import ir.android.persiantask.viewmodels.TaskViewModel;
 import kotlin.jvm.JvmStatic;
 
 /**
@@ -57,6 +63,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private CollapsingToolbarLayout toolBarLayout;
     private ProjectsFragmentBinding projectsFragmentBinding;
     private ProjectViewModel projectViewModel;
+    private TaskViewModel taskViewModel;
+    private SubTasksViewModel subTasksViewModel;
     private AppBarLayout mAppBarLayout;
     private Button firstAddProjectBtn;
     private HashMap<Integer, Fragment> taskFragList;
@@ -251,6 +259,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 break;
             case DELETE:
                 msg = getString(R.string.successDeleteProject);
+
                 Snackbar snackbar = Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
                 snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
@@ -260,7 +269,28 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                         snackbar.dismiss();
                     }
                 }).show();
-                projectViewModel.delete(projects);
+                TasksViewModelFactory taskfactory = new TasksViewModelFactory(getActivity().getApplication(), projects.getProject_id());
+                TaskViewModel tasksViewModel = ViewModelProviders.of(getActivity(), taskfactory).get(TaskViewModel.class);
+                tasksViewModel.getAllTasks().observeForever(new Observer<List<Tasks>>() {
+                    @Override
+                    public void onChanged(List<Tasks> tasks) {
+                        for(Tasks task: tasks){
+                            SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), task.getTasks_id());
+                            SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
+                            subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
+                                @Override
+                                public void onChanged(List<Subtasks> subtasks) {
+                                    for (Subtasks subtask: subtasks){
+                                        subTasksViewModel.delete(subtask);
+                                    }
+                                }
+                            });
+                            tasksViewModel.delete(task);
+                        }
+                        projectViewModel.delete(projects);
+                    }
+                });
+
                 taskFragList.remove(projects.getProject_id());
                 break;
         }

@@ -1,6 +1,7 @@
 package ir.android.persiantask.ui.activity.task;
 
 import android.annotation.SuppressLint;
+import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -92,6 +93,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Long tempTaskID;
     private boolean isEditActivity = false;
     private Tasks clickedTask;
+    private JobScheduler mScheduler;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -194,12 +196,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     private void onClickListener() {
         fabInsertTask.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 insertTasks();
             }
         });
         fabInsertTask2.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 insertTasks();
@@ -398,6 +402,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         completeIcon = findViewById(R.id.completeIcon);
         completeIcon.setTag(R.drawable.ic_black_circle);
+        mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
 
         TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getInt("selectedProjectID", 0));
@@ -461,6 +466,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         isEditActivity = true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void insertTasks() {
         Integer priorityIntVal = 0;
         if (priorityVal.getText().toString().equals(getString(R.string.low))) {
@@ -479,6 +485,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 tasksComment.getText().toString());
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
+//        int diffDay =Init.integerFormatFromStringDate(datepickerVal) - Init.integerFormatFromStringDate(Init.getCurrentTime());
+//        int diffTime =Init.integerFormatFromStringTime(datepickerVal) - Init.integerFormatFromStringTime(Init.getCurrentTime());
+//        int diff = diffDay * 24 * 60 * 60 ;
+//        Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(), diff * 60);
         setResult(RESULT_OK);
         finish();
     }

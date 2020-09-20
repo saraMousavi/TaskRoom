@@ -123,13 +123,26 @@ public class Init {
      * convert string date with slash and : to integer
      *
      * @param dateTime
-     * @return
+     * @return date
      */
     public static Integer integerFormatFromStringDate(String dateTime) {
         if (dateTime.isEmpty()) {
             return 0;
         }
         return Integer.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "").substring(0, 8));
+    }
+
+    /**
+     * convert string date with slash and : to integer
+     *
+     * @param dateTime
+     * @return time
+     */
+    public static Integer integerFormatFromStringTime(String dateTime) {
+        if (dateTime.isEmpty()) {
+            return 0;
+        }
+        return Integer.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "").substring(8, 12));
     }
 
     /**
