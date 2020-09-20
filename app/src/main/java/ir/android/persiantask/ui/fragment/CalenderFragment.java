@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -34,9 +36,11 @@ import com.mohamadian.persianhorizontalexpcalendar.model.CustomGradientDrawable;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,7 +206,7 @@ public class CalenderFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if(taskList.getTag().equals("clicked")) {
+                if (taskList.getTag().equals("clicked")) {
                     Tasks selectedTask = tasksAdapter.getTaskAt(viewHolder.getAdapterPosition());
                     SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTask.getTasks_id());
                     SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
@@ -225,7 +229,7 @@ public class CalenderFragment extends Fragment {
                     Snackbar
                             .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
                             .show();
-                } else if(reminderList.getTag().equals("clicked")){
+                } else if (reminderList.getTag().equals("clicked")) {
                     Reminders selectedReminder = reminderAdapter.getReminderAt(viewHolder.getAdapterPosition());
                     reminderViewModel.delete(selectedReminder);
 
@@ -309,11 +313,15 @@ public class CalenderFragment extends Fragment {
      */
     private void markDaysThatHaveTask() {
         taskViewModel.getAllTasks().observe(CalenderFragment.this, new Observer<List<Tasks>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<Tasks> tasks) {
                 for (Tasks task : tasks) {
-                    for (int i = Init.integerFormatFromStringDate(task.getTasks_startdate()); i <= Init.integerFormatFromStringDate(task.getTasks_enddate()); i++) {
-                        markSomeDays(Init.convertIntegerToDateTime(i));
+                    DateTime dateTime1 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
+                    DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
+                    int duration = Days.daysBetween(dateTime1, dateTime2).getDays();
+                    for(int i = 0 ; i < duration; i++){
+                        markSomeDays(dateTime1.plusDays(i));
                     }
                 }
             }

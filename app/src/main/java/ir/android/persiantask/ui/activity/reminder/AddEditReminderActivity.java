@@ -192,6 +192,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         reminders_active = findViewById(R.id.reminders_active);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        datepickerVal = Init.getCurrentTime();
 
         Intent intent = getIntent();
 
