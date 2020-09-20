@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -149,15 +150,18 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     tasksFragment.setArguments(bundle);
                     taskFragList.put(project.getProject_id(), tasksFragment);
                 }
+                NestedScrollView taskFragmentContainer = inflatedView.findViewById(R.id.taskFragmentContainer);
                 if (projects.size() == 0) {
                     projectsEmptyPage.setVisibility(View.VISIBLE);
                     mAppBarLayout.setVisibility(View.GONE);
+                    taskFragmentContainer.setVisibility(View.GONE);
                     taskFragList.clear();
                 } else {
                     //null added to list for add Btn at the end of recyclerview
                     projects.add(null);
                     projectsEmptyPage.setVisibility(View.GONE);
                     mAppBarLayout.setVisibility(View.VISIBLE);
+                    taskFragmentContainer.setVisibility(View.VISIBLE);
                     projectRecyclerView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -274,13 +278,13 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 tasksViewModel.getAllTasks().observeForever(new Observer<List<Tasks>>() {
                     @Override
                     public void onChanged(List<Tasks> tasks) {
-                        for(Tasks task: tasks){
+                        for (Tasks task : tasks) {
                             SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), task.getTasks_id());
                             SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
                             subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
                                 @Override
                                 public void onChanged(List<Subtasks> subtasks) {
-                                    for (Subtasks subtask: subtasks){
+                                    for (Subtasks subtask : subtasks) {
                                         subTasksViewModel.delete(subtask);
                                     }
                                 }
