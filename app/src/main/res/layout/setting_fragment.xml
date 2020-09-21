@@ -191,6 +191,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintGuide_begin="300dp" />
                 <LinearLayout
+                    android:id="@+id/aboutApp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -203,7 +204,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/aboutus"/>
+                        android:text="@string/aboutapp"/>
                 </LinearLayout>
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline19"

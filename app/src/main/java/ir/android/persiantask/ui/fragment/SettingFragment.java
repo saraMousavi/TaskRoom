@@ -17,6 +17,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import org.jetbrains.annotations.NotNull;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.ui.activity.AboutAppActivity;
 import ir.android.persiantask.ui.activity.category.CategoryActivity;
 import ir.android.persiantask.ui.activity.theme.ThemeActivity;
 import kotlin.jvm.JvmStatic;
@@ -27,7 +28,7 @@ public class SettingFragment extends Fragment {
     private static final String ARG_BG_COLOR = "arg_bg_color";
     private CollapsingToolbarLayout toolBarLayout;
     private View inflatedView;
-    private LinearLayout projectCategory, themeFragment, shareApp;
+    private LinearLayout projectCategory, themeFragment, shareApp, aboutApp;
 
     @Nullable
     @Override
@@ -91,6 +92,12 @@ public class SettingFragment extends Fragment {
                 startActivity(sendIntent);
             }
         });
+        aboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), AboutAppActivity.class));
+            }
+        });
     }
 
     private void init() {
@@ -98,6 +105,7 @@ public class SettingFragment extends Fragment {
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         themeFragment = this.inflatedView.findViewById(R.id.themeFragment);
         shareApp = this.inflatedView.findViewById(R.id.shareApp);
+        aboutApp = this.inflatedView.findViewById(R.id.aboutApp);
     }
 
     @JvmStatic
