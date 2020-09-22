@@ -94,6 +94,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private boolean isEditActivity = false;
     private Tasks clickedTask;
     private JobScheduler mScheduler;
+    private int lastProjectID;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -108,8 +109,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     private void insertTempTask() {
+        System.out.println("lastProjectID = " + lastProjectID);
         Tasks tasks = new Tasks("", 0, 0, 0,
-                selectedProject.getProject_id(), "", 0, 0,
+                selectedProject== null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "");
         try {
             if (isEditActivity) {
@@ -148,7 +150,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                             }
                         });
                     }
+                    System.out.println("project.getProject_id() = " + project.getProject_id());
+                    lastProjectID = project.getProject_id();
                 }
+
 
             }
         });

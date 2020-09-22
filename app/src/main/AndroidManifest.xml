@@ -15,8 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.AboutAppActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activity.reminder.AddShortCutReminderActivity"></activity>
+        <activity android:name=".ui.activity.task.AddShortCutTaskActivity" />
+        <activity
+            android:name=".ui.activity.AboutAppActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.activity.theme.ThemeActivity" />
         <activity
             android:name=".ui.activity.MainActivity"

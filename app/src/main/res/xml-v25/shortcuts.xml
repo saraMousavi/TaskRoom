@@ -2,7 +2,7 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_orange_alarm"
+        android:icon="@drawable/ic_orange_add"
         android:shortcutDisabledMessage="@string/shortcut_disabled_message"
         android:shortcutId="random_constellation"
         android:shortcutLongLabel="@string/shortcut_long_label_add_task"

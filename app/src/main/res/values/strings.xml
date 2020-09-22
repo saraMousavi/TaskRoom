@@ -215,6 +215,8 @@
     <string name="job_service_notification">job_service_notification</string>
     <string name="notification_channel_description">notification_channel_description</string>
     <string name="shortcut_disabled_message">shortcut_disabled_message</string>
-    <string name="shortcut_long_label">shortcut_long_label</string>
-    <string name="shortcut_short_label">shortcut_short_label</string>
+    <string name="shortcut_long_label_add_task">ثبت کار</string>
+    <string name="shortcut_short_label_add_task">ثبت کار</string>
+    <string name="shortcut_long_label_add_reminder">ثبت یادآور</string>
+    <string name="shortcut_short_label_add_reminder">ثبت یادآور</string>
 </resources>
