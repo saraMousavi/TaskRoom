@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
+                System.out.println("i addOnPageChangeListener= " + i);
                 bubbleNavigationLinearView.setCurrentActiveItem(i);
             }
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        viewPager.setCurrentItem(3);
         bubbleNavigationLinearView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {

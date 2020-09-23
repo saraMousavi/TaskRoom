@@ -18,7 +18,7 @@
     <Button
         android:id="@+id/firstAddTaskBtn"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="?colorAccent"

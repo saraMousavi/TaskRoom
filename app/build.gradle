@@ -92,6 +92,11 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation 'com.google.firebase:firebase-database:19.4.0'
+
+    //device compability
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+
 //    //chat for support page
 //    implementation 'com.cometchat:pro-android-chat-sdk:2.1.1'
 //    implementation 'com.github.stfalcon:chatkit:0.3.3'

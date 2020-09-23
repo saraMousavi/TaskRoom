@@ -409,7 +409,7 @@ public class CalenderFragment extends Fragment {
     //Opens FAB submenus
     private void openSubMenusFab() {
         fabExpanded = true;
-        fab1.animate().translationY(-getResources().getDimension(R.dimen.fab_margin));
+        fab1.animate().translationY(-getResources().getDimension(R.dimen.fab_margin1));
         fab2.animate().translationY(-getResources().getDimension(R.dimen.fab_margin2));
         taskText.setVisibility(View.VISIBLE);
         reminderText.setVisibility(View.VISIBLE);

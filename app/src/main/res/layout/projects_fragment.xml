@@ -23,7 +23,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="@dimen/_135sdp"
             android:background="@color/dark_grey"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay"
@@ -43,10 +43,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="16dp"
-                    android:paddingRight="8dp"
-                    android:paddingBottom="16dp"
+                    android:paddingLeft="@dimen/_6sdp"
+                    android:paddingTop="@dimen/_14sdp"
+                    android:paddingRight="@dimen/_6sdp"
+                    android:paddingBottom="@dimen/_14sdp"
                     android:visibility="visible"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -73,8 +73,8 @@
             style="@style/Widget.MaterialComponents.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="@dimen/_14sdp"
+            android:layout_marginBottom="@dimen/_14sdp"
             android:layout_gravity="bottom|start"
             android:visibility="gone"
             android:src="@drawable/ic_add"/>

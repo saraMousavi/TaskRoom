@@ -12,6 +12,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme1" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -26,6 +27,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme2" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -40,6 +42,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme3" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -54,6 +57,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme4" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -68,6 +72,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
     <!-- Base application theme. -->
@@ -83,6 +88,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme6" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -97,6 +103,7 @@
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
     </style>
 
     <style name="AppThemeCalender" parent="Theme.MaterialComponents.Light.NoActionBar">
