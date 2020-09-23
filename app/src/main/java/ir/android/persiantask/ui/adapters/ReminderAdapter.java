@@ -100,7 +100,6 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
                 reminder.setReminders_active(isChecked ? 1 : 0);
                 reminder.setReminders_id(reminder.getReminders_id());
                 reminderViewModel.update(reminder);
-                notifyDataSetChanged();
             }
         });
     }
