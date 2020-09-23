@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 
 android {
@@ -88,6 +89,9 @@ dependencies {
     //intro for about app
     implementation 'com.ramotion.paperonboarding:paper-onboarding:1.1.3'
 
+    //firebase
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-database:19.4.0'
 //    //chat for support page
 //    implementation 'com.cometchat:pro-android-chat-sdk:2.1.1'
 //    implementation 'com.github.stfalcon:chatkit:0.3.3'
