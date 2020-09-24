@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -18,8 +19,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
-            android:fitsSystemWindows="true"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
@@ -33,12 +33,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/taskName"
+                    style="@style/TextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:hint="@string/taskTitle"
                     android:layoutDirection="rtl"
-                    style="@style/TextInputLayoutStyle"
                     android:textColorHint="@color/white"
                     app:boxBackgroundColor="?colorPrimary">
 
@@ -46,15 +46,15 @@
                         android:id="@+id/taskNameEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textCursorDrawable="@null"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textCursorDrawable="@null" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"/>
+                    app:layout_collapseMode="pin" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -62,6 +62,7 @@
         <include
             android:id="@+id/nestedScroll"
             layout="@layout/tasks_add_scrolling_content" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabInsertTask"
@@ -78,7 +79,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_insert"
-            android:visibility="gone"
+            android:scaleX="0"
+            android:scaleY="0"
             app:layout_anchor="@id/nestedScroll"
             app:layout_anchorGravity="bottom|end" />
 

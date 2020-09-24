@@ -4,12 +4,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -44,7 +46,7 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUpWindowAnimation();
+        setupWindowAnimations();
         init();
         addCategoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,14 +58,16 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setUpWindowAnimation() {
-        Fade fade = new Fade();
-        fade.setDuration(1000);
-        getWindow().setEnterTransition(fade);
-        Slide slide = new Slide();
-        slide.setDuration(1000);
-        getWindow().setReturnTransition(slide);
+    private void setupWindowAnimations() {
+        // Re-enter transition is executed when returning to this activity
+        Slide slideTransition = new Slide();
+        slideTransition.setSlideEdge(Gravity.LEFT);
+        slideTransition.setDuration(1000);
+        getWindow().setReenterTransition(slideTransition);
+        getWindow().setExitTransition(slideTransition);
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init(){

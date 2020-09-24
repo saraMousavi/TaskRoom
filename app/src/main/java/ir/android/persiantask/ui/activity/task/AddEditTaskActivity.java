@@ -7,11 +7,15 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -21,6 +25,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -70,6 +76,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         , TasksRepeatDayBottomSheetFragment.RepeatDayClickListener
         , TasksRepeatPeriodBottomSheetFragment.RepeatPeriodClickListener
         , TasksPriorityTypeBottomSheetFragment.PriorityTypeClickListener {
+    private static final int PERCENTAGE_TO_SHOW_IMAGE = 20;
     private TextInputEditText taskNameEdit, tasksComment;
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
@@ -95,6 +102,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Tasks clickedTask;
     private JobScheduler mScheduler;
     private int lastProjectID;
+    private int mMaxScrollSize;
+    private boolean mIsImageHidden;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -106,6 +115,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         //for inserting subtask we need task foreign key
         insertTempTask();
         initRecyclerViews();
+//        viewsAnimation();
     }
 
     private void insertTempTask() {
@@ -221,19 +231,40 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
                     //@TODO add slide down animation
-                    fabInsertTask2.setVisibility(View.VISIBLE);
+                    ViewCompat.animate(fabInsertTask2).scaleX(1).scaleY(1).start();
                     isShow = true;
                 } else if (isShow) {
                     //@TODO add slide up animation
-                    fabInsertTask2.setVisibility(View.GONE);
+                    ViewCompat.animate(fabInsertTask2).scaleX(0).scaleY(0).start();
                     isShow = false;
                 }
             }
+
+//            int scrollRange = -1;
+//            boolean isShow = false;
+//            FloatingActionButton fabInsertTask2 = findViewById(R.id.fabInsertTask2);
+//
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+//                if (scrollRange == -1) {
+//                    scrollRange = appBarLayout.getTotalScrollRange();
+//                }
+//                if (scrollRange + verticalOffset == 0) {
+//                    //@TODO add slide down animation
+////                    fabInsertTask2.setVisibility(View.VISIBLE);
+//                    isShow = true;
+//                } else if (isShow) {
+//                    //@TODO add slide up animation
+////                    fabInsertTask2.setVisibility(View.GONE);
+//                    isShow = false;
+//                }
+//            }
         });
         startDateConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -434,6 +465,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         viewMap.put(fabInsertTask2, false);
         views.add(viewMap);
         Init.setViewBackgroundDependOnTheme(views, AddEditTaskActivity.this);
+    }
+
+    private void viewsAnimation(){
+        Animation logoMoveAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        fabInsertTask.startAnimation(logoMoveAnimation);
     }
 
     private void editableTaskFields() {

@@ -76,6 +76,7 @@
             android:layout_marginLeft="@dimen/_14sdp"
             android:layout_marginBottom="@dimen/_14sdp"
             android:layout_gravity="bottom|start"
+            android:transitionName="insertTaskTransition"
             android:visibility="gone"
             android:src="@drawable/ic_add"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

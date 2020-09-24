@@ -45,7 +45,6 @@ import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
-import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
