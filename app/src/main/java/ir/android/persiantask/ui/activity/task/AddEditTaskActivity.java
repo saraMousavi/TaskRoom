@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -15,10 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -52,6 +53,7 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.entity.Test;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
@@ -102,8 +104,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Tasks clickedTask;
     private JobScheduler mScheduler;
     private int lastProjectID;
-    private int mMaxScrollSize;
-    private boolean mIsImageHidden;
+    private CollapsingToolbarLayout toolBarLayout;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -121,7 +122,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void insertTempTask() {
         System.out.println("lastProjectID = " + lastProjectID);
         Tasks tasks = new Tasks("", 0, 0, 0,
-                selectedProject== null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
+                selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "");
         try {
             if (isEditActivity) {
@@ -238,33 +239,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 if (scrollRange + verticalOffset == 0) {
                     //@TODO add slide down animation
                     ViewCompat.animate(fabInsertTask2).scaleX(1).scaleY(1).start();
+                    toolBarLayout.setTitle(taskNameEdit.getText().toString());
                     isShow = true;
                 } else if (isShow) {
-                    //@TODO add slide up animation
+                    toolBarLayout.setTitle(" ");
                     ViewCompat.animate(fabInsertTask2).scaleX(0).scaleY(0).start();
                     isShow = false;
                 }
             }
-
-//            int scrollRange = -1;
-//            boolean isShow = false;
-//            FloatingActionButton fabInsertTask2 = findViewById(R.id.fabInsertTask2);
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    //@TODO add slide down animation
-////                    fabInsertTask2.setVisibility(View.VISIBLE);
-//                    isShow = true;
-//                } else if (isShow) {
-//                    //@TODO add slide up animation
-////                    fabInsertTask2.setVisibility(View.GONE);
-//                    isShow = false;
-//                }
-//            }
         });
         startDateConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,16 +278,24 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         /**
          * show and hide add row for add new sub task
          */
+        Animation slideDown = AnimationUtils.loadAnimation(AddEditTaskActivity.this, R.anim.slide_down);
+        Animation slideUp = AnimationUtils.loadAnimation(AddEditTaskActivity.this, R.anim.slide_up);
         insertSubtasksBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (subfirstRow.getVisibility() == View.GONE) {
                     subfirstRow.setVisibility(View.VISIBLE);
-                    ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
-                    addRow.setVisibility(View.VISIBLE);
+
+                    subfirstRow.startAnimation(slideDown);
+                    if (subtaskRecyclerView.getChildCount() != 0) {
+                        ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
+                        addRow.setVisibility(View.VISIBLE);
+                        addRow.startAnimation(slideDown);
+                    }
                 } else {
                     ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
                     addRow.setVisibility(View.VISIBLE);
+                    addRow.startAnimation(slideDown);
                 }
             }
         });
@@ -384,10 +374,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     case 1:
                         reminderTypeConstraint.setVisibility(View.VISIBLE);
                         repeatTypeConstraint.setVisibility(View.GONE);
+                        Init.fadeVisibelityView(reminderTypeConstraint);
                         break;
                     case 2:
                         reminderTypeConstraint.setVisibility(View.VISIBLE);
                         repeatTypeConstraint.setVisibility(View.VISIBLE);
+                        Init.fadeVisibelityView(reminderTypeConstraint);
+                        Init.fadeVisibelityView(repeatTypeConstraint);
                         Snackbar
                                 .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG)
                                 .show();
@@ -436,6 +429,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         reminderTime = findViewById(R.id.reminderTime);
         projectIcon = findViewById(R.id.projectIcon);
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
+        toolBarLayout = findViewById(R.id.toolbar_layout);
         completeIcon = findViewById(R.id.completeIcon);
         completeIcon.setTag(R.drawable.ic_black_circle);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
@@ -467,7 +461,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         Init.setViewBackgroundDependOnTheme(views, AddEditTaskActivity.this);
     }
 
-    private void viewsAnimation(){
+    private void viewsAnimation() {
         Animation logoMoveAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
         fabInsertTask.startAnimation(logoMoveAnimation);
     }
@@ -475,7 +469,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void editableTaskFields() {
         taskNameEdit.setText(clickedTask.getTasks_title());
         startTextVal.setText(clickedTask.getTasks_startdate());
-        if(!clickedTask.getTasks_enddate().isEmpty()) {
+        if (!clickedTask.getTasks_enddate().isEmpty()) {
             endTextVal.setText(clickedTask.getTasks_enddate());
             endTextVal.setVisibility(View.VISIBLE);
         }
@@ -485,7 +479,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 reminderTime.setSelection(clickedTask.getTasks_remindertime());
             }
         });
-        if(clickedTask.getTasks_remindertype() != null) {
+        if (clickedTask.getTasks_remindertype() != null) {
             ((RadioButton) reminderTypeGroup.getChildAt(clickedTask.getTasks_remindertype())).setChecked(true);
         }
         repeatTypeVal.setVisibility(View.VISIBLE);
@@ -523,6 +517,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
+        if (taskNameEdit.getText().toString().isEmpty()) {
+            Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterTaskName), Snackbar.LENGTH_LONG)
+                    .show();
+            return;
+        }
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
                 reminderType == null ? null : (reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1),
@@ -541,7 +541,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        monthOfYear ++ ;
+        monthOfYear++;
         datepickerVal = "";
         datepickerVal += year + "/"
                 + (monthOfYear < 10 ? "0" + monthOfYear : monthOfYear)
@@ -562,7 +562,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
-        datepickerVal += " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay )
+        datepickerVal += " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
                 + ":" + (minute < 10 ? "0" + minute : minute);
         if (view.getTag().equals("startTimePickerDialog")) {
             startTextVal.setText(datepickerVal);
@@ -571,6 +571,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             endTextVal.setText(datepickerVal);
             endTextVal.setVisibility(View.VISIBLE);
             reminderTimeConstraint.setVisibility(View.VISIBLE);
+            Init.fadeVisibelityView(reminderTimeConstraint);
         }
     }
 

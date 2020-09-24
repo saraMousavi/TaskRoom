@@ -6,8 +6,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
@@ -302,7 +304,7 @@ public class Init {
      * onClick method that schedules the jobs based on the parameters set.
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void scheduleJob(JobScheduler mScheduler, String pkg, int jobId,  int deadline) {
+    public static void scheduleJob(JobScheduler mScheduler, String pkg, int jobId, int deadline) {
 
         int selectedNetworkOption = JobInfo.NETWORK_TYPE_NONE;
 
@@ -328,5 +330,33 @@ public class Init {
             mScheduler.cancelAll();
             mScheduler = null;
         }
+    }
+
+    public static void fadeVisibelityView(View view) {
+        Handler handler = new Handler();
+        (new Thread() {
+            @Override
+            public void run() {
+                for (int i = 100; i < 255; i++) {
+                    int finalI = i;
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if(finalI > 200){
+                                view.setBackgroundColor(Color.argb(255 - finalI, finalI,  0, 0));
+                            } else {
+                                view.setBackgroundColor(Color.argb(100, finalI,  0, 0));
+                            }
+
+                        }
+                    });
+                    // next will pause the thread for some time
+                    try {
+                        sleep(8);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 }

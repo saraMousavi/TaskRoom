@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.material.snackbar.Snackbar;
+
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
@@ -125,8 +127,16 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
             subTasksAddItemViewHolder.insertSubstasksIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(subTasksAddItemViewHolder.addNewSubtasks.getText().toString().isEmpty()){
+                        Snackbar
+                                .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content),
+                                        mFragmentActivity.getString(R.string.enterSubTaskName), Snackbar.LENGTH_LONG)
+                                .show();
+                        return;
+                    }
                     Subtasks subtasks = new Subtasks(subTasksAddItemViewHolder.addNewSubtasks.getText().toString(), 0, sharedPreferences.getLong("tempTaskID", 0));
                     subTasksViewModel.insert(subtasks);
+                    subTasksAddItemViewHolder.addNewSubtasks.setText("");
                 }
             });
         }

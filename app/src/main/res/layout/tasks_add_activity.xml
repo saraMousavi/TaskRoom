@@ -27,7 +27,6 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:padding="16dp"
-                app:contentScrim="?colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
