@@ -27,7 +27,7 @@
             android:background="@color/dark_grey"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
@@ -64,6 +64,7 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/taskFragmentContainer"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="match_parent"
             android:layout_marginTop="-20dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -76,7 +77,6 @@
             android:layout_marginLeft="@dimen/_14sdp"
             android:layout_marginBottom="@dimen/_14sdp"
             android:layout_gravity="bottom|start"
-            android:transitionName="insertTaskTransition"
             android:visibility="gone"
             android:src="@drawable/ic_add"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

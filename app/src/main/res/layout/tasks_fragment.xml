@@ -12,11 +12,13 @@
         <include android:id="@+id/taskList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             layout="@layout/tasks_fragment_full_list"/>
 
         <include android:id="@+id/taskEmptyList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             layout="@layout/tasks_fragment_empty_list"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

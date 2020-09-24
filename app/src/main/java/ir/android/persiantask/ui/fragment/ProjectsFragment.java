@@ -7,12 +7,13 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
@@ -22,8 +23,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Slide;
-import androidx.transition.TransitionInflater;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -154,6 +153,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 NestedScrollView taskFragmentContainer = inflatedView.findViewById(R.id.taskFragmentContainer);
                 if (projects.size() == 0) {
                     projectsEmptyPage.setVisibility(View.VISIBLE);
+                    Animation animation = AnimationUtils.loadAnimation(getContext(),
+                            R.anim.slide_left_700);
+                    projectsEmptyPage.startAnimation(animation);
                     mAppBarLayout.setVisibility(View.GONE);
                     taskFragmentContainer.setVisibility(View.GONE);
                     taskFragList.clear();
