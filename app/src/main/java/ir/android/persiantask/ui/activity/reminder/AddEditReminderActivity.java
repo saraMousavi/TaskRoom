@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
@@ -24,7 +22,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -37,7 +34,6 @@ import java.util.Map;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
 import ir.android.persiantask.databinding.RemindersAddActivityBinding;
-import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
@@ -233,7 +229,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
-        Reminders reminders = new Reminders(reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1
+        Reminders reminders = new Reminders(reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
                 , reminderComment.getText().toString(), startTextVal.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
                 "", 0, isActive ? 1 : 0, 0);
 //        reminders.setReminders_id(tempReminderID);

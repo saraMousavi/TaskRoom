@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import ir.android.persiantask.R;
 
 public enum ReminderType {
-    PUSH(Resources.getSystem().getString(R.string.push)),
+    PUSH(Resources.getSystem().getString(R.string.notification)),
     ALARM(Resources.getSystem().getString(R.string.alarm));
 
     private String value;

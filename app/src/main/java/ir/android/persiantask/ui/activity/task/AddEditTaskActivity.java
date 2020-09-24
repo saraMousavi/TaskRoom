@@ -18,14 +18,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -53,7 +50,6 @@ import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.data.db.entity.Tasks;
-import ir.android.persiantask.data.db.entity.Test;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
@@ -120,7 +116,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     private void insertTempTask() {
-        System.out.println("lastProjectID = " + lastProjectID);
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "");
@@ -161,7 +156,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                             }
                         });
                     }
-                    System.out.println("project.getProject_id() = " + project.getProject_id());
                     lastProjectID = project.getProject_id();
                 }
 
@@ -330,6 +324,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 TasksRepeatTypeBottomSheetFragment tasksRepeatTypeDialog = new TasksRepeatTypeBottomSheetFragment();
+                if(isEditActivity) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("repeatDays", clickedTask.getTasks_repeateddays());
+                    tasksRepeatTypeDialog.setArguments(bundle);
+                }
                 tasksRepeatTypeDialog.show(getSupportFragmentManager(), "tag");
             }
         });
@@ -370,10 +369,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     case 0:
                         reminderTypeConstraint.setVisibility(View.GONE);
                         repeatTypeConstraint.setVisibility(View.GONE);
+                        repeatTypeVal.setText("");
                         break;
                     case 1:
                         reminderTypeConstraint.setVisibility(View.VISIBLE);
                         repeatTypeConstraint.setVisibility(View.GONE);
+                        repeatTypeVal.setText("");
                         Init.fadeVisibelityView(reminderTypeConstraint);
                         break;
                     case 2:
@@ -469,6 +470,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void editableTaskFields() {
         taskNameEdit.setText(clickedTask.getTasks_title());
         startTextVal.setText(clickedTask.getTasks_startdate());
+        if(!clickedTask.getTasks_enddate().isEmpty()){
+            reminderTimeConstraint.setVisibility(View.VISIBLE);
+        }
         if (!clickedTask.getTasks_enddate().isEmpty()) {
             endTextVal.setText(clickedTask.getTasks_enddate());
             endTextVal.setVisibility(View.VISIBLE);
@@ -525,7 +529,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
-                reminderType == null ? null : (reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1),
+                reminderType == null ? null : (reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1),
                 reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
                 tasksComment.getText().toString());

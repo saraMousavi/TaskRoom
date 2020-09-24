@@ -28,8 +28,22 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
         View view = inflater.inflate(R.layout.tasks_repeat_period, container,false);
         this.inlfateView = view;
         init();
+        bundleFields();
         onClickListener();
         return view;
+    }
+
+    private void bundleFields() {
+        Bundle bundle = getArguments();
+        if(bundle != null && !bundle.getString("selectedPeriod").isEmpty()){
+            String[] selectedPeriod = bundle.getString("selectedPeriod").split(" ");
+            numberPeriod.setValue(Integer.parseInt(selectedPeriod[1]));
+            for(int i =0 ; i < typePeriodVal.length ; i++){
+                if(typePeriodVal[i].equals(selectedPeriod[2])){
+                    typePeriod.setValue(i);
+                }
+            }
+        }
     }
 
     private void onClickListener() {
@@ -38,7 +52,7 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
             public void onClick(View v) {
                 dismiss();
                 repeatTypeClickListener.onClickRepeatPeriod(getString(R.string.each) +
-                        numberPeriod.getValue() + " " +
+                        " " + numberPeriod.getValue() + " " +
                         typePeriodVal[typePeriod.getValue()]);
             }
         });

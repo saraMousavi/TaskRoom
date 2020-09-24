@@ -306,12 +306,12 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Push" />
+                    android:text="@string/notification" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alarm" />
+                    android:text="@string/alarm" />
             </RadioGroup>
 
             <androidx.constraintlayout.widget.Guideline

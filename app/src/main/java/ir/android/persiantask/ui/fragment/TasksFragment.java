@@ -208,6 +208,7 @@ public class TasksFragment extends Fragment{
             projects.setProjects_tasks_num(tasksNum);
             projects.setProject_id(selectedProject.getProject_id());
             projectViewModel.update(projects);
+            taskAdapter.notifyDataSetChanged();
             Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG)
                     .show();

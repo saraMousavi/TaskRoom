@@ -13,12 +13,15 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+
 import ir.android.persiantask.R;
 
 public class TasksRepeatTypeBottomSheetFragment extends BottomSheetDialogFragment {
     private View inflatedView;
     private RadioGroup repeatedTypeVal;
     private RepeatTypeClickListener repeatTypeClickListener;
+    private String customDays, customPeriod;
 
     @Nullable
     @Override
@@ -26,8 +29,59 @@ public class TasksRepeatTypeBottomSheetFragment extends BottomSheetDialogFragmen
         View inflatedView = inflater.inflate(R.layout.tasks_repeat_type, container, false);
         this.inflatedView = inflatedView;
         init();
+        bundleFields();
         onClickListener();
         return inflatedView;
+    }
+
+    private void bundleFields() {
+        Bundle bundle = getArguments();
+        if(bundle != null && !bundle.getString("repeatDays").isEmpty()){
+            int count =  repeatedTypeVal.getChildCount();
+            ArrayList<RadioButton> listOfRadioButton = new ArrayList<RadioButton>();
+            for(int i =0 ; i < count; i++){
+                RadioButton radioButton = (RadioButton) repeatedTypeVal.getChildAt(i);
+                if(radioButton.getText().toString().equals(bundle.getString("repeatDays"))){
+                    radioButton.setChecked(true);
+                } else if(bundle.getString("repeatDays").contains(",")){
+                    ((RadioButton) repeatedTypeVal.getChildAt(4)).setChecked(true);
+                    customDays = bundle.getString("repeatDays");
+                    customDayClickEvent();
+                } else{
+                    ((RadioButton) repeatedTypeVal.getChildAt(5)).setChecked(true);
+                    customPeriod = bundle.getString("repeatDays");
+                    customPeriodClickEvent();
+                }
+            }
+        }
+    }
+
+    private void customPeriodClickEvent() {
+        repeatedTypeVal.getChildAt(5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TasksRepeatPeriodBottomSheetFragment tasksRepeatPeriodBottomSheetFragment = new TasksRepeatPeriodBottomSheetFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("selectedPeriod", customPeriod);
+                tasksRepeatPeriodBottomSheetFragment.setArguments(bundle);
+                tasksRepeatPeriodBottomSheetFragment.show(getActivity().getSupportFragmentManager(), "Select_Period");
+                dismiss();
+            }
+        });
+    }
+
+    private void customDayClickEvent() {
+        repeatedTypeVal.getChildAt(4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TasksRepeatDayBottomSheetFragment tasksRepeatDayBottomSheetFragment = new TasksRepeatDayBottomSheetFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("selectedDays", customDays);
+                tasksRepeatDayBottomSheetFragment.setArguments(bundle);
+                tasksRepeatDayBottomSheetFragment.show(getActivity().getSupportFragmentManager(), "Select_Day");
+                dismiss();
+            }
+        });
     }
 
     private void onClickListener() {

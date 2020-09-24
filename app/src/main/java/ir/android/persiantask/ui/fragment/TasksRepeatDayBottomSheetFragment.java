@@ -10,8 +10,11 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.util.ArrayList;
 
 import ir.android.persiantask.R;
 
@@ -26,8 +29,28 @@ public class TasksRepeatDayBottomSheetFragment extends BottomSheetDialogFragment
         View view = inflater.inflate(R.layout.tasks_repeat_day, container,false);
         this.inlfateView = view;
         init();
+        bundleFields();
         onClickListener();
         return view;
+    }
+
+    private void bundleFields() {
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            String selectedDays = bundle.getString("selectedDays");
+            if (selectedDays != null && !selectedDays.isEmpty()) {
+                String[] selectedDaysList = selectedDays.split(",");
+                ConstraintLayout dayList = inlfateView.findViewById(R.id.dayList);
+                for (String day : selectedDaysList) {
+                    for (int i = 0; i < dayList.getChildCount() - 1; i++) {
+                        AppCompatCheckBox checkBox = (AppCompatCheckBox) dayList.getChildAt(i);
+                        if (checkBox.getText().equals(day)) {
+                            checkBox.setChecked(true);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void onClickListener() {
