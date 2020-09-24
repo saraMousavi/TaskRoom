@@ -67,9 +67,10 @@ public class Init {
     public static String getCurrentDate() {
         GregorianCalendar galena = new GregorianCalendar();
         PersianCalendar persianCalendar = new PersianCalendar();
+        int month = persianCalendar.getPersianMonth() + 1;
         int value = galena.get(Calendar.HOUR) % 12;
         return persianCalendar.getPersianYear() + "/"
-                + (persianCalendar.getPersianMonth() < 10 ? "0" + persianCalendar.getPersianMonth() : persianCalendar.getPersianMonth()) + "/"
+                + (month < 10 ? "0" + month : month) + "/"
                 + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
                 + " "
                 + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))

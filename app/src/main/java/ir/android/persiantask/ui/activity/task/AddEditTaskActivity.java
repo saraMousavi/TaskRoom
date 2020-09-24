@@ -439,15 +439,19 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void editableTaskFields() {
         taskNameEdit.setText(clickedTask.getTasks_title());
         startTextVal.setText(clickedTask.getTasks_startdate());
-        endTextVal.setText(clickedTask.getTasks_enddate());
-        endTextVal.setVisibility(View.VISIBLE);
+        if(!clickedTask.getTasks_enddate().isEmpty()) {
+            endTextVal.setText(clickedTask.getTasks_enddate());
+            endTextVal.setVisibility(View.VISIBLE);
+        }
         reminderTime.post(new Runnable() {
             @Override
             public void run() {
                 reminderTime.setSelection(clickedTask.getTasks_remindertime());
             }
         });
-        ((RadioButton) reminderTypeGroup.getChildAt(clickedTask.getTasks_remindertype())).setChecked(true);
+        if(clickedTask.getTasks_remindertype() != null) {
+            ((RadioButton) reminderTypeGroup.getChildAt(clickedTask.getTasks_remindertype())).setChecked(true);
+        }
         repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(clickedTask.getTasks_repeateddays());
         if (clickedTask.getTasks_iscompleted() == 1) {
@@ -484,7 +488,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
-                selectedProject.getProject_id(), startTextVal.getText().toString(), reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1,
+                selectedProject.getProject_id(), startTextVal.getText().toString(),
+                reminderType == null ? null : (reminderType.getText().toString().equals(getString(R.string.push)) ? 0 : 1),
                 reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
                 tasksComment.getText().toString());
@@ -500,6 +505,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        monthOfYear ++ ;
         datepickerVal = "";
         datepickerVal += year + "/"
                 + (monthOfYear < 10 ? "0" + monthOfYear : monthOfYear)
@@ -520,7 +526,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
-        datepickerVal += " " + hourOfDay + ":" + minute;
+        datepickerVal += " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay )
+                + ":" + (minute < 10 ? "0" + minute : minute);
         if (view.getTag().equals("startTimePickerDialog")) {
             startTextVal.setText(datepickerVal);
             startTextVal.setVisibility(View.VISIBLE);

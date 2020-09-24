@@ -2,6 +2,8 @@ package ir.android.persiantask.ui.activity.category;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -42,6 +44,7 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUpWindowAnimation();
         init();
         addCategoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +53,16 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                 addCategoryBottomSheetFragment.show(getSupportFragmentManager(), "");
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUpWindowAnimation() {
+        Fade fade = new Fade();
+        fade.setDuration(1000);
+        getWindow().setEnterTransition(fade);
+        Slide slide = new Slide();
+        slide.setDuration(1000);
+        getWindow().setReturnTransition(slide);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -111,7 +111,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             holder.reminder_time.setVisibility(View.VISIBLE);
         }
         //reminder type == alarm
-        if(tasks.getTasks_remindertype() == 1){
+        if(tasks.getTasks_remindertype() != null &&  tasks.getTasks_remindertype() == 1){
             holder.reminder_type.setVisibility(View.VISIBLE);
         }
         //set comment for task
