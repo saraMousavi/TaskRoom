@@ -1,4 +1,4 @@
-package ir.android.persiantask.ui.activity;
+package ir.android.persiantask.ui.activity.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,7 +25,6 @@ public class AboutAppActivity extends AppCompatActivity {
         engine.setOnChangeListener(new PaperOnboardingOnChangeListener() {
             @Override
             public void onPageChanged(int oldElementIndex, int newElementIndex) {
-                Toast.makeText(getApplicationContext(), "Swiped from " + oldElementIndex + " to " + newElementIndex, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -33,7 +32,6 @@ public class AboutAppActivity extends AppCompatActivity {
             @Override
             public void onRightOut() {
                 // Probably here will be your exit action
-                Toast.makeText(getApplicationContext(), "Swiped out right", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -42,11 +40,11 @@ public class AboutAppActivity extends AppCompatActivity {
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
         PaperOnboardingPage scr1 = new PaperOnboardingPage("Projects", "project description",
-                Color.parseColor("#678FB4"), R.drawable.ic_black_alarm, R.drawable.ic_black_alarm);
+                Color.parseColor("#678FB4"), R.drawable.about_projects, R.drawable.ic_white_projects);
         PaperOnboardingPage scr2 = new PaperOnboardingPage("Reminder", "reminder description",
-                Color.parseColor("#65B0B4"), R.drawable.ic_black_alarm, R.drawable.ic_black_alarm);
+                Color.parseColor("#65B0B4"), R.drawable.about_reminder, R.drawable.ic_black_reminder_active);
         PaperOnboardingPage scr3 = new PaperOnboardingPage("Calender", "calender description",
-                Color.parseColor("#9B90BC"), R.drawable.ic_black_alarm, R.drawable.ic_black_alarm);
+                Color.parseColor("#9B90BC"), R.drawable.about_calender, R.drawable.ic_calendar);
 
         ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
         elements.add(scr1);

@@ -18,11 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.SupportActivity" />
+        <activity android:name=".ui.activity.setting.SupportActivity" />
         <activity android:name=".ui.activity.reminder.AddShortCutReminderActivity" />
         <activity android:name=".ui.activity.task.AddShortCutTaskActivity" />
         <activity
-            android:name=".ui.activity.AboutAppActivity"
+            android:name=".ui.activity.setting.AboutAppActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.activity.theme.ThemeActivity" />
         <activity

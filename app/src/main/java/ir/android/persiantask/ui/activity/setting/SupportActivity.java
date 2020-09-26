@@ -1,4 +1,4 @@
-package ir.android.persiantask.ui.activity;
+package ir.android.persiantask.ui.activity.setting;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

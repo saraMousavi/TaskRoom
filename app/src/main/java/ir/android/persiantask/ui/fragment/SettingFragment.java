@@ -17,8 +17,8 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import org.jetbrains.annotations.NotNull;
 
 import ir.android.persiantask.R;
-import ir.android.persiantask.ui.activity.AboutAppActivity;
-import ir.android.persiantask.ui.activity.SupportActivity;
+import ir.android.persiantask.ui.activity.setting.AboutAppActivity;
+import ir.android.persiantask.ui.activity.setting.SupportActivity;
 import ir.android.persiantask.ui.activity.category.CategoryActivity;
 import ir.android.persiantask.ui.activity.theme.ThemeActivity;
 import kotlin.jvm.JvmStatic;
