@@ -39,11 +39,11 @@ public class AboutAppActivity extends AppCompatActivity {
     // Just example data for Onboarding
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
-        PaperOnboardingPage scr1 = new PaperOnboardingPage("Projects", "project description",
+        PaperOnboardingPage scr1 = new PaperOnboardingPage(getResources().getString(R.string.aboutAppProjectTitle), getResources().getString(R.string.aboutAppProjectDescription),
                 Color.parseColor("#678FB4"), R.drawable.about_projects, R.drawable.ic_white_projects);
-        PaperOnboardingPage scr2 = new PaperOnboardingPage("Reminder", "reminder description",
+        PaperOnboardingPage scr2 = new PaperOnboardingPage(getResources().getString(R.string.aboutAppReminderTitle), getResources().getString(R.string.aboutAppReminderDescription),
                 Color.parseColor("#65B0B4"), R.drawable.about_reminder, R.drawable.ic_black_reminder_active);
-        PaperOnboardingPage scr3 = new PaperOnboardingPage("Calender", "calender description",
+        PaperOnboardingPage scr3 = new PaperOnboardingPage(getResources().getString(R.string.aboutAppCalenderTitle), getResources().getString(R.string.aboutAppCalenderDescription),
                 Color.parseColor("#9B90BC"), R.drawable.about_calender, R.drawable.ic_calendar);
 
         ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
