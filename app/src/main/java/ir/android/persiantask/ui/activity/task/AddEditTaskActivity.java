@@ -98,7 +98,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
     private SharedPreferences sharedPreferences;
-    private ImageView projectIcon, completeIcon, pickedImage;
+    private ImageView projectIcon, completeIcon, pickedImage, priorityIcon;
     private Projects selectedProject;
     private boolean isCompleted;
     private String completedDateVal = "";
@@ -453,6 +453,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         toolBarLayout = findViewById(R.id.toolbar_layout);
         completeIcon = findViewById(R.id.completeIcon);
         pickedImage = findViewById(R.id.pickedImage);
+        priorityIcon = findViewById(R.id.priorityIcon);
         completeIcon.setTag(R.drawable.ic_black_circle);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
@@ -518,12 +519,16 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         priorityVal.setVisibility(View.VISIBLE);
         String priorityStringVal = getString(R.string.nonePriority);
+        priorityIcon.setImageResource(R.drawable.ic_priority);
         if (clickedTask.getTasks_priority() == 1) {
             priorityStringVal = getString(R.string.low);
+            priorityIcon.setImageResource(R.drawable.ic_low_yellow_priority);
         } else if (clickedTask.getTasks_priority() == 2) {
             priorityStringVal = getString(R.string.medium);
+            priorityIcon.setImageResource(R.drawable.ic_medium_orange_priority);
         } else if (clickedTask.getTasks_priority() == 3) {
             priorityStringVal = getString(R.string.high);
+            priorityIcon.setImageResource(R.drawable.ic_high_green_priority);
         }
         priorityVal.setText(priorityStringVal);
         tasksComment.setText(clickedTask.getTasks_comment());
@@ -622,9 +627,19 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     public void onClickPriorityType(String priorityType, boolean isGone) {
         if (isGone) {
             priorityVal.setVisibility(View.GONE);
+            priorityIcon.setImageResource(R.drawable.ic_priority);
         } else {
             priorityVal.setVisibility(View.VISIBLE);
             priorityVal.setText(priorityType);
+            if (priorityVal.getText().toString().equals(getString(R.string.low))) {
+                priorityIcon.setImageResource(R.drawable.ic_low_yellow_priority);
+            } else if (priorityVal.getText().toString().equals(getString(R.string.medium))) {
+                priorityIcon.setImageResource(R.drawable.ic_medium_orange_priority);
+            } else if (priorityVal.getText().toString().equals(getString(R.string.high))) {
+                priorityIcon.setImageResource(R.drawable.ic_high_green_priority);
+            } else {
+                priorityIcon.setImageResource(R.drawable.ic_priority);
+            }
         }
     }
 

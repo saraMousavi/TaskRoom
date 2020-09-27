@@ -52,7 +52,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView taskTitle, tasks_enddate;
-        public ImageView tasksIsCompleted, reminder_time, reminder_type, tasks_comment;
+        public ImageView tasksIsCompleted, reminder_time, reminder_type, tasks_comment, task_priority;
         public ConstraintLayout subtaskConstarint;
 
 
@@ -64,6 +64,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             reminder_time = itemView.findViewById(R.id.reminder_time);
             reminder_type = itemView.findViewById(R.id.reminder_type);
             tasks_comment = itemView.findViewById(R.id.tasks_comment);
+            task_priority = itemView.findViewById(R.id.task_priority);
             subtaskConstarint = itemView.findViewById(R.id.subtaskConstarint);
         }
     }
@@ -118,9 +119,25 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         if(!tasks.getTasks_comment().isEmpty()){
             holder.tasks_comment.setVisibility(View.VISIBLE);
         }
+        //set priority colorflag
+        if(tasks.getTasks_priority() != 0){
+            holder.task_priority.setVisibility(View.VISIBLE);
+        }
+        switch (tasks.getTasks_priority()){
+            case 1:
+                holder.task_priority.setImageResource(R.drawable.ic_low_yellow_priority);
+                break;
+            case 2:
+                holder.task_priority.setImageResource(R.drawable.ic_medium_orange_priority);
+                break;
+            case 3:
+                holder.task_priority.setImageResource(R.drawable.ic_high_green_priority);
+                break;
+        }
         int newContainerID = View.generateViewId();
         holder.subtaskConstarint.setId(newContainerID);
         fragmentJump(tasks, newContainerID);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
