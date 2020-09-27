@@ -53,7 +53,9 @@
     <color name="mdtp_date_picker_text_normal_dark_theme">@color/white</color>
     <color name="mdtp_date_picker_month_day_dark_theme">#b4b4b4</color>
     <color name="mdtp_date_picker_text_disabled_dark_theme">#767676</color>
-    <color name="mdtp_date_picker_text_highlighted_dark_theme">@color/mdtp_date_picker_text_normal_dark_theme</color>
+    <color name="mdtp_date_picker_text_highlighted_dark_theme">
+        @color/mdtp_date_picker_text_normal_dark_theme
+    </color>
 
     <color name="mdtp_calendar_header">@color/mdtp_accent_color_dark</color>
     <color name="mdtp_date_picker_view_animator">@android:color/white</color>
@@ -93,5 +95,7 @@
 
     <color name="theme_page_green">#70AD47</color>
     <color name="theme_page_green_border">#507E32</color>
+
+    <color name="black_overlay">#66000000</color>
 
 </resources>

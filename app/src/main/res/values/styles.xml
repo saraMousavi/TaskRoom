@@ -89,7 +89,7 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        
+
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme6" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -148,6 +148,18 @@
         <item name="colorControlActivated">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="colorControlHighlight">@color/white</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
 </resources>

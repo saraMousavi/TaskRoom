@@ -229,4 +229,7 @@
     <string name="aboutAppReminderDescription">"تعریف مجموعه یادآورها بدون نیاز به تعریف پروژه  "</string>
     <string name="aboutAppCalenderTitle">تقویم</string>
     <string name="aboutAppCalenderDescription">نمایش لیست کارهای تمام پروژهها و یادآورهای مربوط به روز انتخاب شده در تقویم و تعریف کار و یادآور جدید برای آن روز</string>
+    <string name="title_activity_splash">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

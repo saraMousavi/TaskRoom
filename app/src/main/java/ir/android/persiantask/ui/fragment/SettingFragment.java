@@ -96,7 +96,9 @@ public class SettingFragment extends Fragment {
         aboutApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), AboutAppActivity.class));
+                Intent intent = new Intent(getActivity(), AboutAppActivity.class);
+                intent.putExtra("isFirstInvoke", 0);
+                startActivity(intent);
             }
         });
         support.setOnClickListener(new View.OnClickListener() {

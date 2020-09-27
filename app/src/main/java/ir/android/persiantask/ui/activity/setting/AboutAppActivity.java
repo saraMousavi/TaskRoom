@@ -2,6 +2,7 @@ package ir.android.persiantask.ui.activity.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import com.ramotion.paperonboarding.listeners.PaperOnboardingOnRightOutListener;
 
 import java.util.ArrayList;
 import ir.android.persiantask.R;
+import ir.android.persiantask.ui.activity.MainActivity;
 
 public class AboutAppActivity extends AppCompatActivity {
 
@@ -31,6 +33,11 @@ public class AboutAppActivity extends AppCompatActivity {
         engine.setOnRightOutListener(new PaperOnboardingOnRightOutListener() {
             @Override
             public void onRightOut() {
+                if(getIntent().getExtras().getInt("isFirstInvoke") == 1){
+                   startActivity(new Intent(AboutAppActivity.this, MainActivity.class));
+                } else {
+                    finish();
+                }
                 // Probably here will be your exit action
             }
         });
