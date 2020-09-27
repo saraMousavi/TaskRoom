@@ -1,12 +1,19 @@
 package ir.android.persiantask.ui.activity.task;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,6 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -79,7 +87,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
             repeatTypeConstraint, priorityTypeContraint, subTaskTitle,
-            reminderTimeConstraint, reminderTypeConstraint;
+            reminderTimeConstraint, reminderTypeConstraint, uploadFileContraint;
     private TextView startTextVal, endTextVal, repeatTypeVal, completedDate, priorityVal;
     private AppBarLayout mAppBarLayout;
     private ImageButton insertSubtasksBtn;
@@ -90,7 +98,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
     private SharedPreferences sharedPreferences;
-    private ImageView projectIcon, completeIcon;
+    private ImageView projectIcon, completeIcon, pickedImage;
     private Projects selectedProject;
     private boolean isCompleted;
     private String completedDateVal = "";
@@ -101,6 +109,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private JobScheduler mScheduler;
     private int lastProjectID;
     private CollapsingToolbarLayout toolBarLayout;
+    private final static int WRITE_REQUEST_CODE = 100;
+    private static final int REQUEST_CODE_CHOOSE_PICTURE_FROM_GALLARY = 22;
+    private String taskPath = "";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -394,6 +405,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
             }
         });
+
+        uploadFileContraint.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -420,6 +439,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         priorityVal = findViewById(R.id.priorityVal);
         reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);
         reminderTypeConstraint = findViewById(R.id.reminderTypeConstraint);
+        uploadFileContraint = findViewById(R.id.uploadFileContraint);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         subfirstRow = findViewById(R.id.subfirstRow);
         repeatTypeConstraint = findViewById(R.id.repeatTypeConstraint);
@@ -432,6 +452,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         toolBarLayout = findViewById(R.id.toolbar_layout);
         completeIcon = findViewById(R.id.completeIcon);
+        pickedImage = findViewById(R.id.pickedImage);
         completeIcon.setTag(R.drawable.ic_black_circle);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
@@ -609,5 +630,51 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     public interface ClickAddSubTaskListener {
         void addSubTaskListener();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        System.out.println("requestCode = " + requestCode);
+        switch (requestCode) {
+            case WRITE_REQUEST_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_PICTURE_FROM_GALLARY);
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String filename = "";
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CHOOSE_PICTURE_FROM_GALLARY) {
+            try {
+                Uri uri = data.getData();
+                if (uri != null) {
+                    if (uri.toString().startsWith("file:")) {
+                        filename = uri.getPath();
+                    } else {
+                        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            int id = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                            if (id != -1) {
+                                filename = cursor.getString(id);
+                            }
+                        }
+                    }
+                }
+                Bitmap bitmap = BitmapFactory.decodeFile(filename);
+                pickedImage.setVisibility(View.VISIBLE);
+                pickedImage.setImageBitmap(bitmap);
+                taskPath = filename;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
