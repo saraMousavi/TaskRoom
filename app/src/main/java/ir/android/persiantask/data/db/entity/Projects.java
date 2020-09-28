@@ -6,6 +6,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 /**
  * Room Table Builder
  * project table for save all project define with user that each project have multi task
@@ -15,7 +17,7 @@ import androidx.room.PrimaryKey;
         foreignKeys = {@ForeignKey(entity = Category.class,
                 parentColumns = "category_id",
                 childColumns = "category_id")}, tableName = "Projects")
-public class Projects {
+public class Projects implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "project_id")
     private Integer project_id;

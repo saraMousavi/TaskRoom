@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.ui.fragment.AddProjectBottomSheetFragment;
@@ -132,9 +134,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                     AddProjectBottomSheetFragment editProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("isEditProjects", true);
-                    bundle.putString("projects_title", getProjectAt(position).getProjects_title());
-                    bundle.putInt("category_id", getProjectAt(position).getCategory_id());
-                    bundle.putInt("project_id", getProjectAt(position).getProject_id());
+                    bundle.putSerializable("clickedProject", (Serializable) getProjectAt(position));
                     editProjectBottomSheetFragment.setArguments(bundle);
                     editProjectBottomSheetFragment.show(mFragmentManager, "");
                     return false;

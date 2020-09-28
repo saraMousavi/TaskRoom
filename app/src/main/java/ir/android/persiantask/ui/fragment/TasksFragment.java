@@ -181,7 +181,6 @@ public class TasksFragment extends Fragment{
                 View taskList = (View) inflatedView.findViewById(R.id.taskList);
                 View taskEmptyList = (View) inflatedView.findViewById(R.id.taskEmptyList);
                 tasksNum = tasks.size();
-                System.out.println("tasksNum = " + tasksNum);
                 if (tasksNum == 0) {
                     taskList.setVisibility(View.GONE);
                     taskEmptyList.setVisibility(View.VISIBLE);

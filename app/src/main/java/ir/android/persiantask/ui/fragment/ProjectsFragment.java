@@ -3,6 +3,7 @@ package ir.android.persiantask.ui.fragment;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +33,11 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Projects;
@@ -70,6 +73,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private Button firstAddProjectBtn;
     private HashMap<Integer, Fragment> taskFragList;
     private SharedPreferences sharedPreferences;
+    private List<Tasks> tempTaskList = new ArrayList<>();
+    private List<Subtasks> tempSubTaskList = new ArrayList<>();
+    private boolean notUndoDelete = true;
 
 
     @Override
@@ -266,28 +272,21 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 break;
             case DELETE:
                 msg = getString(R.string.successDeleteProject);
-
-                Snackbar snackbar = Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
-                snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //@TODO add timer for undo
-                        snackbar.dismiss();
-                    }
-                }).show();
+                Projects tempProject = projects;
                 TasksViewModelFactory taskfactory = new TasksViewModelFactory(getActivity().getApplication(), projects.getProject_id());
                 TaskViewModel tasksViewModel = ViewModelProviders.of(getActivity(), taskfactory).get(TaskViewModel.class);
                 tasksViewModel.getAllTasks().observeForever(new Observer<List<Tasks>>() {
                     @Override
                     public void onChanged(List<Tasks> tasks) {
                         for (Tasks task : tasks) {
+                            tempTaskList.add(task);
                             SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), task.getTasks_id());
                             SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
                             subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
                                 @Override
                                 public void onChanged(List<Subtasks> subtasks) {
                                     for (Subtasks subtask : subtasks) {
+                                        tempSubTaskList.add(subtask);
                                         subTasksViewModel.delete(subtask);
                                     }
                                 }
@@ -298,9 +297,40 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     }
                 });
 
-                taskFragList.remove(projects.getProject_id());
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+                snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //@TODO add timer for undo
+                        projectViewModel.insert(tempProject);
+                        for (Tasks task : tempTaskList) {
+                            try {
+                                tasksViewModel.insert(task);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (Subtasks subtask : tempSubTaskList) {
+                            subTasksViewModel.insert(subtask);
+                        }
+                        notUndoDelete = false;
+                        snackbar.dismiss();
+                    }
+                }).show();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (notUndoDelete) {
+                            taskFragList.remove(projects.getProject_id());
+                        }
+                    }
+                }, 3000);
                 break;
         }
+
+
         projectsAdapter.notifyDataSetChanged();
 
     }

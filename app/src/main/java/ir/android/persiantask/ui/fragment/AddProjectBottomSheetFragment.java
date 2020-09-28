@@ -49,16 +49,17 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         this.inflatedView = inflatedView;
         init();
         Bundle bundle = getArguments();
+        Projects selectedProject = (Projects) bundle.getSerializable("clickedProject");
         if (bundle.getBoolean("isEditProjects")) {
             insertProjectBtn.setText(getString(R.string.edit));
             deleteProjectBtn.setVisibility(View.VISIBLE);
-            projectsTitle.setText(bundle.getString("projects_title"));
+            projectsTitle.setText(selectedProject.getProjects_title());
             CategoryViewModel categoryViewModel = new CategoryViewModel(getActivity().getApplication());
             categoryViewModel.getAllCategory().observe(this, new Observer<List<Category>>() {
                 @Override
                 public void onChanged(List<Category> categories) {
                     for(Category category:categories){
-                        if(category.getCategory_id().equals(bundle.getInt("category_id"))){
+                        if(category.getCategory_id().equals(selectedProject.getCategory_id())){
                             projectCategory.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -75,8 +76,8 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
-                    Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, 0);
-                    projects.setProject_id(bundle.getInt("project_id"));
+                    Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, selectedProject.getProjects_tasks_num());
+                    projects.setProject_id(selectedProject.getProject_id());
                     submitClickListener.onClickSubmit(projects, ActionTypes.EDIT);
                     dismiss();
                 }
@@ -84,9 +85,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
             deleteProjectBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Projects projects = new Projects(0,0,"", 0, 0);
-                    projects.setProject_id(bundle.getInt("project_id"));
-                    submitClickListener.onClickSubmit(projects, ActionTypes.DELETE);
+                    submitClickListener.onClickSubmit(selectedProject, ActionTypes.DELETE);
                     dismiss();
                 }
             });
