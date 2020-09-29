@@ -233,4 +233,11 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="uploadText">بارگذاری فایل</string>
+    <string name="cancel_upload">انصراف</string>
+    <string name="main_action_rotate">چرخش</string>
+    <string name="main_action_flip">فلیپ</string>
+    <string name="main_action_flip_horizontally">افقی</string>
+    <string name="main_action_flip_vertically">عمودی</string>
+    <string name="main_action_crop">کراپ</string>
+    <string name="successDeleteAttachments">ضمیمه مورد نظر با موفقیت حذف گردید.</string>
 </resources>

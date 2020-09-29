@@ -27,5 +27,5 @@ public interface AttachmentsDao {
     LiveData<List<Attachments>> getAllAttachments();
 
     @Query("SELECT * FROM Attachments where tasks_id = :tasksID ORDER BY attachments_id DESC")
-    LiveData<List<Attachments>> getAllSubTask(Integer tasksID);
+    LiveData<List<Attachments>> getAllTasksAttachments(Long tasksID);
 }

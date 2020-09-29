@@ -1,24 +1,20 @@
 package ir.android.persiantask.ui.activity.task;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -26,7 +22,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -35,9 +30,11 @@ import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewbinding.ViewBinding;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -45,7 +42,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.imagepicker.FilePickUtils;
+import com.imagepicker.LifeCycleCallBackManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -55,13 +55,16 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.data.db.entity.Attachments;
 import ir.android.persiantask.data.db.entity.Projects;
 import ir.android.persiantask.data.db.entity.Subtasks;
 import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.factory.AttachmentsViewModelFactory;
 import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.TasksAddActivityBinding;
+import ir.android.persiantask.ui.adapters.AttachmentsAdapter;
 import ir.android.persiantask.ui.adapters.SubTasksAdapter;
 import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatDayBottomSheetFragment;
@@ -71,6 +74,7 @@ import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.calender.DatePickerDialog;
 import ir.android.persiantask.utils.calender.PersianCalendar;
 import ir.android.persiantask.utils.calender.TimePickerDialog;
+import ir.android.persiantask.viewmodels.AttachmentsViewModel;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
@@ -98,7 +102,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
     private SharedPreferences sharedPreferences;
-    private ImageView projectIcon, completeIcon, pickedImage, priorityIcon;
+    private ImageView projectIcon, completeIcon, priorityIcon;
     private Projects selectedProject;
     private boolean isCompleted;
     private String completedDateVal = "";
@@ -109,16 +113,17 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private JobScheduler mScheduler;
     private int lastProjectID;
     private CollapsingToolbarLayout toolBarLayout;
-    private final static int WRITE_REQUEST_CODE = 100;
-    private static final int REQUEST_CODE_CHOOSE_PICTURE_FROM_GALLARY = 22;
-    private String taskPath = "";
+    private LifeCycleCallBackManager lifeCycleCallBackManager;
+    private RecyclerView attachedRecyclerView;
+    private AttachmentsAdapter attachmentsAdapter;
+    private AttachmentsViewModel attachmentsViewModel;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-        onClickListener();
+        onClickEvents();
         initSpinners();
         //for inserting subtask we need task foreign key
         insertTempTask();
@@ -213,9 +218,21 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         .show();
             }
         }).attachToRecyclerView(subtaskRecyclerView);
+        AttachmentsViewModelFactory attachmentFactory = new AttachmentsViewModelFactory(getApplication(), tempTaskID);
+        attachmentsViewModel = ViewModelProviders.of(this, attachmentFactory).get(AttachmentsViewModel.class);
+        attachmentsAdapter = new AttachmentsAdapter(attachmentsViewModel, AddEditTaskActivity.this);
+        attachmentsViewModel.getAllTasksAttachments().observe(this, new Observer<List<Attachments>>() {
+            @Override
+            public void onChanged(List<Attachments> attachments) {
+                System.out.println("attachments.size() = " + attachments.size());
+                attachmentsAdapter.submitList(attachments);
+                attachedRecyclerView.setAdapter(attachmentsAdapter);
+            }
+        });
+        attachedRecyclerView.setLayoutManager(new GridLayoutManager(AddEditTaskActivity.this, 3, RecyclerView.VERTICAL, false));
     }
 
-    private void onClickListener() {
+    private void onClickEvents() {
         fabInsertTask.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -335,7 +352,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 TasksRepeatTypeBottomSheetFragment tasksRepeatTypeDialog = new TasksRepeatTypeBottomSheetFragment();
-                if(isEditActivity) {
+                if (isEditActivity) {
                     Bundle bundle = new Bundle();
                     bundle.putString("repeatDays", clickedTask.getTasks_repeateddays());
                     tasksRepeatTypeDialog.setArguments(bundle);
@@ -410,10 +427,28 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
+                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
+                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+                filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
+//                requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
             }
         });
     }
+
+    private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
+        @Override
+        public void onFileChoose(String fileUri, int requestCode, int size) {
+            File imgFile = new File(fileUri);
+            if (imgFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                Attachments attachments = new Attachments("jpg", fileUri, tempTaskID);
+                attachmentsViewModel.insert(attachments);
+                attachmentsAdapter.notifyDataSetChanged();
+
+            }
+
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
@@ -452,7 +487,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         toolBarLayout = findViewById(R.id.toolbar_layout);
         completeIcon = findViewById(R.id.completeIcon);
-        pickedImage = findViewById(R.id.pickedImage);
+        attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
         priorityIcon = findViewById(R.id.priorityIcon);
         completeIcon.setTag(R.drawable.ic_black_circle);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
@@ -461,6 +496,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getInt("selectedProjectID", 0));
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskViewModel = ViewModelProviders.of(this, taskFactory).get(TaskViewModel.class);
+
 
         Intent intent = getIntent();
 
@@ -492,7 +528,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void editableTaskFields() {
         taskNameEdit.setText(clickedTask.getTasks_title());
         startTextVal.setText(clickedTask.getTasks_startdate());
-        if(!clickedTask.getTasks_enddate().isEmpty()){
+        if (!clickedTask.getTasks_enddate().isEmpty()) {
             reminderTimeConstraint.setVisibility(View.VISIBLE);
         }
         if (!clickedTask.getTasks_enddate().isEmpty()) {
@@ -643,53 +679,72 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
     }
 
-    public interface ClickAddSubTaskListener {
-        void addSubTaskListener();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        System.out.println("requestCode = " + requestCode);
-        switch (requestCode) {
-            case WRITE_REQUEST_CODE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_CHOOSE_PICTURE_FROM_GALLARY);
-                }
-                break;
+        if (lifeCycleCallBackManager != null) {
+            lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String filename = "";
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CHOOSE_PICTURE_FROM_GALLARY) {
-            try {
-                Uri uri = data.getData();
-                if (uri != null) {
-                    if (uri.toString().startsWith("file:")) {
-                        filename = uri.getPath();
-                    } else {
-                        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int id = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                            if (id != -1) {
-                                filename = cursor.getString(id);
-                            }
-                        }
-                    }
-                }
-                Bitmap bitmap = BitmapFactory.decodeFile(filename);
-                pickedImage.setVisibility(View.VISIBLE);
-                pickedImage.setImageBitmap(bitmap);
-                taskPath = filename;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (lifeCycleCallBackManager != null) {
+            lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if(requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE){
+//            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ){
+//                CropImage.activity().setAllowRotation(true).setCropShape(CropImageView.CropShape.OVAL)
+//                        .setGuidelinesColor(R.color.red)
+//                        .setAllowCounterRotation(true)
+//                        .setCropMenuCropButtonIcon(R.drawable.about_calender)
+//                        .setAutoZoomEnabled(true).start(AddEditTaskActivity.this);
+//            } else {
+//                Toast.makeText(AddEditTaskActivity.this, "cancel", Toast.LENGTH_LONG);
+//            }
+//        }
+//        if(requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE){
+//            if(mCropImageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                System.out.println("mCropImageUri = " + mCropImageUri);
+//            } else {
+//                Toast.makeText(AddEditTaskActivity.this, "cancel pick", Toast.LENGTH_LONG);
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.main,menu);
+//        return true;
+//    }
+//
+//    @RequiresApi(api = Build.VERSION_CODES.M)
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if(requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK){
+//            Uri imageUri = CropImage.getPickImageResultUri(AddEditTaskActivity.this, data);
+////            CropImage.activity(imageUri).setAllowRotation(true).setGuidelines(CropImageView.Guidelines.ON)
+////                    .setAutoZoomEnabled(true).setActivityMenuIconColor(getColor(R.color.black)).setGuidelinesColor(getColor(R.color.red))
+////                    .setCropShape(CropImageView.CropShape.OVAL);
+//
+//            if(CropImage.isReadExternalStoragePermissionsRequired(AddEditTaskActivity.this, imageUri)) {
+//                mCropImageUri = imageUri;
+//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE);
+//            } else {
+//                pickedImage.setImageUriAsync(imageUri);
+//            }
+//        }
+//    }
+
+    public interface ClickAddSubTaskListener {
+        void addSubTaskListener();
     }
 }

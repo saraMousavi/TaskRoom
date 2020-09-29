@@ -97,6 +97,9 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
+    //photo ucrop
+    implementation 'com.github.himangipatel:ImagePickerUtil:v2.1'
+
 //    //chat for support page
 //    implementation 'com.cometchat:pro-android-chat-sdk:2.1.1'
 //    implementation 'com.github.stfalcon:chatkit:0.3.3'

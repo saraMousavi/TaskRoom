@@ -19,32 +19,32 @@ public class Attachments {
   @ColumnInfo(name="attachments_id")
   private Integer attachments_id;
   @ColumnInfo(name="attachments_type")
-  private Integer attachments_type;
+  private String attachments_type;
   @ColumnInfo(name="attachments_path")
-  private Integer attachments_path;
+  private String attachments_path;
   @ColumnInfo(name="tasks_id")
-  private Integer tasks_id;
-  public Attachments(Integer attachments_type, Integer attachments_path, Integer tasks_id){
+  private Long tasks_id;
+  public Attachments(String attachments_type, String attachments_path, Long tasks_id){
    this.attachments_type=attachments_type;
    this.attachments_path=attachments_path;
    this.tasks_id=tasks_id;
   }
-  public void setAttachments_type(Integer attachments_type){
+  public void setAttachments_type(String attachments_type){
    this.attachments_type=attachments_type;
   }
-  public Integer getAttachments_type(){
+  public String getAttachments_type(){
    return attachments_type;
   }
-  public void setAttachments_path(Integer attachments_path){
+  public void setAttachments_path(String attachments_path){
    this.attachments_path=attachments_path;
   }
-  public Integer getAttachments_path(){
+  public String getAttachments_path(){
    return attachments_path;
   }
-  public void setTasks_id(Integer tasks_id){
+  public void setTasks_id(Long tasks_id){
    this.tasks_id=tasks_id;
   }
-  public Integer getTasks_id(){
+  public Long getTasks_id(){
    return tasks_id;
   }
   public void setAttachments_id(Integer attachments_id){

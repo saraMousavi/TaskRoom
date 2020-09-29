@@ -15,10 +15,10 @@ public class AttachmentsRepository {
     private AttachmentsDao attachmentsDao;
     private LiveData<List<Attachments>> allAttachments;
 
-    public AttachmentsRepository(Application application) {
+    public AttachmentsRepository(Application application, Long tasksID) {
         PersianTaskDb chopTimedb = PersianTaskDb.getInstance(application);
         attachmentsDao = chopTimedb.attachmentsDao();
-        allAttachments = attachmentsDao.getAllAttachments();
+        allAttachments = attachmentsDao.getAllTasksAttachments(tasksID);
     }
 
     public void insert(Attachments attachments) {

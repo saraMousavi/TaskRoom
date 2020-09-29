@@ -28,3 +28,4 @@
     -keepclassmembers class ir.android.persiantask.data.db.entity.Test {
       *;
     }
+    -keep class androidx.appcompat.widget.* {*;}
