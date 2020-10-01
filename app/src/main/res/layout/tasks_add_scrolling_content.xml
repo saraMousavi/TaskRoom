@@ -497,6 +497,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:paddingTop="@dimen/_3sdp"
             android:layoutDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -524,6 +525,35 @@
                 app:layout_constraintBottom_toTopOf="@id/attachedRecyclerView"
                 app:layout_constraintStart_toStartOf="@id/guideline18"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/uploadChoose"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/corner_shape_upload_choose"
+                android:orientation="horizontal"
+                android:padding="@dimen/_3sdp"
+                app:layout_constraintBottom_toTopOf="@+id/attachedRecyclerView"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/cameraIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_8sdp"
+                    android:src="@drawable/ic_camera" />
+
+                <ImageView
+                    android:id="@+id/storageIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:src="@drawable/ic_storage" />
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/attachedRecyclerView"

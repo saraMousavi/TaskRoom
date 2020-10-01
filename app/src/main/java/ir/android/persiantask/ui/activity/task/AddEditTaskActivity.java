@@ -12,11 +12,13 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -102,7 +104,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
     private SharedPreferences sharedPreferences;
-    private ImageView projectIcon, completeIcon, priorityIcon;
+    private ImageView projectIcon, completeIcon, priorityIcon, cameraIcon, storageIcon;
     private Projects selectedProject;
     private boolean isCompleted;
     private String completedDateVal = "";
@@ -117,6 +119,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private RecyclerView attachedRecyclerView;
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
+    private LinearLayout uploadChoose;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -427,12 +430,57 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                if(uploadChoose.getVisibility() == View.VISIBLE){
+                    scaleAnimation(false);
+                } else {
+                    scaleAnimation(true);
+                }
+            }
+        });
+
+        cameraIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scaleAnimation(false);
                 FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
                 lifeCycleCallBackManager = filePickUtils.getCallBackManager();
                 filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
 //                requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
             }
         });
+        storageIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scaleAnimation(false);
+                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
+                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, false, false, true);
+            }
+        });
+    }
+
+    private void scaleAnimation(boolean visible) {
+        if(visible){
+            Animation anim = new ScaleAnimation(
+                    0, 1f, // Start and end values for the X axis scaling
+                    1f, 1f, // Start and end values for the Y axis scaling
+                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+            anim.setFillAfter(true); // Needed to keep the result of the animation
+            anim.setDuration(500);
+            uploadChoose.startAnimation(anim);
+            uploadChoose.setVisibility(View.VISIBLE);
+        } else {
+            Animation anim = new ScaleAnimation(
+                    1f, 0, // Start and end values for the X axis scaling
+                    1f, 1f, // Start and end values for the Y axis scaling
+                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+            anim.setFillAfter(true); // Needed to keep the result of the animation
+            anim.setDuration(500);
+            uploadChoose.startAnimation(anim);
+            uploadChoose.setVisibility(View.GONE);
+        }
     }
 
     private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
@@ -489,6 +537,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         completeIcon = findViewById(R.id.completeIcon);
         attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
         priorityIcon = findViewById(R.id.priorityIcon);
+        cameraIcon = findViewById(R.id.cameraIcon);
+        storageIcon = findViewById(R.id.storageIcon);
+        uploadChoose = findViewById(R.id.uploadChoose);
         completeIcon.setTag(R.drawable.ic_black_circle);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
