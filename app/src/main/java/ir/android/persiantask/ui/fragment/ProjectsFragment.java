@@ -185,7 +185,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         });
         projectRecyclerView.setAdapter(projectsAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-        layoutManager.setReverseLayout(true);
         projectRecyclerView.setLayoutManager(layoutManager);
     }
 

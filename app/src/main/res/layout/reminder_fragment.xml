@@ -15,6 +15,7 @@
         android:paddingTop="32dp"
         android:paddingRight="6dp"
         android:layoutDirection="rtl"
+        android:rotationY="180"
         tools:context=".ui.fragment.ReminderFragment">
 
         <include android:visibility="gone"

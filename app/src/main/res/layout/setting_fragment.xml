@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragment.SettingFragment"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    android:rotationY="180">
 
 
         <com.google.android.material.appbar.AppBarLayout

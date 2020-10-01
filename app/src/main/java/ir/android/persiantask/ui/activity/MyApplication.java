@@ -1,13 +1,16 @@
 package ir.android.persiantask.ui.activity;
 
 import android.app.Application;
+import android.content.res.Configuration;
 
+import androidx.core.view.ViewCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.List;
+import java.util.Locale;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
