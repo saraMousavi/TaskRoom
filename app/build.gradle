@@ -71,9 +71,11 @@ dependencies {
     // Set this dependency if you want to use the Hamcrest matcher library
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
 
-    //bubble navigation
-    implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+
+    //bottom navigation
+    implementation 'androidx.navigation:navigation-fragment:2.3.0'
+    implementation 'androidx.navigation:navigation-ui:2.3.0'
 
 
     implementation 'com.android.support:multidex:1.0.3'

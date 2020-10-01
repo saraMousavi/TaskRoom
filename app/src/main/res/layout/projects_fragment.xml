@@ -12,8 +12,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:rotationY="180">
+        android:fitsSystemWindows="true">
 <!--        this view visible when the list of projects is empty-->
         <include android:visibility="gone"
             android:id="@+id/projectsEmptyPage"

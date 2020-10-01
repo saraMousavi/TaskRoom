@@ -28,19 +28,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.gson.Gson;
 import com.mohamadian.persianhorizontalexpcalendar.PersianHorizontalExpCalendar;
 import com.mohamadian.persianhorizontalexpcalendar.enums.PersianCustomMarks;
 import com.mohamadian.persianhorizontalexpcalendar.enums.PersianViewPagerType;
 import com.mohamadian.persianhorizontalexpcalendar.model.CustomGradientDrawable;
 
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 
 import java.io.Serializable;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -359,7 +358,6 @@ public class CalenderFragment extends Fragment {
 
 
     @JvmStatic
-    @NotNull
     public static CalenderFragment newInstance(@NotNull String title, int bgColorId) {
         return CalenderFragment.Companion.newInstance(title, bgColorId);
     }

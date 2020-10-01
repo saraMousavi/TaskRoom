@@ -16,7 +16,6 @@
         android:textOff="@string/inactive"
         android:textOn="@string/active"
         android:thumb="@drawable/custom_thumb"
-        android:rotation="90"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
