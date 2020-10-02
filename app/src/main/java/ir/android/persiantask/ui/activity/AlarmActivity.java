@@ -47,7 +47,7 @@ public class AlarmActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (!isChecked) {
                     AlarmJobService.ringtone.stop();
                     finish();
                 }

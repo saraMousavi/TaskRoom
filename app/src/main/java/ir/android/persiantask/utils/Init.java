@@ -71,14 +71,65 @@ public class Init {
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
         int value = galena.get(Calendar.HOUR) % 12;
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value)));
+        int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
+                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE))));
         return persianCalendar.getPersianYear() + "/"
                 + (month < 10 ? "0" + month : month) + "/"
                 + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
                 + " "
-                + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))
+                + (hour < 10 ? "0" + hour : hour)
                 + ":"
-                + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
-                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE)));
+                + (minute < 10 ? "0" + minute : minute);
+    }
+
+    /**
+     * current date time with second
+     *
+     * @return
+     */
+    public static DateTime getCurrentDateTimeWithSecond() {
+        GregorianCalendar galena = new GregorianCalendar();
+        PersianCalendar persianCalendar = new PersianCalendar();
+        int month = persianCalendar.getPersianMonth() + 1;
+        int value = galena.get(Calendar.HOUR) % 12;
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value)));
+        int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
+                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE))));
+        int second = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
+                galena.get(Calendar.SECOND) == 60 ? 0 : galena.get(Calendar.SECOND))));
+
+        return convertIntegerToDateTime(integerFormatFromStringDate(persianCalendar.getPersianYear() + "/"
+                + (month < 10 ? "0" + month : month) + "/"
+                + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
+                + " "
+                + (hour < 10 ? "0" + hour : hour)
+                + ":"
+                + (minute < 10 ? "0" + minute : minute)
+                + ":" + (second < 10 ? "0" + second : second)));
+    }
+
+    /**
+     * current date time with second
+     *
+     * @return
+     */
+    public static DateTime getTodayDateTimeWithTime(String time) {
+        GregorianCalendar galena = new GregorianCalendar();
+        PersianCalendar persianCalendar = new PersianCalendar();
+        int month = persianCalendar.getPersianMonth() + 1;
+        int hour = Integer.parseInt(time.split(":")[0]);
+        int minute = Integer.parseInt(time.split(":")[1]);
+        System.out.println("minute new = " + minute);
+        System.out.println("hour new= " + hour);
+        return convertIntegerToDateTime((long)integerFormatFromStringDate(persianCalendar.getPersianYear() + "/"
+                + (month < 10 ? "0" + month : month) + "/"
+                + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
+                + " "
+                + (hour < 10 ? "0" + hour : hour)
+                + ":"
+                + (minute < 10 ? "0" + minute : minute)
+                + ":" + "00"));
     }
 
     /**
@@ -89,10 +140,12 @@ public class Init {
     public static String getCurrentTime() {
         GregorianCalendar galena = new GregorianCalendar();
         int value = galena.get(Calendar.HOUR) % 12;
-        return LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value))
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value)));
+        int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
+                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE))));
+        return (hour < 10 ? "0" + hour : hour)
                 + ":"
-                + LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
-                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE)));
+                + (minute < 10 ? "0" + minute : minute);
     }
 
     /**
@@ -128,11 +181,12 @@ public class Init {
      * @param dateTime
      * @return date
      */
-    public static Integer integerFormatFromStringDate(String dateTime) {
+    public static Long integerFormatFromStringDate(String dateTime) {
         if (dateTime.isEmpty()) {
-            return 0;
+            return 0L;
         }
-        return Integer.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "").substring(0, 8));
+        return Long.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").
+                replaceAll(" ", ""));
     }
 
     /**
@@ -154,13 +208,22 @@ public class Init {
      * @param integerTime
      * @return
      */
-    public static DateTime convertIntegerToDateTime(Integer integerTime) {
+    public static DateTime convertIntegerToDateTime(Long integerTime) {
         if (integerTime < 1000000) {
             return null;
         }
-        int year = integerTime / 10000;
-        int month = (integerTime % 10000) / 100;
-        int day = integerTime % 100;
+        if(integerTime > 99999999){
+            long year = integerTime / 10000000000L;
+            long month = (integerTime % 10000000000L) / 100000000L;
+            long day = (integerTime % 100000000L)/1000000L;
+            long hour = (integerTime % 1000000L)/10000L;
+            long minute = (integerTime % 10000L)/100L;
+            long second = (integerTime % 100);
+            return new DateTime((int)year, (int)month, (int)day, (int) hour, (int) minute, (int) second);
+        }
+        int year = (int)(long)integerTime / 10000;
+        int month = ((int)(long)integerTime % 10000) / 100;
+        int day = (int)(long)integerTime % 100;
         return new DateTime(year, month, day, 1, 1);
     }
 
@@ -304,7 +367,7 @@ public class Init {
      * onClick method that schedules the jobs based on the parameters set.
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void scheduleJob(JobScheduler mScheduler, String pkg, int jobId, int deadline) {
+    public static void scheduleJob(JobScheduler mScheduler, String pkg, int jobId, long deadline) {
 
         int selectedNetworkOption = JobInfo.NETWORK_TYPE_NONE;
 
@@ -315,7 +378,7 @@ public class Init {
                 .setRequiredNetworkType(selectedNetworkOption)
                 .setRequiresDeviceIdle(true);
 
-        builder.setOverrideDeadline(deadline * 1000);
+        builder.setOverrideDeadline(deadline);
 
         JobInfo myJobInfo = builder.build();
         mScheduler.schedule(myJobInfo);
@@ -341,10 +404,10 @@ public class Init {
                     int finalI = i;
                     handler.post(new Runnable() {
                         public void run() {
-                            if(finalI > 200){
-                                view.setBackgroundColor(Color.argb(255 - finalI, finalI,  0, 0));
+                            if (finalI > 200) {
+                                view.setBackgroundColor(Color.argb(255 - finalI, finalI, 0, 0));
                             } else {
-                                view.setBackgroundColor(Color.argb(100, finalI,  0, 0));
+                                view.setBackgroundColor(Color.argb(100, finalI, 0, 0));
                             }
 
                         }

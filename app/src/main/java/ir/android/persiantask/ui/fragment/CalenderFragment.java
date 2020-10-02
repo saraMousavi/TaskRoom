@@ -158,7 +158,7 @@ public class CalenderFragment extends Fragment {
 
     private void initTaskRecyclerView() {
         if (clickedDateTime != null) {
-            taskViewModel.getAllTasks().observe(CalenderFragment.this, new Observer<List<Tasks>>() {
+            taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
                 @Override
                 public void onChanged(List<Tasks> tasks) {
                     List<Tasks> filteredTasks = new ArrayList<>();
@@ -311,7 +311,7 @@ public class CalenderFragment extends Fragment {
      * mark days that have task(day that are between start date and end date of the task)
      */
     private void markDaysThatHaveTask() {
-        taskViewModel.getAllTasks().observe(CalenderFragment.this, new Observer<List<Tasks>>() {
+        taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<Tasks> tasks) {

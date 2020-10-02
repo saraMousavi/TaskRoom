@@ -13,14 +13,15 @@
         android:layout_height="wrap_content"
         android:checked="true"
         android:switchMinWidth="56dp"
+        android:rotation="90"
         android:textOff="@string/inactive"
         android:textOn="@string/active"
         android:thumb="@drawable/custom_thumb"
+        app:track="@drawable/custom_track"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/reminderContainer"
-        app:track="@drawable/custom_track" />
+        app:layout_constraintLeft_toRightOf="@+id/reminderContainer" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reminderContainer"
