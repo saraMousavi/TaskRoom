@@ -50,7 +50,7 @@
                     android:text="@string/reminderTime" />
 
                 <TextView
-                    android:id="@+id/startTextVal"
+                    android:id="@+id/reminderTimeVal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
@@ -224,6 +224,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:switchMinWidth="56dp"
+                android:checked="true"
                 android:textOff="@string/inactive"
                 android:textOn="@string/active" />
 

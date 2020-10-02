@@ -159,7 +159,7 @@ public class ReminderFragment extends Fragment {
 
     private void initRecyclerView() {
         reminderAdapter = new ReminderAdapter(getActivity(), reminderViewModel);
-        reminderViewModel.getAllReminders().observe(this, new Observer<List<Reminders>>() {
+        reminderViewModel.getAllReminders().observe(getViewLifecycleOwner(), new Observer<List<Reminders>>() {
             @Override
             public void onChanged(List<Reminders> reminders) {
                 View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
@@ -195,6 +195,7 @@ public class ReminderFragment extends Fragment {
             Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
                     .show();
+            reminderAdapter.notifyDataSetChanged();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
         }
     }

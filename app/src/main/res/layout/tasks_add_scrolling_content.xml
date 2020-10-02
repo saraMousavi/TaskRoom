@@ -142,7 +142,7 @@
                     android:text="@string/startDate" />
 
                 <TextView
-                    android:id="@+id/startTextVal"
+                    android:id="@+id/reminderTimeVal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"

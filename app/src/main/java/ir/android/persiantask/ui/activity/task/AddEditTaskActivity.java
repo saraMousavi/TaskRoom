@@ -15,7 +15,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,7 +35,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewbinding.ViewBinding;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -513,7 +511,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         tasksComment = findViewById(R.id.tasksComment);
         startDateConstraint = findViewById(R.id.startDateConstraint);
         endDateConstraint = findViewById(R.id.endDateConstraint);
-        startTextVal = findViewById(R.id.startTextVal);
+        startTextVal = findViewById(R.id.reminderTimeVal);
         //@TODO why hour and minute  has inversed in ui
         startTextVal.setText(Init.getCurrentDate());
         endTextVal = findViewById(R.id.endTextVal);

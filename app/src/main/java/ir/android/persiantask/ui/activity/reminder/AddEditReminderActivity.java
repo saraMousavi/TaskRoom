@@ -25,13 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.joda.time.Days;
-import org.joda.time.Instant;
 import org.joda.time.Interval;
-import org.joda.time.Minutes;
-import org.joda.time.Seconds;
-import org.joda.time.field.MillisDurationField;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,7 +56,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private ConstraintLayout startDateConstraint,
             repeatTypeConstraint, priorityTypeContraint,
             reminderTimeConstraint, reminderTypeConstraint;
-    private TextView startTextVal, repeatTypeVal, priorityVal;
+    private TextView reminderTime, repeatTypeVal, priorityVal;
     private AppBarLayout mAppBarLayout;
     private RemindersAddActivityBinding remindersAddActivityBinding;
     private String datepickerVal;
@@ -75,6 +69,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private Reminders clickedReminder;
     private SwitchCompat reminders_active;
     private JobScheduler mScheduler;
+    private boolean isReminerTimeChange = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -184,10 +179,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminderNameEdit = findViewById(R.id.reminderNameEdit);
         reminderComment = findViewById(R.id.reminderComment);
         startDateConstraint = findViewById(R.id.startDateConstraint);
-        startTextVal = findViewById(R.id.startTextVal);
+        reminderTime = findViewById(R.id.reminderTimeVal);
         //@TODO why hour and minute  has inversed in ui
-        startTextVal.setText(Init.getCurrentTime());
-        startTextVal.setText(Init.getCurrentTime());
+        reminderTime.setText(Init.getCurrentTime());
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
         priorityVal = findViewById(R.id.priorityVal);
         reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);
@@ -224,6 +218,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private void editableRemindersFields() {
         reminderNameEdit.setText(clickedReminder.getReminders_title());
+        reminderTime.setText(clickedReminder.getReminders_time());
         isEditActivity = true;
     }
 
@@ -239,23 +234,37 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
+        int jobId;
+        if (isEditActivity) {
+            jobId = Integer.parseInt(clickedReminder.getJob_ids());
+            if (isReminerTimeChange) {
+                mScheduler.cancel(Integer.parseInt(clickedReminder.getJob_ids()));
+                DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
+                DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
+                Interval interval = new Interval(dateTime1, dateTime2);
+                jobId =  mScheduler.getAllPendingJobs().size();
+                Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(),
+                        interval.toDurationMillis());
+            }
+            //@TODO update jobinfo
+        } else {
+            DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
+            DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
+            Interval interval = new Interval(dateTime1, dateTime2);
+            jobId =  mScheduler.getAllPendingJobs().size();
+            Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(),
+                    interval.toDurationMillis());
+
+        }
         Reminders reminders = new Reminders(reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
-                , reminderComment.getText().toString(), startTextVal.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
-                "", 0, isActive ? 1 : 0, 0);
+                , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
+                "", 0, isActive ? 1 : 0, 0, String.valueOf(jobId));
         if (isEditActivity) {
             reminders.setReminders_id(clickedReminder.getReminders_id());
             reminderViewModel.update(reminders);
             //@TODO update jobinfo
         } else {
             reminderViewModel.insert(reminders);
-            DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-            DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
-            Interval interval = new Interval(dateTime1, dateTime2);
-            System.out.println("interval.toDurationMillis() = " + interval.toDurationMillis());
-            System.out.println("Seconds.secondsBetween(dateTime1, dateTime2).getSeconds() = " + Seconds.secondsBetween(dateTime1, dateTime2).getSeconds());
-            Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(),
-                    interval.toDurationMillis());
-
         }
         setResult(RESULT_OK);
         finish();
@@ -265,7 +274,8 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
         datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay) + ":" + (minute < 10 ? "0" + minute : minute);
-        startTextVal.setText(datepickerVal);
+        reminderTime.setText(datepickerVal);
+        isReminerTimeChange = true;
     }
 
     @Override
