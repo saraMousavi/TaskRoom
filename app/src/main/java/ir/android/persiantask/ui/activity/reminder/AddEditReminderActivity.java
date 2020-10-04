@@ -19,9 +19,6 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -39,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
@@ -48,7 +44,6 @@ import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatTypeBottomSheetFragment;
-import ir.android.persiantask.ui.workers.AlarmWorker;
 import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.calender.TimePickerDialog;
 import ir.android.persiantask.viewmodels.ReminderViewModel;
@@ -294,16 +289,19 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     @Override
     public void onClickRepeatType(String repeatType) {
+        repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(repeatType);
     }
 
     @Override
     public void onClickRepeatDay(String repeatDay) {
+        repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(repeatDay);
     }
 
     @Override
     public void onClickRepeatPeriod(String repeatPeriod) {
+        repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(repeatPeriod);
     }
 
