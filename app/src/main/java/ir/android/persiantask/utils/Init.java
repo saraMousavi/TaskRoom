@@ -404,6 +404,7 @@ public class Init {
 
             }
             if (repeatIntervalList.size() == 0) {
+                //@intial delay from selected time
                 PeriodicWorkRequest periodicWorkRequest =
                         new PeriodicWorkRequest.Builder(AlarmWorker.class,
                                 repeatInterval, repeatIntervalTimeUnit)
