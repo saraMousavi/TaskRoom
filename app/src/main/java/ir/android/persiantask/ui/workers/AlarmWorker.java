@@ -28,7 +28,7 @@ public class AlarmWorker extends Worker {
     public Result doWork() {
         Intent i = new Intent(getApplicationContext(), AlarmActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+        i.putExtra("alarmTitle", getInputData().getString("alarmTitle"));
         getApplicationContext().startActivity(i);
         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
 // Vibrate for 500 milliseconds
@@ -40,20 +40,19 @@ public class AlarmWorker extends Worker {
         }
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
         ringtone.play();
-        PowerManager powerManager = (PowerManager) getApplicationContext()
-                .getSystemService(getApplicationContext().POWER_SERVICE);
-        PowerManager.WakeLock  wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
-                PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                PowerManager.ON_AFTER_RELEASE | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON, "appname::WakeLock");
+//        PowerManager powerManager = (PowerManager) getApplicationContext()
+//                .getSystemService(getApplicationContext().POWER_SERVICE);
+//        PowerManager.WakeLock  wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
+//                PowerManager.ACQUIRE_CAUSES_WAKEUP |
+//                PowerManager.ON_AFTER_RELEASE , "appname::WakeLock");
+//        turnScreenOn();
 
         //acquire will turn on the display
-        wakeLock.acquire(2*60*1000L /*2 minutes*/);
+//        wakeLock.acquire(2*60*1000L /*2 minutes*/);
 
         //release will release the lock from CPU, in case of that, screen will go back to sleep mode in defined time bt device settings
-        wakeLock.release();
+//        wakeLock.release();
         return Result.success();
     }
+
 }

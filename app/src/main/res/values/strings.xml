@@ -222,6 +222,7 @@
     <string name="enterYourMessage">پیغام خود را وارد نمایید.</string>
     <string name="listOfChatList">لیست پیغام ها</string>
     <string name="enterTaskName">عنوان کار را وارد نمایید.</string>
+    <string name="enterReminderName">عنوان یادآور را وارد نمایید.</string>
     <string name="enterSubTaskName">عنوان کار فرعی را وارد نمایید.</string>
     <string name="aboutAppProjectTitle">لیست پروژه ها</string>
     <string name="aboutAppProjectDescription">"تعریف مجموعه کارهای اصلی و فرعی در قالب پروژه "</string>
@@ -239,4 +240,5 @@
     <string name="main_action_flip_vertically">عمودی</string>
     <string name="main_action_crop">کراپ</string>
     <string name="successDeleteAttachments">ضمیمه مورد نظر با موفقیت حذف گردید.</string>
+    <string name="enterValidTime">ساعت بزرگتر از ساعت فعلی انتخاب نمایید.</string>
 </resources>

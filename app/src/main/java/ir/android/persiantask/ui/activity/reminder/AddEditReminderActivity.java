@@ -26,6 +26,7 @@ import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.joda.time.DateTime;
@@ -37,6 +38,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import ir.android.persiantask.R;
@@ -71,7 +73,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private String completedDateVal = "";
     private RadioGroup reminderTypeGroup;
     private Integer tempReminderID;
-    private boolean isEditActivity = false, isActive = false;
+    private boolean isEditActivity = false, isActive = true;
     private Reminders clickedReminder;
     private SwitchCompat reminders_active;
     private JobScheduler mScheduler;
@@ -230,6 +232,12 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void insertReminder() {
+        if (reminderNameEdit.getText().toString().isEmpty()) {
+            Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterReminderName), Snackbar.LENGTH_LONG)
+                    .show();
+            return;
+        }
         Integer priorityIntVal = 0;
         if (priorityVal.getText().toString().equals(getString(R.string.low))) {
             priorityIntVal = 1;
@@ -239,50 +247,41 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             priorityIntVal = 3;
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
-        //@TODO get repeat type val from bottom sheet
-        int jobId;
-        if (isEditActivity) {
-            jobId = Integer.parseInt(clickedReminder.getJob_ids());
-            if (isReminerTimeChange) {
-                mScheduler.cancel(Integer.parseInt(clickedReminder.getJob_ids()));
-                DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-                DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
-                Interval interval = new Interval(dateTime1, dateTime2);
-                jobId = mScheduler.getAllPendingJobs().size();
-                Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(),
-                        interval.toDurationMillis());
-            }
-            //@TODO update jobinfo
-        } else {
-            DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-            DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
-            System.out.println("dateTime1 = " + dateTime1);
-            System.out.println("dateTime2 = " + dateTime2);
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-                    .build();
+        String workID = ceateWorkRequest();
 
-            PeriodicWorkRequest saveRequest =
-                    new PeriodicWorkRequest.Builder(AlarmWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
-                            .setConstraints(constraints)
-                            .setInitialDelay(10, TimeUnit.SECONDS)
-                            .build();
-            WorkManager
-                    .getInstance(getApplicationContext())
-                    .enqueue(saveRequest);
-        }
         Reminders reminders = new Reminders(reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
-                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, String.valueOf(0));
+                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, workID);
         if (isEditActivity) {
+            if (isReminerTimeChange) {
+                if (clickedReminder.getWork_id().contains(",")) {
+                    for (String requestId : clickedReminder.getWork_id().split(",")) {
+                        WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
+                    }
+                } else {
+                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
+                }
+            }
             reminders.setReminders_id(clickedReminder.getReminders_id());
             reminderViewModel.update(reminders);
-            //@TODO update jobinfo
         } else {
             reminderViewModel.insert(reminders);
         }
         setResult(RESULT_OK);
         finish();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private String ceateWorkRequest() {
+        DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
+        DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0);
+        if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay() + "" + dateTime1.getMinuteOfHour())) {
+            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
+        }
+        Interval interval = new Interval(dateTime1, dateTime2);
+        return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(),
+                Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
+                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty());
     }
 
 
@@ -295,19 +294,16 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     @Override
     public void onClickRepeatType(String repeatType) {
-        repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(repeatType);
     }
 
     @Override
     public void onClickRepeatDay(String repeatDay) {
-        repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(repeatDay);
     }
 
     @Override
     public void onClickRepeatPeriod(String repeatPeriod) {
-        repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(repeatPeriod);
     }
 

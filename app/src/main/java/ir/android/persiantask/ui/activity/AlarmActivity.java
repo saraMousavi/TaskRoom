@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AnalogClock;
@@ -30,7 +31,15 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
+        turnOnScreen();
         onClickListener();
+    }
+
+    private void turnOnScreen() {
+        int flags = WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
+        getWindow().addFlags(flags);
     }
 
     private void onClickListener() {
@@ -55,6 +64,7 @@ public class AlarmActivity extends AppCompatActivity {
         alarmClockIcon = findViewById(R.id.analogClock);
         alarmActive = findViewById(R.id.alarm_active);
         alarmTitle = findViewById(R.id.alarmTitle);
+        alarmTitle.setText(getIntent().getExtras().getString("alarmTitle"));
         Animation animation = AnimationUtils.loadAnimation(AlarmActivity.this,
                 R.anim.shake);
         alarmIcon.startAnimation(animation);

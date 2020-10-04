@@ -56,13 +56,13 @@ public class Reminders implements Serializable {
     private String reminders_time;
     @ColumnInfo(name = "label_id")
     private Integer label_id;
-    @ColumnInfo(name = "job_ids")
-    private String job_ids;
+    @ColumnInfo(name = "work_id")
+    private String work_id;
 
 
     public Reminders(Integer reminders_type, String reminders_comment, String reminders_time, Integer reminders_priority,
                      String reminders_title, String reminders_repeatedday,
-                     Integer reminders_repeatedtype, Integer reminders_active, Integer label_id, String job_ids)  {
+                     Integer reminders_repeatedtype, Integer reminders_active, Integer label_id, String work_id)  {
         this.reminders_type = reminders_type;
         this.reminders_comment = reminders_comment;
         this.reminders_priority = reminders_priority;
@@ -72,7 +72,7 @@ public class Reminders implements Serializable {
         this.reminders_active = reminders_active;
         this.reminders_time = reminders_time;
         this.label_id = label_id;
-        this.job_ids = job_ids;
+        this.work_id = work_id;
     }
 
     public void setReminders_update(Integer reminders_update) {
@@ -188,11 +188,11 @@ public class Reminders implements Serializable {
         return label_id;
     }
 
-    public String getJob_ids() {
-        return job_ids;
+    public String getWork_id() {
+        return work_id;
     }
 
-    public void setJob_ids(String job_ids) {
-        this.job_ids = job_ids;
+    public void setWork_id(String work_id) {
+        this.work_id = work_id;
     }
 }
