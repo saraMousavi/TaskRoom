@@ -102,6 +102,21 @@ dependencies {
     //photo ucrop
     implementation 'com.github.himangipatel:ImagePickerUtil:v2.1'
 
+    //work manager
+    def work_version = "2.4.0"
+
+    // (Java only)
+    implementation "androidx.work:work-runtime:$work_version"
+
+    // optional - RxJava2 support
+    implementation "androidx.work:work-rxjava2:$work_version"
+
+    // optional - GCMNetworkManager support
+    implementation "androidx.work:work-gcm:$work_version"
+
+    // optional - Test helpers
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+
 //    //chat for support page
 //    implementation 'com.cometchat:pro-android-chat-sdk:2.1.1'
 //    implementation 'com.github.stfalcon:chatkit:0.3.3'

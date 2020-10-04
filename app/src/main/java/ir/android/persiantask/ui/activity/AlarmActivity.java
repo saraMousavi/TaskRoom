@@ -1,5 +1,6 @@
 package ir.android.persiantask.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import ir.android.persiantask.R;
-import ir.android.persiantask.ui.services.AlarmJobService;
+import ir.android.persiantask.ui.workers.AlarmWorker;
 
 public class AlarmActivity extends AppCompatActivity {
     private ImageView alarmIcon;
@@ -38,7 +39,7 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    AlarmJobService.ringtone.stop();
+                    AlarmWorker.ringtone.stop();
                     alarmTitle.setVisibility(View.GONE);
                     finish();
                 }
@@ -46,6 +47,7 @@ public class AlarmActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ShortAlarm")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         setContentView(R.layout.alarm_activity);
@@ -57,6 +59,10 @@ public class AlarmActivity extends AppCompatActivity {
                 R.anim.shake);
         alarmIcon.startAnimation(animation);
         alarmClockIcon.startAnimation(animation);
+//        Intent intent = new Intent(AlarmActivity.this, AlarmJobService.class);
+//        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//        PendingIntent pendingIntent = PendingIntent.getService(AlarmActivity.this, 0 , intent, 0);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
     }
 
     @Override

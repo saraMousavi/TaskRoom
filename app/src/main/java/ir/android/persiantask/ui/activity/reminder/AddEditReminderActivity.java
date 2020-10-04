@@ -19,6 +19,10 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,6 +37,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
@@ -41,6 +46,7 @@ import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatTypeBottomSheetFragment;
+import ir.android.persiantask.ui.workers.AlarmWorker;
 import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.calender.TimePickerDialog;
 import ir.android.persiantask.viewmodels.ReminderViewModel;
@@ -242,7 +248,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
                 DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
                 Interval interval = new Interval(dateTime1, dateTime2);
-                jobId =  mScheduler.getAllPendingJobs().size();
+                jobId = mScheduler.getAllPendingJobs().size();
                 Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(),
                         interval.toDurationMillis());
             }
@@ -250,15 +256,24 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         } else {
             DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
             DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal);
-            Interval interval = new Interval(dateTime1, dateTime2);
-            jobId =  mScheduler.getAllPendingJobs().size();
-            Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(),
-                    interval.toDurationMillis());
+            System.out.println("dateTime1 = " + dateTime1);
+            System.out.println("dateTime2 = " + dateTime2);
+            Constraints constraints = new Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                    .build();
 
+            PeriodicWorkRequest saveRequest =
+                    new PeriodicWorkRequest.Builder(AlarmWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, TimeUnit.MILLISECONDS)
+                            .setConstraints(constraints)
+                            .setInitialDelay(10, TimeUnit.SECONDS)
+                            .build();
+            WorkManager
+                    .getInstance(getApplicationContext())
+                    .enqueue(saveRequest);
         }
         Reminders reminders = new Reminders(reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
-                "", 0, isActive ? 1 : 0, 0, String.valueOf(jobId));
+                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, String.valueOf(0));
         if (isEditActivity) {
             reminders.setReminders_id(clickedReminder.getReminders_id());
             reminderViewModel.update(reminders);
