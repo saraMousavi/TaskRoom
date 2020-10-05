@@ -48,6 +48,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView remindersTitle, remindertime, remindersRepeat;
         public SwitchCompat remindersActive;
+        public View priorityView;
         public ImageView reminderComment, repeatedIcon, reminderAttachment;
 
         public ViewHolder(View itemView) {
@@ -59,6 +60,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             reminderComment = itemView.findViewById(R.id.reminderComment);
             repeatedIcon = itemView.findViewById(R.id.repeatedIcon);
             reminderAttachment = itemView.findViewById(R.id.reminderAttachment);
+            priorityView = itemView.findViewById(R.id.priorityView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -102,6 +104,13 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             holder.reminderAttachment.setVisibility(View.VISIBLE);
         } else {
             holder.reminderAttachment.setVisibility(View.GONE);
+        }
+        if(reminder.getReminders_priority() == 1){
+            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape));
+        } else if(reminder.getReminders_priority() == 2){
+            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.orange_priority_corner_shape));
+        } else if(reminder.getReminders_priority() == 3){
+            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape));
         }
         holder.remindersActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

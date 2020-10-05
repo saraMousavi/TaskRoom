@@ -5,8 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_4sdp"
+    android:padding="0dp"
     android:background="@drawable/white_item_corner_shape"
     android:layoutDirection="rtl">
+
+    <View
+        android:id="@+id/priorityView"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="0dp"
+        android:background="@drawable/grey_priority_corner_shape"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/reminders_active"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/reminders_active"
@@ -21,7 +32,7 @@
         android:thumb="@drawable/custom_thumb"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/reminderContainer"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/priorityView"
         app:layout_constraintTop_toTopOf="parent"
         app:track="@drawable/custom_track" />
 
