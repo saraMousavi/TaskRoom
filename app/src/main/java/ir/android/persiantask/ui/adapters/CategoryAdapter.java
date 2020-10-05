@@ -1,12 +1,17 @@
 package ir.android.persiantask.ui.adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,9 +32,11 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
             return oldItem.getCategory_title().equals(newItem.getCategory_title());
         }
     };
+    private final Context mContext;
 
-    public CategoryAdapter(){
+    public CategoryAdapter(Context context){
         super(DIFF_CALLBACK);
+        this.mContext = context;
     }
 
     @NonNull
@@ -46,13 +53,16 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = getItem(position);
         holder.categoryTitle.setText(category.getCategory_title());
+        holder.categoryImage.setImageResource(mContext.getResources().getIdentifier(category.getCategory_image(), "xml", null));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView categoryTitle;
+        public ImageView categoryImage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryTitle = itemView.findViewById(R.id.category_title);
+            categoryImage = itemView.findViewById(R.id.category_image);
         }
     }
 }

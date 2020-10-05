@@ -2,29 +2,53 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="CategoryViewModel"
             type="ir.android.persiantask.viewmodels.CategoryViewModel" />
     </data>
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
-    android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/categoryRecyclerView"
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="rtl">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/category_item_recyclerview" />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addCategoryBtn"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_add" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/reminderListTile"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_60sdp"
+                android:background="?colorPrimary"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/categoryList"
+                android:textColor="@color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-20dp"
+                android:background="@drawable/white_bg_corner_shape"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/category_item_recyclerview" />
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addCategoryBtn"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_add" />
+    </FrameLayout>
 </layout>

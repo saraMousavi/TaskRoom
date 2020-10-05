@@ -40,7 +40,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         insertCategoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Category category = new Category(categoryTitle.getText().toString());
+                Category category = new Category(categoryTitle.getText().toString(), "");
                 submitClickListener.onClickSubmit(category);
                 dismiss();
             }

@@ -2,6 +2,10 @@ package ir.android.persiantask.ui.activity;
 
 import android.app.Application;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import androidx.core.view.ViewCompat;
 import androidx.lifecycle.LifecycleOwner;
@@ -9,6 +13,7 @@ import androidx.lifecycle.Observer;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,11 +33,11 @@ public class MyApplication extends Application {
             @Override
             public void onChanged(List<Category> categories) {
                 if (categories.size() == 0) {
-                    Category artCategory = new Category(getString(R.string.art));
+                    Category artCategory = new Category(getString(R.string.art), "ir.android.persiantask:drawable/ic_white_art");
                     categoryViewModel.insert(artCategory);
-                    Category sportCategory = new Category(getString(R.string.sports));
+                    Category sportCategory = new Category(getString(R.string.sports), "ir.android.persiantask:drawable/ic_white_sports");
                     categoryViewModel.insert(sportCategory);
-                    Category scientificCategory = new Category(getString(R.string.scientific));
+                    Category scientificCategory = new Category(getString(R.string.scientific), "ir.android.persiantask:drawable/ic_white_scientific");
                     categoryViewModel.insert(scientificCategory);
                 }
             }

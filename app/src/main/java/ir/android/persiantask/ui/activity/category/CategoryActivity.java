@@ -77,7 +77,7 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         categoryActivityBinding.setCategoryViewModel(categoryViewModel);
         addCategoryBtn = findViewById(R.id.addCategoryBtn);
         categoryRecyclerView = findViewById(R.id.categoryRecyclerView);
-        categoryAdapter = new CategoryAdapter();
+        categoryAdapter = new CategoryAdapter(getApplicationContext());
         categoryViewModel.getAllCategory().observe(this, new Observer<List<Category>>() {
             @Override
             public void onChanged(List<Category> categories) {
