@@ -21,6 +21,118 @@
             android:hint="@string/categoryTitle" />
 
     </com.google.android.material.textfield.TextInputLayout>
+    <RadioGroup
+        android:id="@+id/category_image_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
+        <RadioButton
+            android:id="@+id/image_1"
+            android:tag="ir.android.persiantask:drawable/ic_white_art"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_orange_art"
+            android:checked="true"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_2"
+            android:tag="ir.android.persiantask:drawable/ic_white_scientific"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_scientific"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_3"
+            android:tag="ir.android.persiantask:drawable/ic_white_sports"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_sports"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_4"
+            android:tag="ir.android.persiantask:drawable/ic_white_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_setting"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_5"
+            android:tag="ir.android.persiantask:drawable/ic_white_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_music"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+    </RadioGroup>
+    <RadioGroup
+        android:id="@+id/category_image_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/category_image_1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
+        <RadioButton
+            android:id="@+id/image_6"
+            android:tag="ir.android.persiantask:drawable/ic_white_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_chat"
+            android:checked="true"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_7"
+            android:tag="ir.android.persiantask:drawable/ic_white_restoorant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_restoorant"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_8"
+            android:tag="ir.android.persiantask:drawable/ic_white_airport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_airport"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_9"
+            android:tag="ir.android.persiantask:drawable/ic_white_flower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_flower"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+        <RadioButton
+            android:id="@+id/image_10"
+            android:tag="ir.android.persiantask:drawable/ic_white_hospital"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_black_hospital"
+            android:gravity="bottom"
+            android:button="@android:color/transparent"/>
+    </RadioGroup>
 
     <Button
         android:id="@+id/insertCategoryBtn"
@@ -31,6 +143,6 @@
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/category_image_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -222,6 +222,7 @@
     <string name="enterYourMessage">پیغام خود را وارد نمایید.</string>
     <string name="listOfChatList">لیست پیغام ها</string>
     <string name="enterTaskName">عنوان کار را وارد نمایید.</string>
+    <string name="enterCategoryName">عنوان دسته را وارد نمایید.</string>
     <string name="enterReminderName">عنوان یادآور را وارد نمایید.</string>
     <string name="enterSubTaskName">عنوان کار فرعی را وارد نمایید.</string>
     <string name="aboutAppProjectTitle">لیست پروژه ها</string>
