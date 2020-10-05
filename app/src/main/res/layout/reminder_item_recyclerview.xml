@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layoutDirection="rtl"
-    android:padding="6dp">
+    android:layout_margin="@dimen/_4sdp"
+    android:background="@drawable/white_item_corner_shape"
+    android:layoutDirection="rtl">
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/reminders_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:checked="true"
         android:rotation="90"
-        android:switchMinWidth="56dp"
         android:textOff="@string/inactive"
         android:textOn="@string/active"
         android:thumb="@drawable/custom_thumb"
@@ -30,42 +32,54 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/reminders_active"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/white_item_corner_shape">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/remindertime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:30"
+            android:textColor="?colorPrimary"
+            android:textSize="@dimen/_30ssp"
+            app:layout_constraintBottom_toTopOf="@+id/reminders_title"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/reminders_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:text="@string/reminder"
+            android:textColor="?colorAccent"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/guideline3"
-            app:layout_constraintRight_toRightOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remindertime" />
         <TextView
-            android:id="@+id/tasks_remindertime"
+            android:id="@+id/reminders_repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:text="12:30"
+            android:text="@string/onlyOnce"
             android:textColor="?colorAccent"
-            android:textSize="22sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            />
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remindertime"
+            app:layout_constraintRight_toLeftOf="@id/reminders_title"/>
+
 
         <ImageView
             android:id="@+id/repeatedIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_orange_repeat"
-            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints"
             android:visibility="gone"
-            tools:layout_editor_absoluteX="6dp" />
+            app:layout_constraintBottom_toTopOf="@id/reminderComment"/>
 
         <ImageView
             android:id="@+id/reminderComment"
@@ -73,52 +87,19 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_orange_comment"
             android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@+id/repeatedIcon"
-            app:layout_constraintTop_toTopOf="@+id/guideline3"
-            tools:layout_editor_absoluteX="6dp" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/repeatedIcon"
+            app:layout_constraintBottom_toTopOf="@+id/reminderAttachment"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
+        <ImageView
+            android:id="@+id/reminderAttachment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="36dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="60dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="130dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="222dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="313dp" />
+            android:src="@drawable/ic_orange_attach"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/reminderComment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

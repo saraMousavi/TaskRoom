@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -163,13 +164,14 @@ public class ReminderFragment extends Fragment {
             @Override
             public void onChanged(List<Reminders> reminders) {
                 View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
+                LinearLayout reminderLinear = inflaterView.findViewById(R.id.reminderLinear);
                 if (reminders.size() == 0) {
                     remindersEmptyPage.setVisibility(View.VISIBLE);
-                    reminderRecyclerView.setVisibility(View.GONE);
+                    reminderLinear.setVisibility(View.GONE);
                     addReminderBtn.setVisibility(View.GONE);
                 } else {
                     remindersEmptyPage.setVisibility(View.GONE);
-                    reminderRecyclerView.setVisibility(View.VISIBLE);
+                    reminderLinear.setVisibility(View.VISIBLE);
                     addReminderBtn.setVisibility(View.VISIBLE);
                 }
                 reminderAdapter.submitList(reminders);

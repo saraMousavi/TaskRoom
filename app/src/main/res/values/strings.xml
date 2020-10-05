@@ -241,4 +241,5 @@
     <string name="main_action_crop">کراپ</string>
     <string name="successDeleteAttachments">ضمیمه مورد نظر با موفقیت حذف گردید.</string>
     <string name="enterValidTime">ساعت بزرگتر از ساعت فعلی انتخاب نمایید.</string>
+    <string name="onlyOnce">، فقط یکبار</string>
 </resources>

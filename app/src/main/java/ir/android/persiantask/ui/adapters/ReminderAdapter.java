@@ -2,24 +2,19 @@ package ir.android.persiantask.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
@@ -51,14 +46,15 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView remindersTitle, tasks_remindertime;
+        public TextView remindersTitle, remindertime, remindersRepeat;
         public SwitchCompat remindersActive;
         public ImageView reminderComment, repeatedIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
             remindersTitle = itemView.findViewById(R.id.reminders_title);
-            tasks_remindertime = itemView.findViewById(R.id.tasks_remindertime);
+            remindertime = itemView.findViewById(R.id.remindertime);
+            remindersRepeat = itemView.findViewById(R.id.reminders_repeat);
             remindersActive = itemView.findViewById(R.id.reminders_active);
             reminderComment = itemView.findViewById(R.id.reminderComment);
             repeatedIcon = itemView.findViewById(R.id.repeatedIcon);
@@ -89,16 +85,17 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
         Reminders reminder = getItem(position);
         holder.remindersTitle.setText(reminder.getReminders_title());
         holder.remindersActive.setChecked(reminder.getReminders_active() == 1 ? true : false);
-        holder.tasks_remindertime.setText(reminder.getReminders_time());
+        holder.remindertime.setText(reminder.getReminders_time());
         if (reminder.getReminders_comment().isEmpty()) {
             holder.reminderComment.setVisibility(View.GONE);
         } else {
             holder.reminderComment.setVisibility(View.VISIBLE);
         }
         if (reminder.getReminders_repeatedday().isEmpty()) {
-            holder.reminderComment.setVisibility(View.GONE);
+            holder.repeatedIcon.setVisibility(View.GONE);
         } else {
-            holder.reminderComment.setVisibility(View.VISIBLE);
+            holder.repeatedIcon.setVisibility(View.VISIBLE);
+            holder.remindersRepeat.setText("," +reminder.getReminders_repeatedday());
         }
         holder.remindersActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
