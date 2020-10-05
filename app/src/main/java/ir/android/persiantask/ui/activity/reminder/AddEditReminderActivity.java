@@ -100,7 +100,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private JobScheduler mScheduler;
     private boolean isReminerTimeChange = false;
     private LinearLayout uploadChoose;
-    private ImageView cameraIcon, storageIcon;
+    private ImageView cameraIcon, storageIcon, priorityIcon;
     private LifeCycleCallBackManager lifeCycleCallBackManager;
     private RecyclerView attachedRecyclerView;
     private AttachmentsAdapter attachmentsAdapter;
@@ -329,6 +329,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         uploadChoose = findViewById(R.id.uploadChoose);
         cameraIcon = findViewById(R.id.cameraIcon);
         storageIcon = findViewById(R.id.storageIcon);
+        priorityIcon = findViewById(R.id.priorityIcon);
         //@TODO why hour and minute  has inversed in ui
         reminderTime.setText(Init.getCurrentTime());
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
@@ -370,6 +371,23 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private void editableRemindersFields() {
         reminderNameEdit.setText(clickedReminder.getReminders_title());
         reminderTime.setText(clickedReminder.getReminders_time());
+        priorityIcon.setImageResource(R.drawable.ic_priority);
+        String priorityStringVal = getString(R.string.nonePriority);
+        priorityVal.setVisibility(View.VISIBLE);
+        if (clickedReminder.getReminders_priority() == 1) {
+            priorityStringVal = getString(R.string.low);
+            priorityIcon.setImageResource(R.drawable.ic_low_yellow_priority);
+        } else if (clickedReminder.getReminders_priority() == 2) {
+            priorityStringVal = getString(R.string.medium);
+            priorityIcon.setImageResource(R.drawable.ic_medium_orange_priority);
+        } else if (clickedReminder.getReminders_priority() == 3) {
+            priorityStringVal = getString(R.string.high);
+            priorityIcon.setImageResource(R.drawable.ic_high_green_priority);
+        }
+        priorityVal.setText(priorityStringVal);
+        repeatTypeVal.setVisibility(View.VISIBLE);
+        repeatTypeVal.setText(clickedReminder.getReminders_repeatedday());
+        reminderComment.setText(clickedReminder.getReminders_comment());
         isEditActivity = true;
     }
 
@@ -480,9 +498,19 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     public void onClickPriorityType(String priorityType, boolean isGone) {
         if (isGone) {
             priorityVal.setVisibility(View.GONE);
+            priorityIcon.setImageResource(R.drawable.ic_priority);
         } else {
             priorityVal.setVisibility(View.VISIBLE);
             priorityVal.setText(priorityType);
+            if (priorityVal.getText().toString().equals(getString(R.string.low))) {
+                priorityIcon.setImageResource(R.drawable.ic_low_yellow_priority);
+            } else if (priorityVal.getText().toString().equals(getString(R.string.medium))) {
+                priorityIcon.setImageResource(R.drawable.ic_medium_orange_priority);
+            } else if (priorityVal.getText().toString().equals(getString(R.string.high))) {
+                priorityIcon.setImageResource(R.drawable.ic_high_green_priority);
+            } else {
+                priorityIcon.setImageResource(R.drawable.ic_priority);
+            }
         }
     }
 
