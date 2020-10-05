@@ -99,10 +99,9 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
-    <string name="task1">تسک 1</string>
     <string name="projectTitle">عنوان پروژه</string>
     <string name="insert">ثبت</string>
-    <string name="taskTitle">عنوان تسک</string>
+    <string name="taskTitle">عنوان کار</string>
     <string name="createNewProject">ایجاد پروژه جدید</string>
     <string name="subtasks">کارهای فرعی</string>
     <string name="chart">نمودار</string>
