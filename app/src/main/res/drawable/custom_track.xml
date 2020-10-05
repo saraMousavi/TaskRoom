@@ -3,13 +3,13 @@
     <item android:state_checked="false">
         <shape >
             <stroke android:width="@dimen/_3sdp"
-                android:color="?colorAccent" />
+                android:color="#fdd692" />
             <corners android:radius="@dimen/_20sdp"/>
         </shape>
     </item>
     <item android:state_checked="true">
         <shape >
-            <solid android:color="?colorAccent"/>
+            <solid android:color="#fdd692"/>
             <stroke android:width="@dimen/_2sdp"
                 android:color="?colorAccent" />
             <corners android:radius="@dimen/_20sdp"/>
