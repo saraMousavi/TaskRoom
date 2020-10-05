@@ -487,7 +487,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             File imgFile = new File(fileUri);
             if (imgFile.exists()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                Attachments attachments = new Attachments("jpg", fileUri, tempTaskID);
+                Attachments attachments = new Attachments("jpg", fileUri, tempTaskID, 0L, 0L);
                 attachmentsViewModel.insert(attachments);
                 attachmentsAdapter.notifyDataSetChanged();
 

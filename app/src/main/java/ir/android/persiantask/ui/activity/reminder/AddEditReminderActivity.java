@@ -3,32 +3,47 @@ package ir.android.persiantask.ui.activity.reminder;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.imagepicker.FilePickUtils;
+import com.imagepicker.LifeCycleCallBackManager;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,17 +51,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.data.db.entity.Attachments;
 import ir.android.persiantask.data.db.entity.Reminders;
+import ir.android.persiantask.data.db.entity.Subtasks;
+import ir.android.persiantask.data.db.entity.Tasks;
+import ir.android.persiantask.data.db.factory.AttachmentsViewModelFactory;
+import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.databinding.RemindersAddActivityBinding;
+import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
+import ir.android.persiantask.ui.adapters.AttachmentsAdapter;
+import ir.android.persiantask.ui.adapters.SubTasksAdapter;
 import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.persiantask.ui.fragment.TasksRepeatTypeBottomSheetFragment;
 import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.calender.TimePickerDialog;
+import ir.android.persiantask.viewmodels.AttachmentsViewModel;
 import ir.android.persiantask.viewmodels.ReminderViewModel;
+import ir.android.persiantask.viewmodels.SubTasksViewModel;
 
 public class AddEditReminderActivity extends AppCompatActivity implements
         TimePickerDialog.OnTimeSetListener
@@ -57,7 +83,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private TextInputEditText reminderNameEdit, reminderComment;
     private FloatingActionButton fabInsertReminders, fabInsertReminders2;
     private ConstraintLayout startDateConstraint,
-            repeatTypeConstraint, priorityTypeContraint,
+            repeatTypeConstraint, priorityTypeContraint, uploadFileContraint,
             reminderTimeConstraint, reminderTypeConstraint;
     private TextView reminderTime, repeatTypeVal, priorityVal;
     private AppBarLayout mAppBarLayout;
@@ -67,12 +93,18 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private SharedPreferences sharedPreferences;
     private String completedDateVal = "";
     private RadioGroup reminderTypeGroup;
-    private Integer tempReminderID;
+    private Long tempReminderID;
     private boolean isEditActivity = false, isActive = true;
     private Reminders clickedReminder;
     private SwitchCompat reminders_active;
     private JobScheduler mScheduler;
     private boolean isReminerTimeChange = false;
+    private LinearLayout uploadChoose;
+    private ImageView cameraIcon, storageIcon;
+    private LifeCycleCallBackManager lifeCycleCallBackManager;
+    private RecyclerView attachedRecyclerView;
+    private AttachmentsAdapter attachmentsAdapter;
+    private AttachmentsViewModel attachmentsViewModel;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -81,8 +113,24 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         init();
         onClickListener();
         initSpinners();
+        insertTempReminder();
+        initRecyclerViews();
     }
 
+    private void initRecyclerViews() {
+        AttachmentsViewModelFactory attachmentFactory = new AttachmentsViewModelFactory(getApplication(), tempReminderID);
+        attachmentsViewModel = ViewModelProviders.of(this, attachmentFactory).get(AttachmentsViewModel.class);
+        attachmentsAdapter = new AttachmentsAdapter(attachmentsViewModel, AddEditReminderActivity.this);
+        attachmentsViewModel.getAllRemindersAttachments().observe(this, new Observer<List<Attachments>>() {
+            @Override
+            public void onChanged(List<Attachments> attachments) {
+                System.out.println("attachments.size() = " + attachments.size());
+                attachmentsAdapter.submitList(attachments);
+                attachedRecyclerView.setAdapter(attachmentsAdapter);
+            }
+        });
+        attachedRecyclerView.setLayoutManager(new GridLayoutManager(AddEditReminderActivity.this, 3, RecyclerView.VERTICAL, false));
+    }
 
     private void initSpinners() {
         ArrayList<String> remindTimeArray = new ArrayList<>();
@@ -100,14 +148,26 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                insertReminder();
+                try {
+                    insertReminder();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         fabInsertReminders2.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                insertReminder();
+                try {
+                    insertReminder();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -168,6 +228,89 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 isActive = isChecked;
             }
         });
+
+        uploadFileContraint.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                if(uploadChoose.getVisibility() == View.VISIBLE){
+                    scaleAnimation(false);
+                } else {
+                    scaleAnimation(true);
+                }
+            }
+        });
+
+        cameraIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scaleAnimation(false);
+                FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
+                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+                filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
+//                requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
+            }
+        });
+        storageIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scaleAnimation(false);
+                FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
+                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, false, false, true);
+            }
+        });
+    }
+
+    private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
+        @Override
+        public void onFileChoose(String fileUri, int requestCode, int size) {
+            File imgFile = new File(fileUri);
+            if (imgFile.exists()) {
+                Attachments attachments = new Attachments("jpg", fileUri, 0L, tempReminderID, 0L);
+                attachmentsViewModel.insert(attachments);
+                attachmentsAdapter.notifyDataSetChanged();
+
+            }
+
+        }
+    };
+
+    private void insertTempReminder() {
+        Reminders reminders = new Reminders(0,"","",
+                0,"","",0,0,1,"");
+
+        try {
+            if (isEditActivity) {
+                tempReminderID = clickedReminder.getReminders_id();
+            } else {
+                tempReminderID = reminderViewModel.insert(reminders);
+            }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("tempReminderID");
+            editor.putLong("tempReminderID", tempReminderID);
+            editor.apply();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (lifeCycleCallBackManager != null) {
+            lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (lifeCycleCallBackManager != null) {
+            lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -183,6 +326,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminderComment = findViewById(R.id.reminderComment);
         startDateConstraint = findViewById(R.id.startDateConstraint);
         reminderTime = findViewById(R.id.reminderTimeVal);
+        uploadChoose = findViewById(R.id.uploadChoose);
+        cameraIcon = findViewById(R.id.cameraIcon);
+        storageIcon = findViewById(R.id.storageIcon);
         //@TODO why hour and minute  has inversed in ui
         reminderTime.setText(Init.getCurrentTime());
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
@@ -192,8 +338,10 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         repeatTypeConstraint = findViewById(R.id.repeatTypeConstraint);
         priorityTypeContraint = findViewById(R.id.priorityTypeContraint);
+        uploadFileContraint = findViewById(R.id.uploadFileContraint);
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         reminders_active = findViewById(R.id.reminders_active);
+        attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         datepickerVal = Init.getCurrentTime();
 
@@ -226,7 +374,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void insertReminder() {
+    private void insertReminder() throws ExecutionException, InterruptedException {
         if (reminderNameEdit.getText().toString().isEmpty()) {
             Snackbar
                     .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterReminderName), Snackbar.LENGTH_LONG)
@@ -242,9 +390,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             priorityIntVal = 3;
         }
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
-        String workID = ceateWorkRequest();
+        String workID = createWorkRequest();
 
-        Reminders reminders = new Reminders(reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
+        Reminders reminders = new Reminders(reminderType == null ? null : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
                 repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, workID);
         if (isEditActivity) {
@@ -257,19 +405,42 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                     WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
                 }
             }
-            reminders.setReminders_id(clickedReminder.getReminders_id());
-            reminderViewModel.update(reminders);
-        } else {
-            reminderViewModel.insert(reminders);
         }
+        reminders.setReminders_id(tempReminderID);
+        reminderViewModel.update(reminders);
         setResult(RESULT_OK);
         finish();
     }
 
+    private void scaleAnimation(boolean visible) {
+        if(visible){
+            Animation anim = new ScaleAnimation(
+                    0, 1f, // Start and end values for the X axis scaling
+                    1f, 1f, // Start and end values for the Y axis scaling
+                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+            anim.setFillAfter(true); // Needed to keep the result of the animation
+            anim.setDuration(500);
+            uploadChoose.startAnimation(anim);
+            uploadChoose.setVisibility(View.VISIBLE);
+        } else {
+            Animation anim = new ScaleAnimation(
+                    1f, 0, // Start and end values for the X axis scaling
+                    1f, 1f, // Start and end values for the Y axis scaling
+                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+            anim.setFillAfter(true); // Needed to keep the result of the animation
+            anim.setDuration(500);
+            uploadChoose.startAnimation(anim);
+            uploadChoose.setVisibility(View.GONE);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String ceateWorkRequest() {
+    private String createWorkRequest() {
         DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
         DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0);
+        System.out.println("datepickerVal = " + datepickerVal);
         if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay() + "" + dateTime1.getMinuteOfHour())) {
             dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
         }

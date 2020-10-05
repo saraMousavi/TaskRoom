@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.data.db.entity.Reminders;
 import ir.android.persiantask.data.db.repository.RemindersRepository;
@@ -21,8 +22,8 @@ public class ReminderViewModel extends AndroidViewModel {
         allReminders = remindersRepository.getAllReminders();
     }
 
-    public void insert(Reminders reminders) {
-        remindersRepository.insert(reminders);
+    public long insert(Reminders reminders) throws ExecutionException, InterruptedException {
+        return remindersRepository.insert(reminders);
     }
 
     public void update(Reminders reminders){

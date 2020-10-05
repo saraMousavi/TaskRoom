@@ -28,4 +28,10 @@ public interface AttachmentsDao {
 
     @Query("SELECT * FROM Attachments where tasks_id = :tasksID ORDER BY attachments_id DESC")
     LiveData<List<Attachments>> getAllTasksAttachments(Long tasksID);
+
+    @Query("SELECT * FROM Attachments where reminders_id = :remindersID ORDER BY attachments_id DESC")
+    LiveData<List<Attachments>> getAllRemindersAttachments(Long remindersID);
+
+    @Query("SELECT * FROM Attachments where category_id = :categoryID ORDER BY attachments_id DESC")
+    LiveData<List<Attachments>> getAllCategoryAttachments(Long categoryID);
 }

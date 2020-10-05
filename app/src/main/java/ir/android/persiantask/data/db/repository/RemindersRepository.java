@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.persiantask.data.db.dao.RemindersDao;
 import ir.android.persiantask.data.db.database.PersianTaskDb;
@@ -21,8 +22,8 @@ public class RemindersRepository {
         allReminders = remindersDao.getAllReminders();
     }
 
-    public void insert(Reminders reminders) {
-        new RemindersRepository.InsertRemindersAsyncTask(remindersDao).execute(reminders);
+    public long insert(Reminders reminders) throws ExecutionException, InterruptedException {
+        return new InsertRemindersAsyncTask(remindersDao).execute(reminders).get();
     }
 
     public void update(Reminders reminders) {
@@ -37,7 +38,7 @@ public class RemindersRepository {
         return allReminders;
     }
 
-    private static class InsertRemindersAsyncTask extends AsyncTask<Reminders, Void, Void> {
+    private static class InsertRemindersAsyncTask extends AsyncTask<Reminders, Void, Long> {
 
         private RemindersDao remindersDao;
 
@@ -46,9 +47,8 @@ public class RemindersRepository {
         }
 
         @Override
-        protected Void doInBackground(Reminders... reminders) {
-            remindersDao.insert(reminders[0]);
-            return null;
+        protected Long doInBackground(Reminders... reminders) {
+            return remindersDao.insert(reminders[0]);
         }
     }
 

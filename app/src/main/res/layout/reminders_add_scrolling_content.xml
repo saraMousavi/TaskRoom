@@ -116,6 +116,7 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:text="@string/notification" />
 
                 <RadioButton
@@ -293,6 +294,88 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/uploadFileContraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingTop="@dimen/_3sdp"
+            android:layoutDirection="rtl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/priorityTypeContraint"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/attachIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_black_attach"
+                app:layout_constraintBottom_toTopOf="@id/attachedRecyclerView"
+                app:layout_constraintEnd_toEndOf="@id/guideline18"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/uploadText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/uploadText"
+                android:textColor="?colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/attachedRecyclerView"
+                app:layout_constraintStart_toStartOf="@id/guideline18"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/uploadChoose"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/corner_shape_upload_choose"
+                android:orientation="horizontal"
+                android:padding="@dimen/_3sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/attachedRecyclerView"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/cameraIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_8sdp"
+                    android:src="@drawable/ic_camera" />
+
+                <ImageView
+                    android:id="@+id/storageIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:src="@drawable/ic_storage" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/attachedRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:numColumns="2"
+                app:layout_constraintStart_toStartOf="@id/guideline18"
+                app:layout_constraintTop_toBottomOf="@id/uploadText"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="28dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tenththRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -301,7 +384,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priorityTypeContraint"
+            app:layout_constraintTop_toBottomOf="@+id/uploadFileContraint"
             tools:ignore="MissingConstraints">
 
             <ImageView

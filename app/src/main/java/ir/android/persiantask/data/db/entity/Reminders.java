@@ -29,7 +29,7 @@ import java.io.Serializable;
 public class Reminders implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "reminders_id")
-    private Integer reminders_id;
+    private Long reminders_id;
     @ColumnInfo(name = "reminders_update")
     private Integer reminders_update;
     @ColumnInfo(name = "reminders_type")
@@ -107,11 +107,11 @@ public class Reminders implements Serializable {
         return reminders_comment;
     }
 
-    public void setReminders_id(Integer reminders_id) {
+    public void setReminders_id(Long reminders_id) {
         this.reminders_id = reminders_id;
     }
 
-    public Integer getReminders_id() {
+    public Long getReminders_id() {
         return reminders_id;
     }
 

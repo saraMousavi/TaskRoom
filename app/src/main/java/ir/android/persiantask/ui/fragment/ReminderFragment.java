@@ -1,6 +1,7 @@
 package ir.android.persiantask.ui.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Reminders;
+import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.databinding.ReminderFragmentBinding;
 import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.ui.adapters.ReminderAdapter;
@@ -49,6 +52,7 @@ public class ReminderFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private View inflaterView;
     private RecyclerView reminderRecyclerView;
+    private SharedPreferences sharedPreferences;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -188,6 +192,8 @@ public class ReminderFragment extends Fragment {
         reminderFragmentBinding.setReminderViewModel(reminderViewModel);
         addReminderBtn = this.inflaterView.findViewById(R.id.addReminderBtn);
         firstAddReminderBtn = this.inflaterView.findViewById(R.id.firstAddReminderBtn);
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
     }
 
     @Override
@@ -199,6 +205,11 @@ public class ReminderFragment extends Fragment {
                     .show();
             reminderAdapter.notifyDataSetChanged();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
+            Reminders reminders = new Reminders(0,"","",
+                    0,"","",0,0,1,"");
+
+            reminders.setReminders_id(sharedPreferences.getLong("tempReminderID", 0));
+            reminderViewModel.delete(reminders);
         }
     }
 

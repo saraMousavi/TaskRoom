@@ -13,12 +13,16 @@ import ir.android.persiantask.data.db.entity.Attachments;
 
 public class AttachmentsRepository {
     private AttachmentsDao attachmentsDao;
-    private LiveData<List<Attachments>> allAttachments;
+    private LiveData<List<Attachments>> allTaskAttachments;
+    private LiveData<List<Attachments>> allRemindersAttachments;
+    private LiveData<List<Attachments>> allCategoryAttachments;
 
-    public AttachmentsRepository(Application application, Long tasksID) {
+    public AttachmentsRepository(Application application, Long foreignID) {
         PersianTaskDb chopTimedb = PersianTaskDb.getInstance(application);
         attachmentsDao = chopTimedb.attachmentsDao();
-        allAttachments = attachmentsDao.getAllTasksAttachments(tasksID);
+        allTaskAttachments = attachmentsDao.getAllTasksAttachments(foreignID);
+        allRemindersAttachments = attachmentsDao.getAllRemindersAttachments(foreignID);
+        allCategoryAttachments = attachmentsDao.getAllCategoryAttachments(foreignID);
     }
 
     public void insert(Attachments attachments) {
@@ -33,8 +37,16 @@ public class AttachmentsRepository {
         new DeleteProjectAsyncTask(attachmentsDao).execute(attachments);
     }
 
-    public LiveData<List<Attachments>> getAllAttachments() {
-        return allAttachments;
+    public LiveData<List<Attachments>> getAllTaskAttachments() {
+        return allTaskAttachments;
+    }
+
+    public LiveData<List<Attachments>> getAllRemindersAttachments() {
+        return allRemindersAttachments;
+    }
+
+    public LiveData<List<Attachments>> getAllCategoryAttachments() {
+        return allCategoryAttachments;
     }
 
     private static class InsertAttachmentsAsyncTask extends AsyncTask<Attachments, Void, Void> {
