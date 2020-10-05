@@ -206,7 +206,7 @@ public class ReminderFragment extends Fragment {
             reminderAdapter.notifyDataSetChanged();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
             Reminders reminders = new Reminders(0,"","",
-                    0,"","",0,0,1,"");
+                    0,"","",0,0,1,"", false);
 
             reminders.setReminders_id(sharedPreferences.getLong("tempReminderID", 0));
             reminderViewModel.delete(reminders);

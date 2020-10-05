@@ -48,7 +48,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView remindersTitle, remindertime, remindersRepeat;
         public SwitchCompat remindersActive;
-        public ImageView reminderComment, repeatedIcon;
+        public ImageView reminderComment, repeatedIcon, reminderAttachment;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -58,6 +58,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             remindersActive = itemView.findViewById(R.id.reminders_active);
             reminderComment = itemView.findViewById(R.id.reminderComment);
             repeatedIcon = itemView.findViewById(R.id.repeatedIcon);
+            reminderAttachment = itemView.findViewById(R.id.reminderAttachment);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -96,6 +97,11 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
         } else {
             holder.repeatedIcon.setVisibility(View.VISIBLE);
             holder.remindersRepeat.setText("," +reminder.getReminders_repeatedday());
+        }
+        if(reminder.getHas_attach()){
+            holder.reminderAttachment.setVisibility(View.VISIBLE);
+        } else {
+            holder.reminderAttachment.setVisibility(View.GONE);
         }
         holder.remindersActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

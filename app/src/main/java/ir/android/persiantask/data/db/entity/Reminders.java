@@ -58,11 +58,13 @@ public class Reminders implements Serializable {
     private Integer label_id;
     @ColumnInfo(name = "work_id")
     private String work_id;
+    @ColumnInfo(name = "has_attach")
+    private Boolean has_attach;
 
 
     public Reminders(Integer reminders_type, String reminders_comment, String reminders_time, Integer reminders_priority,
                      String reminders_title, String reminders_repeatedday,
-                     Integer reminders_repeatedtype, Integer reminders_active, Integer label_id, String work_id)  {
+                     Integer reminders_repeatedtype, Integer reminders_active, Integer label_id, String work_id, Boolean has_attach)  {
         this.reminders_type = reminders_type;
         this.reminders_comment = reminders_comment;
         this.reminders_priority = reminders_priority;
@@ -73,6 +75,7 @@ public class Reminders implements Serializable {
         this.reminders_time = reminders_time;
         this.label_id = label_id;
         this.work_id = work_id;
+        this.has_attach = has_attach;
     }
 
     public void setReminders_update(Integer reminders_update) {
@@ -194,5 +197,13 @@ public class Reminders implements Serializable {
 
     public void setWork_id(String work_id) {
         this.work_id = work_id;
+    }
+
+    public Boolean getHas_attach() {
+        return has_attach;
+    }
+
+    public void setHas_attach(Boolean has_attach) {
+        this.has_attach = has_attach;
     }
 }

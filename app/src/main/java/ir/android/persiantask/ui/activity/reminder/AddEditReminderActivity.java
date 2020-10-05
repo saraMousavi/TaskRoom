@@ -278,7 +278,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private void insertTempReminder() {
         Reminders reminders = new Reminders(0,"","",
-                0,"","",0,0,1,"");
+                0,"","",0,0,1,"", false);
 
         try {
             if (isEditActivity) {
@@ -394,7 +394,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
         Reminders reminders = new Reminders(reminderType == null ? null : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
-                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, workID);
+                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, workID, attachmentsAdapter.getItemCount() > 0);
         if (isEditActivity) {
             if (isReminerTimeChange) {
                 if (clickedReminder.getWork_id().contains(",")) {
