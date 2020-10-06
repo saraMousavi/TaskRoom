@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,6 +46,9 @@ import ir.android.persiantask.ui.workers.AlarmWorker;
 import ir.android.persiantask.utils.calender.LanguageUtils;
 import ir.android.persiantask.utils.calender.PersianCalendar;
 import ir.android.persiantask.utils.enums.CategoryType;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class Init {
     /**
@@ -608,5 +612,25 @@ public class Init {
                 }
             }
         }).start();
+    }
+
+    public static void initShowCaseView(Context context, View targetView, String contentText, String sharedPrefContent) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        if (sharedPreferences.getInt(sharedPrefContent, 0) != 1) {
+            new GuideView.Builder(context)
+                    .setContentText(contentText)
+                    .setDismissType(DismissType.anywhere)
+                    .setGuideListener(new GuideListener() {
+                        @Override
+                        public void onDismiss(View view) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.remove(sharedPrefContent);
+                            editor.putInt(sharedPrefContent, 1);
+                            editor.apply();
+                        }
+                    })
+                    .setTargetView(targetView).build().show();
+        }
     }
 }

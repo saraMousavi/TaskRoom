@@ -34,6 +34,7 @@ import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.databinding.ReminderFragmentBinding;
 import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.ui.adapters.ReminderAdapter;
+import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.viewmodels.ReminderViewModel;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -108,6 +109,7 @@ public class ReminderFragment extends Fragment {
         initRecyclerView();
         onClickListener();
         onTouchListener();
+        Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), "firstReminderGuide");
 
         return inflaterView;
     }

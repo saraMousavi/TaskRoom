@@ -243,4 +243,11 @@
     <string name="enterValidTime">ساعت بزرگتر از ساعت فعلی انتخاب نمایید.</string>
     <string name="onlyOnce">، فقط یکبار</string>
     <string name="categoryList">لیست  دسته بندی ها</string>
+    <string name="enterFirstProjectGuide">شما می توانید مجموعه از کارهای مربوط به هم را در قالب یک پروژه وارد نمایید.</string>
+    <string name="enterSecondProjectGuide">اضافه کردن پروژه های بیشتر</string>
+    <string name="enterFirstTaskGuide">اضافه کردن کارهای مربوط به پروژه ای که در لیست بالا انتخاب نموده اید.</string>
+    <string name="enterFirstRemidner">برای تنظیم یادآورهایی که نیاز به تعریف پروژه ندارند از این قسمت اقدام نمایید.</string>
+    <string name="seeListOfTaskAndReminderInCalender">با انتخاب هر روز در تقویم میتوانید لیست یادآورها و کارهایی که در آن روز فعال هستند را مشاهده نمایید.</string>
+    <string name="activeUserGuide">فعال کردن راهنمای کاربر</string>
+    <string name="successActiveUserGuide">راهنمای کاربر با موفقیت فعال گردید.</string>
 </resources>

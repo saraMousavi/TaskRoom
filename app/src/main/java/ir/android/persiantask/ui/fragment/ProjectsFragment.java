@@ -48,11 +48,14 @@ import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.ProjectsFragmentBinding;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
+import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
 import kotlin.jvm.JvmStatic;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 /**
  * this fragment show when the project icon in bubble navigation clicking
@@ -103,6 +106,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
         onClickListener();
 
+        Init.initShowCaseView(getContext(), firstAddProjectBtn, getString(R.string.enterFirstProjectGuide), "firstProjectGuide");
+
         return view;
     }
 
@@ -145,7 +150,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
      * show project data in horizontal recycler view
      */
     private void projectsRecyclerView() {
-        projectViewModel.getAllProjects().observe(this, new Observer<List<Projects>>() {
+        projectViewModel.getAllProjects().observe(getViewLifecycleOwner(), new Observer<List<Projects>>() {
             @Override
             public void onChanged(List<Projects> projects) {
                 taskFragList = new HashMap<>();
@@ -193,7 +198,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.inflatedView.setBackgroundColor(ContextCompat.getColor(Objects.requireNonNull(this.getContext()), this.bgColorResId));
+        this.inflatedView.setBackgroundColor(ContextCompat.getColor(this.requireContext(), this.bgColorResId));
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -258,6 +263,14 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             case ADD:
                 projectViewModel.insert(projects);
                 msg = getString(R.string.successInsertProject);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(1),
+                                getString(R.string.enterSecondProjectGuide), "moreProjectGuide");
+                    }
+                }, 1000);
+
                 Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
                         .show();
@@ -333,6 +346,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         projectsAdapter.notifyDataSetChanged();
 
     }
+
 
     public static final class Companion {
         @JvmStatic

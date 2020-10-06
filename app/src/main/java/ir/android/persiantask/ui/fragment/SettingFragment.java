@@ -1,7 +1,9 @@
 package ir.android.persiantask.ui.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +32,7 @@ public class SettingFragment extends Fragment {
     private static final String ARG_BG_COLOR = "arg_bg_color";
     private CollapsingToolbarLayout toolBarLayout;
     private View inflatedView;
-    private LinearLayout projectCategory, themeFragment, shareApp, aboutApp, support;
+    private LinearLayout projectCategory, themeFragment, shareApp, aboutApp, support, showCaseView;
 
     @Nullable
     @Override
@@ -107,6 +110,26 @@ public class SettingFragment extends Fragment {
                 startActivity(new Intent(getActivity(), SupportActivity.class));
             }
         });
+        showCaseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(getContext());
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove("firstTaskGuide");
+                editor.remove("firstReminderGuide");
+                editor.remove("firstProjectGuide");
+                //@TODO check if project list and task lit has vlue dont remove thier sharePref
+                editor.remove("moreProjectGuide");
+                editor.remove("firstCalenderGuide");
+                editor.apply();
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content),
+                                getActivity().getString(R.string.successActiveUserGuide), Snackbar.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+        });
     }
 
     private void init() {
@@ -116,6 +139,7 @@ public class SettingFragment extends Fragment {
         shareApp = this.inflatedView.findViewById(R.id.shareApp);
         aboutApp = this.inflatedView.findViewById(R.id.aboutApp);
         support = this.inflatedView.findViewById(R.id.support);
+        showCaseView = this.inflatedView.findViewById(R.id.showCaseView);
     }
 
     @JvmStatic

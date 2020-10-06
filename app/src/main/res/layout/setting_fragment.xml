@@ -211,6 +211,7 @@
                     android:orientation="horizontal"
                     app:layout_constraintGuide_begin="350dp" />
                 <LinearLayout
+                    android:id="@+id/showCaseView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -219,16 +220,12 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_version"/>
+                        android:src="@drawable/ic_black_guide"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/versionapp"/>
+                        android:text="@string/activeUserGuide"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/versionappnum"/>
                 </LinearLayout>
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline20"
@@ -236,6 +233,32 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintGuide_begin="400dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/guideline20"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline21">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_version"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/versionapp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:text="@string/versionappnum"/>
+                </LinearLayout>
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline21"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="450dp" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

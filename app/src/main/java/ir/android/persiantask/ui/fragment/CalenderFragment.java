@@ -110,6 +110,8 @@ public class CalenderFragment extends Fragment {
         markDaysThatHaveTask();
         onClickListener();
         onTouchListener();
+        Init.initShowCaseView(getContext(), this.inflater.findViewById(R.id.persianCalendar),
+                getString(R.string.seeListOfTaskAndReminderInCalender), "firstCalenderGuide");
         persianHorizontalExpCalendar = (PersianHorizontalExpCalendar) this.inflater.findViewById(R.id.persianCalendar);
         persianHorizontalExpCalendar.setTodayButtonTextSize(10);
         persianHorizontalExpCalendar.performClick();
@@ -151,6 +153,7 @@ public class CalenderFragment extends Fragment {
                 }
             }
         });
+
 
 
         return view;
@@ -319,7 +322,7 @@ public class CalenderFragment extends Fragment {
                     DateTime dateTime1 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
                     DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
                     int duration = Days.daysBetween(dateTime1, dateTime2).getDays();
-                    for(int i = 0 ; i < duration; i++){
+                    for (int i = 0; i < duration; i++) {
                         markSomeDays(dateTime1.plusDays(i));
                     }
                 }

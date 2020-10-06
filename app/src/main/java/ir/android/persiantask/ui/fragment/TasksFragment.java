@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,9 +43,11 @@ import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.TasksFragmentBinding;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
+import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -75,6 +78,7 @@ public class TasksFragment extends Fragment{
         View view = tasksFragmentBinding.getRoot();
         this.inflatedView = view;
         init();
+        Init.initShowCaseView(getContext(), firstAddTaskBtn, getString(R.string.enterFirstTaskGuide), "firstTaskGuide");
 
         tasksFragmentBinding.setTaskViewModel(taskViewModel);
 
@@ -147,6 +151,18 @@ public class TasksFragment extends Fragment{
             }
         });
         return view;
+    }
+
+    private void initFirstTaskShowCase() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    new GuideView.Builder(getContext())
+                            .setContentText(getString(R.string.enterFirstTaskGuide))
+                            .setTargetView(firstAddTaskBtn)
+                            .build().show();
+                }
+            }, 1000);
     }
 
     private void init() {
