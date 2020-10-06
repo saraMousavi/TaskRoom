@@ -2,25 +2,25 @@ package ir.android.persiantask.ui.activity.category;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.transition.Fade;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +29,10 @@ import java.util.Map;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
 import ir.android.persiantask.databinding.CategoryActivityBinding;
-import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.ui.adapters.CategoryAdapter;
 import ir.android.persiantask.ui.fragment.AddCategoryBottomSheetFragment;
 import ir.android.persiantask.utils.Init;
+import ir.android.persiantask.utils.enums.ActionTypes;
 import ir.android.persiantask.viewmodels.CategoryViewModel;
 
 public class CategoryActivity extends AppCompatActivity implements AddCategoryBottomSheetFragment.SubmitClickListener {
@@ -48,13 +48,68 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
         init();
+        onTouchListener();
+        onClickListener();
+    }
+
+    private void onClickListener() {
         addCategoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddCategoryBottomSheetFragment addCategoryBottomSheetFragment = new AddCategoryBottomSheetFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isEditCategory", false);
+                addCategoryBottomSheetFragment.setArguments(bundle);
                 addCategoryBottomSheetFragment.show(getSupportFragmentManager(), "");
             }
         });
+
+        categoryAdapter.setOnItemClickListener(new CategoryAdapter.CategoryClickListener() {
+            @Override
+            public void editCategory(Category category) {
+                if (category.getCategory_id() < 4) {
+                    Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantEditDefaultCategory), Snackbar.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+                AddCategoryBottomSheetFragment editCategoryBottomSheetFragment = new AddCategoryBottomSheetFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isEditCategory", true);
+                bundle.putSerializable("clickedCategory", (Serializable) category);
+                editCategoryBottomSheetFragment.setArguments(bundle);
+                editCategoryBottomSheetFragment.show(getSupportFragmentManager(), "");
+            }
+        });
+    }
+
+    private void onTouchListener() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Category selectedCategory = categoryAdapter.getCategoryAt(viewHolder.getAdapterPosition());
+                if (selectedCategory.getCategory_id() < 4) {
+                    Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantDeleteDefaultCategory), Snackbar.LENGTH_LONG)
+                            .show();
+                    categoryAdapter.notifyDataSetChanged();
+                    return;
+                }
+                //@TODO cant delete category that use in project
+                CategoryViewModel categoryViewModel = ViewModelProviders.of(CategoryActivity.this).get(CategoryViewModel.class);
+                categoryViewModel.delete(selectedCategory);
+                Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteCategory), Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        }).attachToRecyclerView(categoryRecyclerView);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -68,9 +123,8 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     }
 
 
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void init(){
+    private void init() {
         categoryActivityBinding = DataBindingUtil.setContentView(CategoryActivity.this, R.layout.category_activity);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 
@@ -94,10 +148,22 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     }
 
     @Override
-    public void onClickSubmit(Category category) {
-        categoryViewModel.insert(category);
-        Snackbar
-                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertCategory), Snackbar.LENGTH_LONG)
-                .show();
+    public void onClickSubmit(Category category, ActionTypes actionTypes) {
+        switch (actionTypes){
+            case ADD:
+                categoryViewModel.insert(category);
+                Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertCategory), Snackbar.LENGTH_LONG)
+                        .show();
+                break;
+            case EDIT:
+                categoryViewModel.update(category);
+                Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditCategory), Snackbar.LENGTH_LONG)
+                        .show();
+                break;
+        }
+        categoryAdapter.notifyDataSetChanged();
+
     }
 }

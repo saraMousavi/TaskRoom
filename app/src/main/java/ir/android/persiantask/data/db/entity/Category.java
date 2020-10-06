@@ -5,12 +5,14 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 /**
  * Room Table Builder
  * CategoryDao table for save all CategoryDao of Projects
  */
 @Entity(tableName = "Category")
-public class Category {
+public class Category implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "category_id")
     private Integer category_id;

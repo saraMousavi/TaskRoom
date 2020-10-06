@@ -26,8 +26,8 @@ import java.util.Map;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
-import ir.android.persiantask.ui.activity.category.CategoryActivity;
 import ir.android.persiantask.utils.Init;
+import ir.android.persiantask.utils.enums.ActionTypes;
 
 public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     private View inflatedView;
@@ -51,20 +51,6 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     private void onClickListener() {
-        insertCategoryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (categoryTitle.getText().toString().isEmpty()) {
-                    Snackbar
-                            .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterCategoryName), Snackbar.LENGTH_LONG)
-                            .show();
-                    return;
-                }
-                Category category = new Category(categoryTitle.getText().toString(), categoryImage);
-                submitClickListener.onClickSubmit(category);
-                dismiss();
-            }
-        });
         category_image_1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -152,6 +138,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
+
         insertCategoryBtn = this.inflatedView.findViewById(R.id.insertCategoryBtn);
         categoryTitle = this.inflatedView.findViewById(R.id.categoryTitle);
         category_image_1 = this.inflatedView.findViewById(R.id.category_image_1);
@@ -161,6 +148,36 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         viewMap.put(insertCategoryBtn, true);
         views.add(viewMap);
         Init.setViewBackgroundDependOnTheme(views, getContext());
+        Bundle bundle = getArguments();
+        if (bundle.getBoolean("isEditCategory")) {
+            Category selectedCategory = (Category) bundle.getSerializable("clickedCategory");
+            insertCategoryBtn.setText(getString(R.string.edit));
+            categoryTitle.setText(selectedCategory.getCategory_title());
+            insertCategoryBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Category category = new Category(categoryTitle.getText().toString(), categoryImage);
+                    category.setCategory_id(selectedCategory.getCategory_id());
+                    submitClickListener.onClickSubmit(category, ActionTypes.EDIT);
+                    dismiss();
+                }
+            });
+        } else {
+            insertCategoryBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (categoryTitle.getText().toString().isEmpty()) {
+                        Snackbar
+                                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterCategoryName), Snackbar.LENGTH_LONG)
+                                .show();
+                        return;
+                    }
+                    Category category = new Category(categoryTitle.getText().toString(), categoryImage);
+                    submitClickListener.onClickSubmit(category, ActionTypes.ADD);
+                    dismiss();
+                }
+            });
+        }
     }
 
     @Override
@@ -170,6 +187,6 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public interface SubmitClickListener {
-        void onClickSubmit(Category category);
+        void onClickSubmit(Category category, ActionTypes actionTypes);
     }
 }

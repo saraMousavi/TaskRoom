@@ -1,9 +1,6 @@
 package ir.android.persiantask.ui.adapters;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +29,7 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
         }
     };
     private final Context mContext;
+    private CategoryClickListener categoryClickListener;
 
     public CategoryAdapter(Context context){
         super(DIFF_CALLBACK);
@@ -54,6 +51,12 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
         Category category = getItem(position);
         holder.categoryTitle.setText(category.getCategory_title());
         holder.categoryImage.setImageResource(mContext.getResources().getIdentifier(category.getCategory_image(), "xml", null));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categoryClickListener.editCategory(category);
+            }
+        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -64,5 +67,17 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
             categoryTitle = itemView.findViewById(R.id.category_title);
             categoryImage = itemView.findViewById(R.id.category_image);
         }
+    }
+
+    public Category getCategoryAt(int position) {
+        return getItem(position);
+    }
+
+    public void setOnItemClickListener(CategoryAdapter.CategoryClickListener listener) {
+        this.categoryClickListener = listener;
+    }
+
+    public interface CategoryClickListener {
+        void editCategory(Category category);
     }
 }

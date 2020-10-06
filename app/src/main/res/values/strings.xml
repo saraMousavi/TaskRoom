@@ -253,4 +253,8 @@
     <string name="editDeleteTaskGuide">با انتخاب هر کار میتوانید آن را ویرایش و با کشیدن آن به سمت راست میتوانید آن را حذف نمایید.</string>
     <string name="editDeleteReminderGuide">با انتخاب هر یادآور میتوانید آن را ویرایش و با کشیدن آن به سمت راست میتوانید آن را حذف نمایید.</string>
     <string name="deleteEditProjectGuide">با نگه داشتن دست خود بر روی هر پروژه میتوانید آن را ویرایش و یا حذف نمایید.</string>
+    <string name="successDeleteCategory">دسته مورد نظر با موفقیت حذف گردید.</string>
+    <string name="cantDeleteDefaultCategory">امکان حذف دسته های پیش فرض وجود ندارد.</string>
+    <string name="cantEditDefaultCategory">امکان ویرایش دسته های پیش فرض وجود ندارد.</string>
+    <string name="successEditCategory">دسته مورد نظر با موفقیت ویرایش گردید.</string>
 </resources>
