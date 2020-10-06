@@ -53,7 +53,7 @@ import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public class TasksFragment extends Fragment{
+public class TasksFragment extends Fragment {
 
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
@@ -83,39 +83,12 @@ public class TasksFragment extends Fragment{
         tasksFragmentBinding.setTaskViewModel(taskViewModel);
 
         tasksRecyclerView();
+        onTouchListener();
+        onClickListener();
+        return view;
+    }
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Tasks selectedTask = taskAdapter.getTaskAt(viewHolder.getAdapterPosition());
-                SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTask.getTasks_id());
-                SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
-                subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
-                    @Override
-                    public void onChanged(List<Subtasks> subtasks) {
-                        for (Subtasks subtask: subtasks){
-                            subTasksViewModel.delete(subtask);
-                        }
-                        taskViewModel.delete(selectedTask);
-                    }
-                });
-                Projects projects = selectedProject;
-                projects.setProjects_tasks_num(tasksNum - 1);
-                projects.setProject_id(selectedProject.getProject_id());
-                projectViewModel.update(projects);
-
-                Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
-                        .show();
-            }
-        }).attachToRecyclerView(taskRecyclerView);
-
+    private void onClickListener() {
         addTaskBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +123,40 @@ public class TasksFragment extends Fragment{
                 startActivityForResult(intent, EDIT_TASK_REQUEST);
             }
         });
-        return view;
+    }
+
+    private void onTouchListener() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Tasks selectedTask = taskAdapter.getTaskAt(viewHolder.getAdapterPosition());
+                SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTask.getTasks_id());
+                SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
+                subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
+                    @Override
+                    public void onChanged(List<Subtasks> subtasks) {
+                        for (Subtasks subtask : subtasks) {
+                            subTasksViewModel.delete(subtask);
+                        }
+                        taskViewModel.delete(selectedTask);
+                    }
+                });
+                Projects projects = selectedProject;
+                projects.setProjects_tasks_num(tasksNum - 1);
+                projects.setProject_id(selectedProject.getProject_id());
+                projectViewModel.update(projects);
+
+                Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        }).attachToRecyclerView(taskRecyclerView);
     }
 
     private void init() {
@@ -222,10 +228,10 @@ public class TasksFragment extends Fragment{
             Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG)
                     .show();
-        } else if(requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED){
-            Tasks tasks = new Tasks("", 0,0,0,
-                    selectedProject.getProject_id(),"",0,0,
-                    "","",0,"", "", false);
+        } else if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED) {
+            Tasks tasks = new Tasks("", 0, 0, 0,
+                    selectedProject.getProject_id(), "", 0, 0,
+                    "", "", 0, "", "", false);
             tasks.setTasks_id(sharedPreferences.getLong("tempTaskID", 0));
             taskViewModel.delete(tasks);
         }
