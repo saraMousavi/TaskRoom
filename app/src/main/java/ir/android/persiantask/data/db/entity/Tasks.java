@@ -71,11 +71,15 @@ public class Tasks implements Serializable {
     private Integer label_id;
     @ColumnInfo(name = "tasks_comment")
     private String tasks_comment;
+    @ColumnInfo(name = "work_id")
+    private String work_id;
+    @ColumnInfo(name = "has_attach")
+    private Boolean has_attach;
 
 
     public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype,
                  Integer projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime,
-                 String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment) {
+                 String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment, String work_id, Boolean has_attach) {
         this.tasks_priority = tasks_priority;
         this.tasks_iscompleted = tasks_iscompleted;
         this.tasks_repeatedtype = tasks_repeatedtype;
@@ -88,6 +92,8 @@ public class Tasks implements Serializable {
         this.tasks_enddate = tasks_enddate;
         this.label_id = label_id;
         this.tasks_comment = tasks_comment;
+        this.work_id = work_id;
+        this.has_attach = has_attach;
     }
 
     public void setTasks_priority(Integer tasks_priority) {
@@ -194,4 +200,19 @@ public class Tasks implements Serializable {
         return tasks_comment;
     }
 
+    public String getWork_id() {
+        return work_id;
+    }
+
+    public void setWork_id(String work_id) {
+        this.work_id = work_id;
+    }
+
+    public Boolean getHas_attach() {
+        return has_attach;
+    }
+
+    public void setHas_attach(Boolean has_attach) {
+        this.has_attach = has_attach;
+    }
 }

@@ -74,9 +74,9 @@
             style="@style/Widget.MaterialComponents.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_14sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
             android:layout_marginBottom="@dimen/_14sdp"
-            android:layout_gravity="bottom|start"
+            android:layout_gravity="bottom|end"
             android:visibility="gone"
             android:src="@drawable/ic_add"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

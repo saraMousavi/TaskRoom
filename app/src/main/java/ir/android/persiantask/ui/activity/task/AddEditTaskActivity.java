@@ -45,6 +45,9 @@ import com.google.gson.Gson;
 import com.imagepicker.FilePickUtils;
 import com.imagepicker.LifeCycleCallBackManager;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,7 +100,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private ImageButton insertSubtasksBtn;
     private RecyclerView subtaskRecyclerView;
     private TasksAddActivityBinding tasksAddActivityBinding;
-    private String datepickerVal;
+    private String startDatepickerVal, endDatepickerVal;
     private ProjectViewModel projectViewModel;
     private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
@@ -135,7 +138,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void insertTempTask() {
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
-                "", "", 0, "");
+                "", "", 0, "", "", false);
         try {
             if (isEditActivity) {
                 tempTaskID = clickedTask.getTasks_id();
@@ -428,7 +431,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                if(uploadChoose.getVisibility() == View.VISIBLE){
+                if (uploadChoose.getVisibility() == View.VISIBLE) {
                     scaleAnimation(false);
                 } else {
                     scaleAnimation(true);
@@ -458,7 +461,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     private void scaleAnimation(boolean visible) {
-        if(visible){
+        if (visible) {
             Animation anim = new ScaleAnimation(
                     0, 1f, // Start and end values for the X axis scaling
                     1f, 1f, // Start and end values for the Y axis scaling
@@ -638,30 +641,41 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     .show();
             return;
         }
+        String workID = createWorkRequest();
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
                 reminderType == null ? null : (reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1),
                 reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
-                tasksComment.getText().toString());
+                tasksComment.getText().toString(), workID, attachmentsAdapter.getItemCount() > 0);
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
-//        int diffDay =Init.integerFormatFromStringDate(datepickerVal) - Init.integerFormatFromStringDate(Init.getCurrentTime());
-//        int diffTime =Init.integerFormatFromStringTime(datepickerVal) - Init.integerFormatFromStringTime(Init.getCurrentTime());
-//        int diff = diffDay * 24 * 60 * 60 ;
-//        Init.scheduleJob(mScheduler, getPackageName(), mScheduler.getAllPendingJobs().size(), diff * 60);
         setResult(RESULT_OK);
         finish();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private String createWorkRequest() {
+        DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
+        DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+//        DateTime dateTime3 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(endDatepickerVal));
+//        if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay() + "" + dateTime1.getMinuteOfHour())) {
+//            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
+//        }
+        Interval interval = new Interval(dateTime1, dateTime2);
+        return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(),
+                Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
+                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty());
     }
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         monthOfYear++;
-        datepickerVal = "";
-        datepickerVal += year + "/"
+        GregorianCalendar galena = new GregorianCalendar();
+        String date = year + "/"
                 + (monthOfYear < 10 ? "0" + monthOfYear : monthOfYear)
                 + "/" + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
-        GregorianCalendar galena = new GregorianCalendar();
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
                 AddEditTaskActivity.this,
                 galena.get(Calendar.HOUR),
@@ -669,21 +683,27 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 true
         );
         if (view.getTag().equals("startDatepickerdialog")) {
+            startDatepickerVal = "";
+            startDatepickerVal += date;
             timePickerDialog.show(getSupportFragmentManager(), "startTimePickerDialog");
         } else if (view.getTag().equals("endDatepickerdialog")) {
+            endDatepickerVal = "";
+            endDatepickerVal += date;
             timePickerDialog.show(getSupportFragmentManager(), "endTimePickerDialog");
         }
     }
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
-        datepickerVal += " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
-                + ":" + (minute < 10 ? "0" + minute : minute);
+        String time = " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
+                + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
         if (view.getTag().equals("startTimePickerDialog")) {
-            startTextVal.setText(datepickerVal);
+            startDatepickerVal += time;
+            startTextVal.setText(startDatepickerVal);
             startTextVal.setVisibility(View.VISIBLE);
         } else if (view.getTag().equals("endTimePickerDialog")) {
-            endTextVal.setText(datepickerVal);
+            endDatepickerVal += time;
+            endTextVal.setText(endDatepickerVal);
             endTextVal.setVisibility(View.VISIBLE);
             reminderTimeConstraint.setVisibility(View.VISIBLE);
             Init.fadeVisibelityView(reminderTimeConstraint);

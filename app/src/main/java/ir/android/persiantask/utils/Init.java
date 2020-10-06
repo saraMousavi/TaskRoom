@@ -226,6 +226,7 @@ public class Init {
         if (integerTime < 1000000) {
             return null;
         }
+        System.out.println("integerTime = " + integerTime);
         if (integerTime > 99999999) {
             long year = integerTime / 10000000000L;
             long month = (integerTime % 10000000000L) / 100000000L;
