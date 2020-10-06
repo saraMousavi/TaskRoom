@@ -51,20 +51,22 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView taskTitle, tasks_enddate;
-        public ImageView tasksIsCompleted, reminder_time, reminder_type, tasks_comment, task_priority;
+        public TextView taskTitle, tasks_enddate, tasks_startdate;
+        public ImageView tasksIsCompleted, reminder_time, tasks_comment, reminder_attach;
         public ConstraintLayout subtaskConstarint;
+        public View priorityView;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             taskTitle = itemView.findViewById(R.id.tasks_title);
+            tasks_startdate = itemView.findViewById(R.id.tasks_startdate);
             tasks_enddate = itemView.findViewById(R.id.tasks_enddate);
             tasksIsCompleted = itemView.findViewById(R.id.tasks_iscompleted);
             reminder_time = itemView.findViewById(R.id.reminder_time);
-            reminder_type = itemView.findViewById(R.id.reminder_type);
             tasks_comment = itemView.findViewById(R.id.tasks_comment);
-            task_priority = itemView.findViewById(R.id.task_priority);
+            reminder_attach = itemView.findViewById(R.id.reminder_attach);
+            priorityView = itemView.findViewById(R.id.priorityView);
             subtaskConstarint = itemView.findViewById(R.id.subtaskConstarint);
         }
     }
@@ -85,15 +87,17 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         holder.taskTitle.setText(tasks.getTasks_title());
 
         Init.toggleCompleteCircle(holder.taskTitle, holder.tasksIsCompleted, tasks.getTasks_iscompleted());
-
-        holder.tasks_enddate.setText(tasks.getTasks_enddate());
+        if (!tasks.getTasks_enddate().isEmpty()) {
+            holder.tasks_enddate.setText(tasks.getTasks_enddate());
+        }
+        holder.tasks_startdate.setText(tasks.getTasks_startdate());
 
         holder.tasksIsCompleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Tasks task = new Tasks(tasks.getTasks_title(), tasks.getTasks_priority(),0,tasks.getTasks_repeatedtype(),tasks.getProjects_id(),tasks.getTasks_startdate(),tasks.getTasks_remindertype()
-                ,tasks.getTasks_remindertime(), tasks.getTasks_repeateddays(), tasks.getTasks_enddate(), tasks.getLabel_id(), tasks.getTasks_comment(), tasks.getWork_id(), tasks.getHas_attach());
-                if(tasks.getTasks_iscompleted() == 0){
+                Tasks task = new Tasks(tasks.getTasks_title(), tasks.getTasks_priority(), 0, tasks.getTasks_repeatedtype(), tasks.getProjects_id(), tasks.getTasks_startdate(), tasks.getTasks_remindertype()
+                        , tasks.getTasks_remindertime(), tasks.getTasks_repeateddays(), tasks.getTasks_enddate(), tasks.getLabel_id(), tasks.getTasks_comment(), tasks.getWork_id(), tasks.getHas_attach());
+                if (tasks.getTasks_iscompleted() == 0) {
                     task.setTasks_iscompleted(1);
                     task.setTasks_enddate(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +
                             " " + mFragmentActivity.getString(R.string.completed));
@@ -108,31 +112,24 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             }
         });
         //remind me in advance
-        if(tasks.getTasks_remindertime() != 0){
+        if (tasks.getTasks_remindertime() != 0) {
             holder.reminder_time.setVisibility(View.VISIBLE);
         }
-        //reminder type == alarm
-        if(tasks.getTasks_remindertype() != null &&  tasks.getTasks_remindertype() == 1){
-            holder.reminder_type.setVisibility(View.VISIBLE);
-        }
         //set comment for task
-        if(!tasks.getTasks_comment().isEmpty()){
+        if (!tasks.getTasks_comment().isEmpty()) {
             holder.tasks_comment.setVisibility(View.VISIBLE);
         }
-        //set priority colorflag
-        if(tasks.getTasks_priority() != 0){
-            holder.task_priority.setVisibility(View.VISIBLE);
+        //set attach for task
+        if (tasks.getHas_attach()) {
+            holder.reminder_attach.setVisibility(View.VISIBLE);
         }
-        switch (tasks.getTasks_priority()){
-            case 1:
-                holder.task_priority.setImageResource(R.drawable.ic_low_yellow_priority);
-                break;
-            case 2:
-                holder.task_priority.setImageResource(R.drawable.ic_medium_orange_priority);
-                break;
-            case 3:
-                holder.task_priority.setImageResource(R.drawable.ic_high_green_priority);
-                break;
+        //set priority colorflag
+        if (tasks.getTasks_priority() == 1) {
+            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape));
+        } else if (tasks.getTasks_priority() == 2) {
+            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.orange_priority_corner_shape));
+        } else if (tasks.getTasks_priority() == 3) {
+            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape));
         }
         int newContainerID = View.generateViewId();
         holder.subtaskConstarint.setId(newContainerID);
@@ -155,13 +152,14 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         Bundle bundle = new Bundle();
         bundle.putLong("taskID", tasks.getTasks_id());
         subTaskFragment.setArguments(bundle);
-        if(taskClickListener != null) {
+        if (taskClickListener != null) {
             taskClickListener.switchContent(newContainerID, subTaskFragment);
         }
     }
 
     public interface TaskClickListener {
         void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment);
+
         void editTask(Tasks tasks);
     }
 

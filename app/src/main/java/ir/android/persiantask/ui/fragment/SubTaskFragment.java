@@ -50,7 +50,7 @@ public class SubTaskFragment extends Fragment {
         expandItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subtaskItemRecyclerView.setVisibility(subtaskItemRecyclerView.getVisibility() == View.VISIBLE ? View.GONE:View.VISIBLE);
+                subtaskItemRecyclerView.setVisibility(subtaskItemRecyclerView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
 
             }
         });
@@ -73,8 +73,9 @@ public class SubTaskFragment extends Fragment {
         subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
             @Override
             public void onChanged(List<Subtasks> subtasks) {
-                if(subtasks.size()> 0) {
+                if (subtasks.size() > 0) {
                     int subtaskLineWidth = subtaskListLine.getWidth() / subtasks.size();
+                    expandItem.setVisibility(View.VISIBLE);
                     for (Subtasks subtask : subtasks) {
                         View line = new View(getActivity());
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(subtaskLineWidth, 2);
@@ -88,6 +89,8 @@ public class SubTaskFragment extends Fragment {
 
                         subtaskListLine.addView(line);
                     }
+                } else {
+                    expandItem.setVisibility(View.GONE);
                 }
                 subtasks.add(null);
                 subTasksAdapter.submitList(subtasks);

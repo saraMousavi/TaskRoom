@@ -9,8 +9,7 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="3dp">
+        android:layout_height="wrap_content">
         <LinearLayout
             android:id="@+id/subtaskListLine"
             android:layout_width="match_parent"

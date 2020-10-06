@@ -200,7 +200,7 @@ public class Init {
      * @return date
      */
     public static Long integerFormatFromStringDate(String dateTime) {
-        if (dateTime.isEmpty()) {
+        if (dateTime!=null && dateTime.isEmpty()) {
             return 0L;
         }
         return Long.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").

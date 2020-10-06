@@ -7,107 +7,176 @@
     android:layout_margin="6dp"
     android:background="@drawable/white_item_corner_shape"
     android:layoutDirection="rtl"
-    android:padding="6dp">
+    android:padding="0dp">
 
-    <ImageView
-        android:id="@+id/tasks_iscompleted"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
-        android:src="@drawable/ic_radio_button_unchecked_black"
-        app:layout_constraintBottom_toBottomOf="@id/guideline3"
-        app:layout_constraintStart_toStartOf="parent"
+    <View
+        android:id="@+id/priorityView"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="0dp"
+        android:background="@drawable/grey_priority_corner_shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/constraintContent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tasks_title"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintContent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:padding="@dimen/_5sdp"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/priorityView"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/tasks_iscompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_radio_button_unchecked_black"
+            app:layout_constraintBottom_toTopOf="@+id/tasks_startdatetitle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tasks_enddate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1398/06/06"
-        android:textColor="?colorAccent"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="@id/guideline4"
-        app:layout_constraintTop_toBottomOf="@id/guideline3" />
-    <ImageView
-        android:id="@+id/task_priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="6dp" />
+        <TextView
+            android:id="@+id/tasks_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1"
+            android:text="title"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/tasks_startdatetitle"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline5"
+            app:layout_constraintRight_toLeftOf="@+id/tasks_iscompleted"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/reminder_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_orange_repeat"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/task_priority"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="6dp" />
+        <TextView
+            android:id="@+id/tasks_startdatetitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/startDate"
+            android:textColor="?colorAccent"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tasks_title" />
 
-    <ImageView
-        android:id="@+id/reminder_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_orange_alarm"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/reminder_time"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:layout_editor_absoluteX="6dp" />
+        <TextView
+            android:id="@+id/dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="?colorAccent"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tasks_startdatetitle"
+            app:layout_constraintTop_toBottomOf="@id/tasks_title" />
 
-    <ImageView
-        android:id="@+id/tasks_comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_orange_comment"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/reminder_type"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        tools:layout_editor_absoluteX="6dp" />
+        <TextView
+            android:id="@+id/tasks_startdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:text="1398/06/06"
+            android:textColor="?colorAccent"
+            android:textSize="11sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tasks_startdatetitle"
+            app:layout_constraintRight_toLeftOf="@+id/dot" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="34dp" />
+        <TextView
+            android:id="@+id/tasks_enddatetitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/endDate"
+            android:textColor="?colorAccent"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="36dp" />
+        <TextView
+            android:id="@+id/dot2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="?colorAccent"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tasks_enddatetitle"
+            app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
 
+        <TextView
+            android:id="@+id/tasks_enddate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:text="-"
+            android:textColor="?colorAccent"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/dot2"
+            app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="55dp" />
+        <ImageView
+            android:id="@+id/reminder_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_orange_repeat"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/reminder_attach"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/reminder_attach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_orange_attach"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/tasks_comment"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_time" />
+
+        <ImageView
+            android:id="@+id/tasks_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_orange_comment"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_attach" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="30dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/subtaskConstarint"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/guideline22" />
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_5sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/priorityView"
+        app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="94dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
