@@ -2,6 +2,11 @@
 <resources>
     <attr name="selectedBox" format="integer" />
     <attr name="backgroundLinearLayout" format="color" />
+    <attr name="primaryTextColor" format="color"/>
+    <attr name="secondaryTextColor" format="color"/>
+    <attr name="dividerColor" format="color"/>
+    <attr name="backgroundCardColor" format="color"/>
+    <attr name="iconPlaceholder" format="integer"/>
 
     <!-- Declare custom theme attributes that allow changing which styles are
          used for button bars depending on the API level.

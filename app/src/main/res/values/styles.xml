@@ -115,6 +115,17 @@
 
     </style>
 
+    <!-- Dark base activity theme -->
+    <style name="ActivityTheme.Primary.Base.Dark"    parent="Theme.AppCompat.NoActionBar">
+        <item name="primaryTextColor">#33343B</item>
+        <item name="secondaryTextColor">#8033343B</item>
+        <item name="backgroundCardColor">#28292e</item>
+        <item name="dividerColor">#F2F2F3</item>
+        <item name="colorPrimary">#28292e</item>
+        <item name="colorAccent">#33343B</item>
+        <item name="selectedBox">@drawable/dark_selected_corner_shape</item>
+    </style>
+
     <style name="AppThemeCalender" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/dark_grey</item>
@@ -167,6 +178,10 @@
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+    </style>
+
+
+    <style name="FeedActivityThemeDark" parent="ActivityTheme.Primary.Base.Dark">
     </style>
 
 </resources>

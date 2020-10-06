@@ -7,8 +7,10 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +22,8 @@ import com.google.android.material.snackbar.Snackbar;
 import org.jetbrains.annotations.NotNull;
 
 import ir.android.persiantask.R;
+import ir.android.persiantask.ui.activity.MainActivity;
+import ir.android.persiantask.ui.activity.MyApplication;
 import ir.android.persiantask.ui.activity.setting.AboutAppActivity;
 import ir.android.persiantask.ui.activity.setting.SupportActivity;
 import ir.android.persiantask.ui.activity.category.CategoryActivity;
@@ -33,7 +37,9 @@ public class SettingFragment extends Fragment {
     private static final String ARG_BG_COLOR = "arg_bg_color";
     private CollapsingToolbarLayout toolBarLayout;
     private View inflatedView;
+    private SwitchCompat nightModeActive;
     private LinearLayout projectCategory, themeFragment, shareApp, aboutApp, support, showCaseView;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -114,8 +120,6 @@ public class SettingFragment extends Fragment {
         showCaseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences sharedPreferences = PreferenceManager
-                        .getDefaultSharedPreferences(getContext());
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove(ShowCaseSharePref.EDIT_DELETE_PROJECT_GUIDE.getValue());
                 editor.remove(ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue());
@@ -133,9 +137,26 @@ public class SettingFragment extends Fragment {
                 return;
             }
         });
+        nightModeActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if(isChecked) {
+                    editor.remove("NIGHT_MODE");
+                    editor.putBoolean("NIGHT_MODE", true);
+                } else {
+                    editor.remove("NIGHT_MODE");
+                    editor.putBoolean("NIGHT_MODE", false);
+                }
+                editor.apply();
+                startActivity(new Intent(getContext(), MainActivity.class));
+            }
+        });
     }
 
     private void init() {
+        sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
         toolBarLayout = (CollapsingToolbarLayout) this.inflatedView.findViewById(R.id.toolbar_layout);
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         themeFragment = this.inflatedView.findViewById(R.id.themeFragment);
@@ -143,29 +164,10 @@ public class SettingFragment extends Fragment {
         aboutApp = this.inflatedView.findViewById(R.id.aboutApp);
         support = this.inflatedView.findViewById(R.id.support);
         showCaseView = this.inflatedView.findViewById(R.id.showCaseView);
-    }
-
-    @JvmStatic
-    @NotNull
-    public static SettingFragment newInstance(@NotNull String title, int bgColorId) {
-        return SettingFragment.Companion.newInstance(title, bgColorId);
-    }
-
-    public static final class Companion {
-        @JvmStatic
-        @NotNull
-        public static SettingFragment newInstance(@NotNull String title, int bgColorId) {
-            SettingFragment settingFragment = new SettingFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(ARG_TITLE, title);
-            bundle.putInt(ARG_BG_COLOR, bgColorId);
-            settingFragment.setArguments(bundle);
-            return settingFragment;
+        nightModeActive = this.inflatedView.findViewById(R.id.nightModeActive);
+        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+            nightModeActive.setChecked(true);
         }
-
-        private Companion() {
-        }
-
     }
 
 }

@@ -8,6 +8,7 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -29,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setMasterTheme() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(MainActivity.this);
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
         switch (getFlag()) {
             case 2:
                 setTheme(R.style.AppTheme2);

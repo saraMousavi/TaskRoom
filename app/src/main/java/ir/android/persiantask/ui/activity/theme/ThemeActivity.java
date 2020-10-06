@@ -82,6 +82,8 @@ public class ThemeActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.remove("theme");
         editor.putInt("theme", flag);
+        editor.remove("NIGHT_MODE");
+        editor.putBoolean("NIGHT_MODE", false);
         editor.apply();
         startActivity(new Intent(ThemeActivity.this, MainActivity.class));
         finish();
