@@ -44,6 +44,7 @@ import ir.android.persiantask.databinding.TasksFragmentBinding;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.TasksAdapter;
 import ir.android.persiantask.utils.Init;
+import ir.android.persiantask.utils.enums.ShowCaseSharePref;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
@@ -78,7 +79,6 @@ public class TasksFragment extends Fragment{
         View view = tasksFragmentBinding.getRoot();
         this.inflatedView = view;
         init();
-        Init.initShowCaseView(getContext(), firstAddTaskBtn, getString(R.string.enterFirstTaskGuide), "firstTaskGuide");
 
         tasksFragmentBinding.setTaskViewModel(taskViewModel);
 
@@ -153,18 +153,6 @@ public class TasksFragment extends Fragment{
         return view;
     }
 
-    private void initFirstTaskShowCase() {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    new GuideView.Builder(getContext())
-                            .setContentText(getString(R.string.enterFirstTaskGuide))
-                            .setTargetView(firstAddTaskBtn)
-                            .build().show();
-                }
-            }, 1000);
-    }
-
     private void init() {
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
@@ -201,10 +189,17 @@ public class TasksFragment extends Fragment{
                     taskList.setVisibility(View.GONE);
                     taskEmptyList.setVisibility(View.VISIBLE);
                     addTaskBtn.setVisibility(View.GONE);
+                    Init.initShowCaseView(getContext(), firstAddTaskBtn, getString(R.string.enterFirstTaskGuide), ShowCaseSharePref.FIRST_TASK_GUIDE.getValue());
                 } else {
                     taskList.setVisibility(View.VISIBLE);
                     taskEmptyList.setVisibility(View.GONE);
                     addTaskBtn.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Init.initShowCaseView(getContext(), taskRecyclerView.getChildAt(0), getString(R.string.editDeleteTaskGuide), ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue());
+                        }
+                    }, 1000);
                 }
                 taskAdapter.submitList(tasks);
             }

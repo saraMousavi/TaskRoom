@@ -24,6 +24,7 @@ import ir.android.persiantask.ui.activity.setting.AboutAppActivity;
 import ir.android.persiantask.ui.activity.setting.SupportActivity;
 import ir.android.persiantask.ui.activity.category.CategoryActivity;
 import ir.android.persiantask.ui.activity.theme.ThemeActivity;
+import ir.android.persiantask.utils.enums.ShowCaseSharePref;
 import kotlin.jvm.JvmStatic;
 
 public class SettingFragment extends Fragment {
@@ -116,12 +117,14 @@ public class SettingFragment extends Fragment {
                 SharedPreferences sharedPreferences = PreferenceManager
                         .getDefaultSharedPreferences(getContext());
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("firstTaskGuide");
-                editor.remove("firstReminderGuide");
-                editor.remove("firstProjectGuide");
-                //@TODO check if project list and task lit has vlue dont remove thier sharePref
-                editor.remove("moreProjectGuide");
-                editor.remove("firstCalenderGuide");
+                editor.remove(ShowCaseSharePref.EDIT_DELETE_PROJECT_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.FIRST_PROJECT_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.FIRST_TASK_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.FIRST_CALENDER_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue());
+                editor.remove(ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue());
                 editor.apply();
                 Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content),

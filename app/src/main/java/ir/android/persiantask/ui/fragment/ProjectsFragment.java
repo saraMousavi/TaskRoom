@@ -50,6 +50,7 @@ import ir.android.persiantask.databinding.ProjectsFragmentBinding;
 import ir.android.persiantask.ui.adapters.ProjectsAdapter;
 import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.enums.ActionTypes;
+import ir.android.persiantask.utils.enums.ShowCaseSharePref;
 import ir.android.persiantask.viewmodels.ProjectViewModel;
 import ir.android.persiantask.viewmodels.SubTasksViewModel;
 import ir.android.persiantask.viewmodels.TaskViewModel;
@@ -105,8 +106,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         projectRecyclerViewItemOnclick();
 
         onClickListener();
-
-        Init.initShowCaseView(getContext(), firstAddProjectBtn, getString(R.string.enterFirstProjectGuide), "firstProjectGuide");
 
         return view;
     }
@@ -170,7 +169,20 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     mAppBarLayout.setVisibility(View.GONE);
                     taskFragmentContainer.setVisibility(View.GONE);
                     taskFragList.clear();
+                    Init.initShowCaseView(getContext(), firstAddProjectBtn, getString(R.string.enterFirstProjectGuide),
+                            ShowCaseSharePref.FIRST_PROJECT_GUIDE.getValue());
                 } else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(1),
+                                    getString(R.string.enterSecondProjectGuide), ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue());
+                            if (projects.size() > 1) {
+                                Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(0), getString(R.string.deleteEditProjectGuide),
+                                        ShowCaseSharePref.EDIT_DELETE_PROJECT_GUIDE.getValue());
+                            }
+                        }
+                    }, 1000);
                     //null added to list for add Btn at the end of recyclerview
                     projects.add(null);
                     projectsEmptyPage.setVisibility(View.GONE);
@@ -263,13 +275,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             case ADD:
                 projectViewModel.insert(projects);
                 msg = getString(R.string.successInsertProject);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(1),
-                                getString(R.string.enterSecondProjectGuide), "moreProjectGuide");
-                    }
-                }, 1000);
 
                 Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)

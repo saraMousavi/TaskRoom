@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import ir.android.persiantask.databinding.ReminderFragmentBinding;
 import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.ui.adapters.ReminderAdapter;
 import ir.android.persiantask.utils.Init;
+import ir.android.persiantask.utils.enums.ShowCaseSharePref;
 import ir.android.persiantask.viewmodels.ReminderViewModel;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -109,8 +111,6 @@ public class ReminderFragment extends Fragment {
         initRecyclerView();
         onClickListener();
         onTouchListener();
-        Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), "firstReminderGuide");
-
         return inflaterView;
     }
 
@@ -172,10 +172,18 @@ public class ReminderFragment extends Fragment {
                 View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
                 LinearLayout reminderLinear = inflaterView.findViewById(R.id.reminderLinear);
                 if (reminders.size() == 0) {
+                    Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue());
                     remindersEmptyPage.setVisibility(View.VISIBLE);
                     reminderLinear.setVisibility(View.GONE);
                     addReminderBtn.setVisibility(View.GONE);
                 } else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Init.initShowCaseView(getContext(),reminderRecyclerView.getChildAt(0), getString(R.string.editDeleteReminderGuide),
+                                    ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue());
+                        }
+                    }, 1000);
                     remindersEmptyPage.setVisibility(View.GONE);
                     reminderLinear.setVisibility(View.VISIBLE);
                     addReminderBtn.setVisibility(View.VISIBLE);
