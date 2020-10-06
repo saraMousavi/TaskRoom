@@ -66,8 +66,6 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class CalenderFragment extends Fragment {
-    private static final String ARG_TITLE = "arg_title";
-    private static final String ARG_BG_COLOR = "arg_bg_color";
     private static final String TAG = "TAG";
     private View inflater;
     private PersianHorizontalExpCalendar persianHorizontalExpCalendar;
@@ -359,28 +357,6 @@ public class CalenderFragment extends Fragment {
         closeSubMenusFab();
     }
 
-
-    @JvmStatic
-    public static CalenderFragment newInstance(@NotNull String title, int bgColorId) {
-        return CalenderFragment.Companion.newInstance(title, bgColorId);
-    }
-
-    public static final class Companion {
-        @JvmStatic
-        @NotNull
-        public static CalenderFragment newInstance(@NotNull String title, int bgColorId) {
-            CalenderFragment calenderFragment = new CalenderFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(ARG_TITLE, title);
-            bundle.putInt(ARG_BG_COLOR, bgColorId);
-            calenderFragment.setArguments(bundle);
-            return calenderFragment;
-        }
-
-        private Companion() {
-        }
-
-    }
 
     public void markSomeDays(DateTime perChr) {
         this.persianHorizontalExpCalendar.markDate(new DateTime(perChr), PersianCustomMarks.SmallOval_Bottom, Color.RED).updateMarks();

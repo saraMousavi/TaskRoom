@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -170,7 +171,7 @@ public class ReminderFragment extends Fragment {
             @Override
             public void onChanged(List<Reminders> reminders) {
                 View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
-                LinearLayout reminderLinear = inflaterView.findViewById(R.id.reminderLinear);
+                ConstraintLayout reminderLinear = inflaterView.findViewById(R.id.reminderLinear);
                 if (reminders.size() == 0) {
                     Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue());
                     remindersEmptyPage.setVisibility(View.VISIBLE);

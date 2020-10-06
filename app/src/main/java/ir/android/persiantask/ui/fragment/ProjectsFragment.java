@@ -64,7 +64,6 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 public class ProjectsFragment extends Fragment implements AddProjectBottomSheetFragment.SubmitClickListener {
     private static final String ARG_TITLE = "arg_title";
     private static final String ARG_BG_COLOR = "arg_bg_color";
-    private int bgColorResId = R.color.white;
     private View inflatedView, projectsEmptyPage;
     private RecyclerView projectRecyclerView;
     private ProjectsAdapter projectsAdapter;
@@ -81,16 +80,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private List<Subtasks> tempSubTaskList = new ArrayList<>();
     private boolean notUndoDelete = true;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle arguments = this.getArguments();
-        if (arguments != null) {
-            this.bgColorResId = arguments.getInt(ARG_BG_COLOR);
-        }
-    }
 
     @Override
     @Nullable
@@ -210,7 +199,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.inflatedView.setBackgroundColor(ContextCompat.getColor(this.requireContext(), this.bgColorResId));
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -237,12 +225,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
     public void onDestroyView() {
         super.onDestroyView();
-    }
-
-    @JvmStatic
-    @NotNull
-    public static ProjectsFragment newInstance(@NotNull String title, int bgColorId) {
-        return Companion.newInstance(title, bgColorId);
     }
 
     /**
@@ -349,24 +331,6 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
 
         projectsAdapter.notifyDataSetChanged();
-
-    }
-
-
-    public static final class Companion {
-        @JvmStatic
-        @NotNull
-        public static ProjectsFragment newInstance(@NotNull String title, int bgColorId) {
-            ProjectsFragment screenSlidePageFragmentJ = new ProjectsFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(ARG_TITLE, title);
-            bundle.putInt(ARG_BG_COLOR, bgColorId);
-            screenSlidePageFragmentJ.setArguments(bundle);
-            return screenSlidePageFragmentJ;
-        }
-
-        private Companion() {
-        }
 
     }
 

@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -168,6 +170,10 @@ public class SettingFragment extends Fragment {
         if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
             nightModeActive.setChecked(true);
         }
+        final Toolbar toolbar = (Toolbar) this.inflatedView.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        toolBarLayout = (CollapsingToolbarLayout) this.inflatedView.findViewById(R.id.toolbar_layout);
+        toolBarLayout.setTitle(" ");
     }
 
 }
