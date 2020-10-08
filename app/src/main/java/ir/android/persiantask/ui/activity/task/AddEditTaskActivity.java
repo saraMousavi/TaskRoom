@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -67,6 +68,7 @@ import ir.android.persiantask.data.db.factory.ProjectsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.data.db.factory.TasksViewModelFactory;
 import ir.android.persiantask.databinding.TasksAddActivityBinding;
+import ir.android.persiantask.ui.activity.MainActivity;
 import ir.android.persiantask.ui.adapters.AttachmentsAdapter;
 import ir.android.persiantask.ui.adapters.SubTasksAdapter;
 import ir.android.persiantask.ui.fragment.TasksPriorityTypeBottomSheetFragment;
@@ -125,6 +127,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setMasterTheme();
         super.onCreate(savedInstanceState);
         init();
         onClickEvents();
@@ -556,20 +559,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             clickedTask = (Tasks) intent.getExtras().getSerializable("clickedTask");
             editableTaskFields();
         }
-        List<Map<View, Boolean>> views = new ArrayList<>();
-        Map<View, Boolean> viewMap = new HashMap<>();
-        viewMap.put(mAppBarLayout, true);
-        views.add(viewMap);
-        viewMap = new HashMap<>();
-        viewMap.put(taskNameEdit, true);
-        views.add(viewMap);
-        viewMap = new HashMap<>();
-        viewMap.put(fabInsertTask, false);
-        views.add(viewMap);
-        viewMap = new HashMap<>();
-        viewMap.put(fabInsertTask2, false);
-        views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, AddEditTaskActivity.this);
+        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+            View someView = findViewById(R.id.nestedScroll);
+            View root = someView.getRootView();
+            root.setBackgroundColor(getResources().getColor(R.color.backgroundDarkWindow));
+        }
     }
 
     private void viewsAnimation() {
@@ -764,54 +758,41 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if(requestCode == CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE){
-//            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ){
-//                CropImage.activity().setAllowRotation(true).setCropShape(CropImageView.CropShape.OVAL)
-//                        .setGuidelinesColor(R.color.red)
-//                        .setAllowCounterRotation(true)
-//                        .setCropMenuCropButtonIcon(R.drawable.about_calender)
-//                        .setAutoZoomEnabled(true).start(AddEditTaskActivity.this);
-//            } else {
-//                Toast.makeText(AddEditTaskActivity.this, "cancel", Toast.LENGTH_LONG);
-//            }
-//        }
-//        if(requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE){
-//            if(mCropImageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                System.out.println("mCropImageUri = " + mCropImageUri);
-//            } else {
-//                Toast.makeText(AddEditTaskActivity.this, "cancel pick", Toast.LENGTH_LONG);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.main,menu);
-//        return true;
-//    }
-//
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK){
-//            Uri imageUri = CropImage.getPickImageResultUri(AddEditTaskActivity.this, data);
-////            CropImage.activity(imageUri).setAllowRotation(true).setGuidelines(CropImageView.Guidelines.ON)
-////                    .setAutoZoomEnabled(true).setActivityMenuIconColor(getColor(R.color.black)).setGuidelinesColor(getColor(R.color.red))
-////                    .setCropShape(CropImageView.CropShape.OVAL);
-//
-//            if(CropImage.isReadExternalStoragePermissionsRequired(AddEditTaskActivity.this, imageUri)) {
-//                mCropImageUri = imageUri;
-//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE);
-//            } else {
-//                pickedImage.setImageUriAsync(imageUri);
-//            }
-//        }
-//    }
+    public void setMasterTheme() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(AddEditTaskActivity.this);
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag()) {
+            case 2:
+                setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                setTheme(R.style.AppTheme6);
+                break;
+            default:
+                setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag() {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        return sharedpreferences.getInt("theme", 1);
+    }
 
     public interface ClickAddSubTaskListener {
         void addSubTaskListener();

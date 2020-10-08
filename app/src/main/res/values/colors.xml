@@ -7,7 +7,9 @@
     <color name="colorPrimary5">#5D2A42</color>
     <color name="colorPrimary6">#273043</color>
     <color name="lightcolorPrimary">#334375</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimaryDark">#28292e</color>
+    <color name="colorAccentDark">#33343B</color>
+    <color name="backgroundDarkWindow">#303030</color>
     <color name="colorAccent">#F15025</color>
     <color name="colorAccent2">#F7A072</color>
     <color name="colorAccent3">#85CB33</color>

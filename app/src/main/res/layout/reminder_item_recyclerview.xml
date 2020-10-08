@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_4sdp"
     android:padding="0dp"
-    android:background="@drawable/white_item_corner_shape"
+    android:background="?recyclerViewBackground"
     android:layoutDirection="rtl">
 
     <View
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12:30"
-            android:textColor="?colorPrimary"
+            android:textColor="?textColor"
             android:textSize="@dimen/_30ssp"
             app:layout_constraintBottom_toTopOf="@+id/reminders_title"
             app:layout_constraintRight_toRightOf="parent"

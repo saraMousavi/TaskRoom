@@ -12,7 +12,7 @@
         android:layout_width="@dimen/_120sdp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        android:background="@drawable/light_gray_corner_shape"
+        android:background="?prjRecyclerViewBackground"
         android:layoutDirection="rtl"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"

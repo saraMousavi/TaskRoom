@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="textColor">@color/colorPrimary</item>
+        <item name="textColor">@color/black</item>
         <item name="backgroundWindow">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="backgroundLinearLayout">@color/colorAccent</item>
@@ -16,13 +16,15 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme1" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="appBarLayoutStyle">@color/colorPrimary</item>
-        <item name="textColor">@color/colorPrimary</item>
+        <item name="textColor">@color/black</item>
         <item name="backgroundWindow">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="backgroundLinearLayout">@color/colorAccent</item>
@@ -34,13 +36,15 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme2" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary2</item>
         <item name="appBarLayoutStyle">@color/colorPrimary2</item>
-        <item name="textColor">@color/colorPrimary2</item>
+        <item name="textColor">@color/black</item>
         <item name="backgroundWindow">@color/white</item>
         <item name="selectedBox">@drawable/dark_selected_corner_shape_theme2</item>
         <item name="colorPrimaryDark">@color/colorPrimary2</item>
@@ -52,13 +56,15 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme3" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary3</item>
         <item name="appBarLayoutStyle">@color/colorPrimary3</item>
-        <item name="textColor">@color/colorPrimary3</item>
+        <item name="textColor">@color/black</item>
         <item name="backgroundWindow">@color/white</item>
         <item name="selectedBox">@drawable/dark_selected_corner_shape_theme3</item>
         <item name="colorPrimaryDark">@color/colorPrimary3</item>
@@ -70,6 +76,8 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme4" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -77,7 +85,7 @@
         <item name="colorPrimary">@color/colorPrimary4</item>
         <item name="appBarLayoutStyle">@color/colorPrimary4</item>
         <item name="backgroundWindow">@color/white</item>
-        <item name="textColor">@color/colorPrimary4</item>
+        <item name="textColor">@color/black</item>
         <item name="selectedBox">@drawable/dark_selected_corner_shape_theme4</item>
         <item name="colorPrimaryDark">@color/colorPrimary4</item>
         <item name="colorAccent">@color/colorAccent4</item>
@@ -88,6 +96,8 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
 
     <!-- Base application theme. -->
@@ -95,7 +105,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary5</item>
         <item name="appBarLayoutStyle">@color/colorPrimary5</item>
-        <item name="textColor">@color/colorPrimary5</item>
+        <item name="textColor">@color/black</item>
         <item name="backgroundWindow">@color/white</item>
         <item name="selectedBox">@drawable/dark_selected_corner_shape_theme5</item>
         <item name="colorPrimaryDark">@color/colorPrimary5</item>
@@ -107,14 +117,15 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
-
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme6" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary6</item>
         <item name="appBarLayoutStyle">@color/colorPrimary6</item>
-        <item name="textColor">@color/colorPrimary6</item>
+        <item name="textColor">@color/black</item>
         <item name="backgroundWindow">@color/white</item>
         <item name="selectedBox">@drawable/dark_selected_corner_shape_theme6</item>
         <item name="colorPrimaryDark">@color/colorPrimary6</item>
@@ -126,7 +137,8 @@
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="use_RTL_direction">true</item>
-
+        <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
 
     <!-- Dark base activity theme -->
@@ -134,12 +146,15 @@
         <item name="primaryTextColor">#33343B</item>
         <item name="textColor">@color/white</item>
         <item name="secondaryTextColor">#8033343B</item>
-        <item name="backgroundWindow">#303030</item>
+        <item name="backgroundWindow">@color/backgroundDarkWindow</item>
         <item name="backgroundCardColor">#33343B</item>
         <item name="dividerColor">#F2F2F3</item>
-        <item name="colorPrimary">#28292e</item>
-        <item name="colorAccent">#33343B</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
         <item name="selectedBox">@drawable/dark_selected_corner_shape</item>
+        <item name="android:textColorHint">#F2F2F3</item>
+        <item name="recyclerViewBackground">@drawable/dark_item_corner_shape</item>
+        <item name="prjRecyclerViewBackground">@drawable/dark_item_corner_shape</item>
     </style>
 
     <style name="AppThemeCalender" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -199,5 +214,4 @@
 
     <style name="FeedActivityThemeDark" parent="ActivityTheme.Primary.Base.Dark">
     </style>
-
 </resources>

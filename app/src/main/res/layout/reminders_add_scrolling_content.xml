@@ -54,8 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
-                    android:text=""
-                    android:textColor="@color/lightcolorPrimary" />
+                    android:text="" />
             </LinearLayout>
 
 
@@ -100,7 +99,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/reminderType"
-                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@+id/guideline13"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -168,8 +166,7 @@
                     android:id="@+id/repeatType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/repeatType"
-                    android:textColor="?colorPrimary" />
+                    android:text="@string/repeatType"/>
 
                 <TextView
                     android:id="@+id/repeatTypeVal"
@@ -177,7 +174,6 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:textColor="@color/lightcolorPrimary"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -215,7 +211,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/active"
-                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@id/guideline15"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -271,8 +266,7 @@
                     android:id="@+id/priorityText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/priority"
-                    android:textColor="?colorPrimary" />
+                    android:text="@string/priority"/>
 
                 <TextView
                     android:id="@+id/priorityVal"
@@ -321,7 +315,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/uploadText"
-                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/attachedRecyclerView"
                 app:layout_constraintStart_toStartOf="@id/guideline18"

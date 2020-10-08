@@ -1,9 +1,11 @@
 package ir.android.persiantask.ui.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
+import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.persiantask.utils.Init;
 import ir.android.persiantask.utils.enums.ActionTypes;
 
@@ -38,6 +41,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     private RadioButton tempRadioButton = null;
     private Drawable TempDrawable;
     private String categoryImage = "ir.android.persiantask:drawable/ic_white_art";
+    private SharedPreferences sharedPreferences;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -47,6 +51,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         this.inflatedView = inflatedView;
         init();
         onClickListener();
+        setMasterTheme(getContext());
         return inflatedView;
     }
 
@@ -138,7 +143,8 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
-
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
         insertCategoryBtn = this.inflatedView.findViewById(R.id.insertCategoryBtn);
         categoryTitle = this.inflatedView.findViewById(R.id.categoryTitle);
         category_image_1 = this.inflatedView.findViewById(R.id.category_image_1);
@@ -147,7 +153,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         Map<View, Boolean> viewMap = new HashMap<>();
         viewMap.put(insertCategoryBtn, true);
         views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, getContext());
+        Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
         Bundle bundle = getArguments();
         if (bundle.getBoolean("isEditCategory")) {
             Category selectedCategory = (Category) bundle.getSerializable("clickedCategory");
@@ -188,5 +194,39 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
 
     public interface SubmitClickListener {
         void onClickSubmit(Category category, ActionTypes actionTypes);
+    }
+
+    public void setMasterTheme(Context context) {
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            context.setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag(context)) {
+            case 2:
+                context.setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                context.setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                context.setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                context.setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                context.setTheme(R.style.AppTheme6);
+                break;
+            default:
+                context.setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag(Context context) {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharedpreferences.getInt("theme", 1);
     }
 }

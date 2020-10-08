@@ -1,9 +1,11 @@
 package ir.android.persiantask.ui.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.opengl.EGLExt;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +16,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.lifecycle.Observer;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +43,9 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     private Button insertProjectBtn;
     private Button deleteProjectBtn;
     private TextInputEditText projectsTitle;
+    private TextInputLayout editText;
     private Category selectedCategory = null;
+    private SharedPreferences sharedPreferences;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -116,9 +122,12 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         insertProjectBtn = this.inflatedView.findViewById(R.id.insertProjectBtn);
         projectsTitle = this.inflatedView.findViewById(R.id.projectsTitle);
+        editText = this.inflatedView.findViewById(R.id.editText);
         deleteProjectBtn = this.inflatedView.findViewById(R.id.deleteProjectBtn);
         CategoryViewModel categoryViewModel = new CategoryViewModel(getActivity().getApplication());
         categoryViewModel.getAllCategory().observe(this, new Observer<List<Category>>() {
@@ -145,7 +154,13 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         Map<View, Boolean> viewMap = new HashMap<>();
         viewMap.put(insertProjectBtn, true);
         views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, getContext());
+        Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+//        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+//            projectsTitle.setHintTextColor(getResources().getColor(R.color.white));
+//            editText.setBoxStrokeColor(getResources().getColor(R.color.white));
+//            editText.setBoxStrokeWidth(1);
+//            editText.setBoxStrokeWidthFocused(1);
+//        }
 
 
     }

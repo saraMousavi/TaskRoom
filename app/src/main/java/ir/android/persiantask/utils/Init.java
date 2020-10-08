@@ -264,7 +264,7 @@ public class Init {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void setViewBackgroundDependOnTheme(List<Map<View, Boolean>> views, Context context) {
+    public static void setViewBackgroundDependOnTheme(List<Map<View, Boolean>> views, Context context, Boolean isNightMode) {
 
         for (Map<View, Boolean> view : views) {
             for (Map.Entry<View, Boolean> entry : view.entrySet()) {
@@ -272,55 +272,103 @@ public class Init {
                     case 2:
                         //if isPrimary
                         if (entry.getValue()) {
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary2)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary2)));
+                            }
                         } else {
                             //if isAccent
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent2)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent2)));
+                            }
                         }
                         break;
                     case 3:
                         //if isPrimary
                         if (entry.getValue()) {
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary3)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary3)));
+                            }
                         } else {
                             //if isAccent
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent3)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent3)));
+                            }
                         }
                         break;
                     case 4:
                         //if isPrimary
                         if (entry.getValue()) {
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary4)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary4)));
+                            }
                         } else {
                             //if isAccent
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent4)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent4)));
+                            }
                         }
                         break;
                     case 5:
                         //if isPrimary
                         if (entry.getValue()) {
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary5)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary5)));
+                            }
                         } else {
                             //if isAccent
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent5)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent5)));
+                            }
                         }
                         break;
                     case 6:
                         //if isPrimary
                         if (entry.getValue()) {
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary6)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary6)));
+                            }
                         } else {
                             //if isAccent
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent6)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent6)));
+                            }
                         }
                         break;
                     default:
                         //if isPrimary
                         if (entry.getValue()) {
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
+                            }
                         } else {
                             //if isAccent
-                            entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                            if(isNightMode){
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
+                            } else {
+                                entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                            }
                         }
                         break;
                 }

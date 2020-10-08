@@ -3,9 +3,11 @@ package ir.android.persiantask.utils.calender;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,6 +105,7 @@ public class DatePickerDialog extends DialogFragment implements
     private String mSelectYear;
 
     private String fontName="DroidNaskh-Regular";
+    private SharedPreferences sharedPreferences;
 
     /**
      * The callback used to indicate the user is done filling in the date.
@@ -164,6 +167,8 @@ public class DatePickerDialog extends DialogFragment implements
                     savedInstanceState.getInt(KEY_SELECTED_DAY)
             );
         }
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(activity);
     }
 
     @Override
@@ -221,7 +226,7 @@ public class DatePickerDialog extends DialogFragment implements
         viewMap = new HashMap<>();
         viewMap.put(cancelButton, true);
         viewList.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(viewList, getContext());
+        Init.setViewBackgroundDependOnTheme(viewList, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
         if (mDayOfWeekTextView != null) {
             mDayOfWeekTextView.setTypeface(TypefaceHelper.get(activity, fontName));
         }

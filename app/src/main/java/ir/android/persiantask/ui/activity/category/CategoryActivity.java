@@ -1,7 +1,9 @@
 package ir.android.persiantask.ui.activity.category;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +31,7 @@ import java.util.Map;
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
 import ir.android.persiantask.databinding.CategoryActivityBinding;
+import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.CategoryAdapter;
 import ir.android.persiantask.ui.fragment.AddCategoryBottomSheetFragment;
 import ir.android.persiantask.utils.Init;
@@ -41,10 +44,12 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     private FloatingActionButton addCategoryBtn;
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
+    private SharedPreferences sharedPreferences;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setMasterTheme();
         super.onCreate(savedInstanceState);
         setupWindowAnimations();
         init();
@@ -144,7 +149,9 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         Map<View, Boolean> viewMap = new HashMap<>();
         viewMap.put(addCategoryBtn, false);
         views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, CategoryActivity.this);
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(CategoryActivity.this);
+        Init.setViewBackgroundDependOnTheme(views, CategoryActivity.this,sharedPreferences.getBoolean("NIGHT_MODE", false));
     }
 
     @Override
@@ -165,5 +172,41 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         }
         categoryAdapter.notifyDataSetChanged();
 
+    }
+
+    public void setMasterTheme() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(CategoryActivity.this);
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag()) {
+            case 2:
+                setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                setTheme(R.style.AppTheme6);
+                break;
+            default:
+                setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag() {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        return sharedpreferences.getInt("theme", 1);
     }
 }

@@ -3,10 +3,12 @@ package ir.android.persiantask.utils.calender;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -99,6 +101,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
     private String mSelectHours;
     private String mMinutePickerDescription;
     private String mSelectMinutes;
+    private SharedPreferences sharedPreferences;
 
     private String fontName="DroidNaskh-Regular";
 
@@ -198,6 +201,8 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
             mTitle = savedInstanceState.getString(KEY_TITLE);
             mThemeDark = savedInstanceState.getBoolean(KEY_DARK_THEME);
         }
+        this.sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -240,7 +245,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
         viewMap = new HashMap<>();
         viewMap.put(mCancelButton, true);
         viewList.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(viewList, getContext());
+        Init.setViewBackgroundDependOnTheme(viewList, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
         mHourView.setTypeface(TypefaceHelper.get(activity, fontName));
         mMinuteView.setTypeface(TypefaceHelper.get(activity, fontName));
         mAmPmTextView.setTypeface(TypefaceHelper.get(activity, fontName));

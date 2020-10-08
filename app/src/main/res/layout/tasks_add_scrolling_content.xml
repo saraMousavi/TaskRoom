@@ -32,11 +32,10 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/subtakTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/subtasks"
-                android:textColor="?colorPrimary"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -146,8 +145,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
-                    android:text=""
-                    android:textColor="@color/lightcolorPrimary" />
+                    android:text="" />
             </LinearLayout>
 
 
@@ -206,7 +204,6 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:textColor="@color/lightcolorPrimary"
                     android:visibility="gone" />
 
             </LinearLayout>
@@ -292,7 +289,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/reminderType"
-                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="@+id/guideline13"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -360,8 +356,7 @@
                     android:id="@+id/repeatType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/repeatType"
-                    android:textColor="?colorPrimary" />
+                    android:text="@string/repeatType"/>
 
                 <TextView
                     android:id="@+id/repeatTypeVal"
@@ -369,7 +364,6 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:textColor="@color/lightcolorPrimary"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -415,8 +409,7 @@
                     android:id="@+id/completedText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/complete"
-                    android:textColor="?colorPrimary" />
+                    android:text="@string/complete" />
 
                 <TextView
                     android:id="@+id/completedDate"
@@ -424,7 +417,6 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:textColor="@color/lightcolorPrimary"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -470,8 +462,7 @@
                     android:id="@+id/priorityText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/priority"
-                    android:textColor="?colorPrimary" />
+                    android:text="@string/priority" />
 
                 <TextView
                     android:id="@+id/priorityVal"
@@ -479,7 +470,6 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:text=""
-                    android:textColor="@color/lightcolorPrimary"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -520,7 +510,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/uploadText"
-                android:textColor="?colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/attachedRecyclerView"
                 app:layout_constraintStart_toStartOf="@id/guideline18"

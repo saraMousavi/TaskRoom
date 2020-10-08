@@ -61,6 +61,7 @@ import ir.android.persiantask.data.db.entity.Tasks;
 import ir.android.persiantask.data.db.factory.AttachmentsViewModelFactory;
 import ir.android.persiantask.data.db.factory.SubTasksViewModelFactory;
 import ir.android.persiantask.databinding.RemindersAddActivityBinding;
+import ir.android.persiantask.ui.activity.category.CategoryActivity;
 import ir.android.persiantask.ui.activity.task.AddEditTaskActivity;
 import ir.android.persiantask.ui.adapters.AttachmentsAdapter;
 import ir.android.persiantask.ui.adapters.SubTasksAdapter;
@@ -109,6 +110,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setMasterTheme();
         super.onCreate(savedInstanceState);
         init();
         onClickListener();
@@ -352,20 +354,20 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             clickedReminder = (Reminders) intent.getExtras().getSerializable("clickedReminder");
             editableRemindersFields();
         }
-        List<Map<View, Boolean>> views = new ArrayList<>();
-        Map<View, Boolean> viewMap = new HashMap<>();
-        viewMap.put(mAppBarLayout, true);
-        views.add(viewMap);
-        viewMap = new HashMap<>();
-        viewMap.put(reminderNameEdit, true);
-        views.add(viewMap);
-        viewMap = new HashMap<>();
-        viewMap.put(fabInsertReminders, false);
-        views.add(viewMap);
-        viewMap = new HashMap<>();
-        viewMap.put(fabInsertReminders2, false);
-        views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, AddEditReminderActivity.this);
+//        List<Map<View, Boolean>> views = new ArrayList<>();
+//        Map<View, Boolean> viewMap = new HashMap<>();
+//        viewMap.put(mAppBarLayout, true);
+//        views.add(viewMap);
+//        viewMap = new HashMap<>();
+//        viewMap.put(reminderNameEdit, true);
+//        views.add(viewMap);
+//        viewMap = new HashMap<>();
+//        viewMap.put(fabInsertReminders, false);
+//        views.add(viewMap);
+//        viewMap = new HashMap<>();
+//        viewMap.put(fabInsertReminders2, false);
+//        views.add(viewMap);
+//        Init.setViewBackgroundDependOnTheme(views, AddEditReminderActivity.this, sharedPreferences.getBoolean("NIGHT_MODE", false));
     }
 
     private void editableRemindersFields() {
@@ -512,6 +514,42 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 priorityIcon.setImageResource(R.drawable.ic_priority);
             }
         }
+    }
+
+    public void setMasterTheme() {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(AddEditReminderActivity.this);
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag()) {
+            case 2:
+                setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                setTheme(R.style.AppTheme6);
+                break;
+            default:
+                setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag() {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        return sharedpreferences.getInt("theme", 1);
     }
 
     public interface ClickAddSubTaskListener {

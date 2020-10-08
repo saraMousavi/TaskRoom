@@ -1,6 +1,7 @@
 package ir.android.persiantask.ui.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.ViewCompat;
 
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.ui.activity.setting.AboutAppActivity;
@@ -27,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
      */
-    private View mContentView;
+    private TextView mContentView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +46,11 @@ public class SplashActivity extends AppCompatActivity {
 
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(SplashActivity.this);
+        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+            ConstraintLayout splashRoot = findViewById(R.id.splash_root);
+            splashRoot.setBackgroundColor(getResources().getColor(R.color.backgroundDarkWindow));
+            mContentView.setTextColor(getResources().getColor(R.color.white));
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override

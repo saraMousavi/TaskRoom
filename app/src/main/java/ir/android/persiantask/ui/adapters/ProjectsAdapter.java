@@ -57,7 +57,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
         super(DIFF_CALLBACK);
         mFragmentManager = fragmentManager;
         mFragmentActivity = fragmentActivity;
-        this.sharedPreferences  = PreferenceManager
+        this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(mFragmentActivity);
     }
 
@@ -91,13 +91,13 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        setMasterTheme(context);
         if (viewType == VIEW_TYPE_ADD) {
-            Context context = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(context);
             View projectsView = inflater.inflate(R.layout.projects_item_add, parent, false);
             return new AddViewHolder(projectsView);
         } else if (viewType == VIEW_TYPE_ITEM) {
-            Context context = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(context);
             View projectsView = inflater.inflate(R.layout.projects_item_recyclerview, parent, false);
             return new ItemViewHolder(projectsView);
@@ -142,18 +142,30 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             });
 
             if (clickedPosition == position) {
-                TypedArray array = mFragmentActivity.getTheme().obtainStyledAttributes(getAppThemeStyle(), new int[] {R.attr.selectedBox});
-                int attrResourceId = array.getResourceId(0, 0);
-                Drawable drawable = mFragmentActivity.getResources().getDrawable(attrResourceId);
+                Drawable drawable = null;
+                if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+                    drawable = mFragmentActivity.getResources().getDrawable(R.drawable.dark_selected_corner_shape);
+                } else {
+                    TypedArray array = mFragmentActivity.getTheme().obtainStyledAttributes(getAppThemeStyle(mFragmentActivity), new int[]{R.attr.selectedBox});
+                    int attrResourceId = array.getResourceId(0, 0);
+                    drawable = mFragmentActivity.getResources().getDrawable(attrResourceId);
+                }
                 itemViewHolder.projectsBox.setBackground(drawable);
                 itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                 itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                 itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
             } else {
-                itemViewHolder.projectsBox.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.light_gray_corner_shape));
-                itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
-                itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
-                itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
+                if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+                    itemViewHolder.projectsBox.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.dark_item_corner_shape));
+                    itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
+                    itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
+                    itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
+                } else {
+                    itemViewHolder.projectsBox.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.light_gray_corner_shape));
+                    itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
+                    itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
+                    itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.black));
+                }
             }
             itemViewHolder.tasksNumVal.setText(String.valueOf(getProjectAt(position).getProjects_tasks_num()));
         } else if (holder instanceof AddViewHolder) {
@@ -189,8 +201,42 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
         this.listener = listener;
     }
 
-    public int getAppThemeStyle() {
-        switch (getFlag()) {
+    public void setMasterTheme(Context context) {
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            context.setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag(context)) {
+            case 2:
+                context.setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                context.setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                context.setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                context.setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                context.setTheme(R.style.AppTheme6);
+                break;
+            default:
+                context.setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag(Context context) {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharedpreferences.getInt("theme", 1);
+    }
+
+    public int getAppThemeStyle(Context context) {
+        switch (getFlag(context)) {
             case 2:
                 return R.style.AppTheme2;
             case 3:
@@ -205,12 +251,4 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 return R.style.AppTheme;
         }
     }
-
-
-    public Integer getFlag() {
-        SharedPreferences sharedpreferences = PreferenceManager
-                .getDefaultSharedPreferences(mFragmentActivity);
-        return sharedpreferences.getInt("theme", 1);
-    }
-
 }

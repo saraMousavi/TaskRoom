@@ -1,6 +1,8 @@
 package ir.android.persiantask.ui.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.data.db.entity.Category;
+import ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity;
 
 public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewHolder> {
 
@@ -40,6 +43,7 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        setMasterTheme(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View taskView = inflater.inflate(R.layout.category_item_recyclerview, parent, false);
         CategoryAdapter.ViewHolder viewHolder = new CategoryAdapter.ViewHolder(taskView);
@@ -79,5 +83,41 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
 
     public interface CategoryClickListener {
         void editCategory(Category category);
+    }
+
+    public void setMasterTheme(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            context.setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag(context)) {
+            case 2:
+                context.setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                context.setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                context.setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                context.setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                context.setTheme(R.style.AppTheme6);
+                break;
+            default:
+                context.setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag(Context context) {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharedpreferences.getInt("theme", 1);
     }
 }
