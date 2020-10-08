@@ -173,7 +173,7 @@ public class ReminderFragment extends Fragment {
                 View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
                 ConstraintLayout reminderLinear = inflaterView.findViewById(R.id.reminderLinear);
                 if (reminders.size() == 0) {
-                    Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue());
+                    Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue(), null);
                     remindersEmptyPage.setVisibility(View.VISIBLE);
                     reminderLinear.setVisibility(View.GONE);
                     addReminderBtn.setVisibility(View.GONE);
@@ -182,7 +182,7 @@ public class ReminderFragment extends Fragment {
                         @Override
                         public void run() {
                             Init.initShowCaseView(getContext(),reminderRecyclerView.getChildAt(0), getString(R.string.editDeleteReminderGuide),
-                                    ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue());
+                                    ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue(), null);
                         }
                     }, 1000);
                     remindersEmptyPage.setVisibility(View.GONE);

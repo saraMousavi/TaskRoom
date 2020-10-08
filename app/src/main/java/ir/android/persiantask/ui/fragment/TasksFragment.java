@@ -195,7 +195,7 @@ public class TasksFragment extends Fragment {
                     taskList.setVisibility(View.GONE);
                     taskEmptyList.setVisibility(View.VISIBLE);
                     addTaskBtn.setVisibility(View.GONE);
-                    Init.initShowCaseView(getContext(), firstAddTaskBtn, getString(R.string.enterFirstTaskGuide), ShowCaseSharePref.FIRST_TASK_GUIDE.getValue());
+                    Init.initShowCaseView(getContext(), firstAddTaskBtn, getString(R.string.enterFirstTaskGuide), ShowCaseSharePref.FIRST_TASK_GUIDE.getValue(), null);
                 } else {
                     taskList.setVisibility(View.VISIBLE);
                     taskEmptyList.setVisibility(View.GONE);
@@ -203,7 +203,7 @@ public class TasksFragment extends Fragment {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Init.initShowCaseView(getContext(), taskRecyclerView.getChildAt(0), getString(R.string.editDeleteTaskGuide), ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue());
+                            Init.initShowCaseView(getContext(), taskRecyclerView.getChildAt(0), getString(R.string.editDeleteTaskGuide), ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue(), null);
                         }
                     }, 1000);
                 }

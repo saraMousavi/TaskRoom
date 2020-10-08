@@ -159,17 +159,23 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     taskFragmentContainer.setVisibility(View.GONE);
                     taskFragList.clear();
                     Init.initShowCaseView(getContext(), firstAddProjectBtn, getString(R.string.enterFirstProjectGuide),
-                            ShowCaseSharePref.FIRST_PROJECT_GUIDE.getValue());
+                            ShowCaseSharePref.FIRST_PROJECT_GUIDE.getValue(), null);
                 } else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(1),
-                                    getString(R.string.enterSecondProjectGuide), ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue());
-                            if (projects.size() > 1) {
-                                Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(0), getString(R.string.deleteEditProjectGuide),
-                                        ShowCaseSharePref.EDIT_DELETE_PROJECT_GUIDE.getValue());
-                            }
+                            Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(projectsAdapter.getItemCount() - 1),
+                                    getString(R.string.enterSecondProjectGuide), ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue(), new GuideListener() {
+                                        @Override
+                                        public void onDismiss(View view) {
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.remove(ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue());
+                                            editor.putInt(ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue(), 1);
+                                            editor.apply();
+                                            Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(0), getString(R.string.deleteEditProjectGuide),
+                                                    ShowCaseSharePref.EDIT_DELETE_PROJECT_GUIDE.getValue(), null);
+                                        }
+                                    });
                         }
                     }, 1000);
                     //null added to list for add Btn at the end of recyclerview

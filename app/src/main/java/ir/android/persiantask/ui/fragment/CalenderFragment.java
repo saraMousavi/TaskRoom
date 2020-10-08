@@ -109,7 +109,7 @@ public class CalenderFragment extends Fragment {
         onClickListener();
         onTouchListener();
         Init.initShowCaseView(getContext(), this.inflater.findViewById(R.id.persianCalendar),
-                getString(R.string.seeListOfTaskAndReminderInCalender), "firstCalenderGuide");
+                getString(R.string.seeListOfTaskAndReminderInCalender), "firstCalenderGuide", null);
         persianHorizontalExpCalendar = (PersianHorizontalExpCalendar) this.inflater.findViewById(R.id.persianCalendar);
         persianHorizontalExpCalendar.setTodayButtonTextSize(10);
         persianHorizontalExpCalendar.performClick();

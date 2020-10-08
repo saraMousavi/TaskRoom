@@ -1,10 +1,6 @@
 package ir.android.persiantask.utils;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -14,7 +10,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,10 +18,8 @@ import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.Operation;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -200,7 +193,7 @@ public class Init {
      * @return date
      */
     public static Long integerFormatFromStringDate(String dateTime) {
-        if (dateTime!=null && dateTime.isEmpty()) {
+        if (dateTime != null && dateTime.isEmpty()) {
             return 0L;
         }
         return Long.valueOf(dateTime.replaceAll("/", "").replaceAll(":", "").
@@ -272,14 +265,14 @@ public class Init {
                     case 2:
                         //if isPrimary
                         if (entry.getValue()) {
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary2)));
                             }
                         } else {
                             //if isAccent
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent2)));
@@ -289,14 +282,14 @@ public class Init {
                     case 3:
                         //if isPrimary
                         if (entry.getValue()) {
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary3)));
                             }
                         } else {
                             //if isAccent
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent3)));
@@ -306,14 +299,14 @@ public class Init {
                     case 4:
                         //if isPrimary
                         if (entry.getValue()) {
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary4)));
                             }
                         } else {
                             //if isAccent
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent4)));
@@ -323,14 +316,14 @@ public class Init {
                     case 5:
                         //if isPrimary
                         if (entry.getValue()) {
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary5)));
                             }
                         } else {
                             //if isAccent
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent5)));
@@ -340,14 +333,14 @@ public class Init {
                     case 6:
                         //if isPrimary
                         if (entry.getValue()) {
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary6)));
                             }
                         } else {
                             //if isAccent
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent6)));
@@ -357,14 +350,14 @@ public class Init {
                     default:
                         //if isPrimary
                         if (entry.getValue()) {
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
                             }
                         } else {
                             //if isAccent
-                            if(isNightMode){
+                            if (isNightMode) {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccentDark)));
                             } else {
                                 entry.getKey().setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
@@ -662,23 +655,30 @@ public class Init {
         }).start();
     }
 
-    public static void initShowCaseView(Context context, View targetView, String contentText, String sharedPrefContent) {
+    public static GuideView.Builder initShowCaseView(Context context, View targetView, String contentText, String sharedPrefContent, GuideListener guideListener) {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(context);
+        GuideView.Builder builder = null;
         if (sharedPreferences.getInt(sharedPrefContent, 0) != 1) {
-            new GuideView.Builder(context)
+            builder = new GuideView.Builder(context)
                     .setContentText(contentText)
                     .setDismissType(DismissType.anywhere)
-                    .setGuideListener(new GuideListener() {
-                        @Override
-                        public void onDismiss(View view) {
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.remove(sharedPrefContent);
-                            editor.putInt(sharedPrefContent, 1);
-                            editor.apply();
-                        }
-                    })
-                    .setTargetView(targetView).build().show();
+                    .setTargetView(targetView);
+            if (guideListener == null) {
+                builder.setGuideListener(new GuideListener() {
+                    @Override
+                    public void onDismiss(View view) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.remove(sharedPrefContent);
+                        editor.putInt(sharedPrefContent, 1);
+                        editor.apply();
+                    }
+                });
+            } else {
+                builder.setGuideListener(guideListener);
+            }
+            builder.build().show();
         }
+        return builder;
     }
 }
