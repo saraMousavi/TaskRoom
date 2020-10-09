@@ -11,8 +11,8 @@
              do anything with it. Otherwise you're in for a crash! -->
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="ir.android.persiantask.ui.activity.task.AddEditTaskActivity"
-            android:targetPackage="ir.android.persiantask"/>
+            android:targetClass="ir.android.taskroom.ui.activity.task.AddEditTaskActivity"
+            android:targetPackage="ir.android.taskroom"/>
         <categories android:name="android.shortcut.conversation"/>
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list is what the user sees when they
@@ -33,8 +33,8 @@
         android:shortcutShortLabel="@string/shortcut_short_label_add_reminder">
         <intent
             android:action="RANDOM"
-            android:targetClass="ir.android.persiantask.ui.activity.reminder.AddEditReminderActivity"
-            android:targetPackage="ir.android.persiantask"/>
+            android:targetClass="ir.android.taskroom.ui.activity.reminder.AddEditReminderActivity"
+            android:targetPackage="ir.android.taskroom"/>
         <categories android:name="android.shortcut.conversation"/>
     </shortcut>
 

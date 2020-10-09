@@ -11,7 +11,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     defaultConfig {
-        applicationId "ir.android.persiantask"
+        applicationId "ir.android.taskroom"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1

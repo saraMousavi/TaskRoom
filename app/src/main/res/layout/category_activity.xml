@@ -7,7 +7,7 @@
 
         <variable
             name="CategoryViewModel"
-            type="ir.android.persiantask.viewmodels.CategoryViewModel" />
+            type="ir.android.taskroom.viewmodels.CategoryViewModel" />
     </data>
 
     <FrameLayout

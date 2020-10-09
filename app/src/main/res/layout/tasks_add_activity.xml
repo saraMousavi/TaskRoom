@@ -7,7 +7,7 @@
 
         <variable
             name="TasksViewModel"
-            type="ir.android.persiantask.viewmodels.TaskViewModel" />
+            type="ir.android.taskroom.viewmodels.TaskViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

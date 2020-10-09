@@ -3,7 +3,7 @@
     <data>
         <variable
             name="ProjectViewModel"
-            type="ir.android.persiantask.viewmodels.ProjectViewModel" />
+            type="ir.android.taskroom.viewmodels.ProjectViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -25,7 +25,7 @@
     # This rule will properly ProGuard all the model classes in
     # the package com.yourcompany.models. Modify to fit the structure
     # of your app.
-    -keepclassmembers class ir.android.persiantask.data.db.entity.Test {
+    -keepclassmembers class ir.android.taskroom.data.db.entity.Test {
       *;
     }
     -keep class androidx.appcompat.widget.* {*;}

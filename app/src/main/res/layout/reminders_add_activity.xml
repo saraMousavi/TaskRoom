@@ -6,7 +6,7 @@
 
         <variable
             name="ReminderViewModel"
-            type="ir.android.persiantask.viewmodels.ReminderViewModel" />
+            type="ir.android.taskroom.viewmodels.ReminderViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -32,7 +32,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
         <RadioButton
             android:id="@+id/image_1"
-            android:tag="ir.android.persiantask:drawable/ic_white_art"
+            android:tag="ir.android.taskroom:drawable/ic_white_art"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -42,7 +42,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_2"
-            android:tag="ir.android.persiantask:drawable/ic_white_scientific"
+            android:tag="ir.android.taskroom:drawable/ic_white_scientific"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -51,7 +51,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_3"
-            android:tag="ir.android.persiantask:drawable/ic_white_sports"
+            android:tag="ir.android.taskroom:drawable/ic_white_sports"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -60,7 +60,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_4"
-            android:tag="ir.android.persiantask:drawable/ic_white_setting"
+            android:tag="ir.android.taskroom:drawable/ic_white_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -69,7 +69,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_5"
-            android:tag="ir.android.persiantask:drawable/ic_white_music"
+            android:tag="ir.android.taskroom:drawable/ic_white_music"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -88,7 +88,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
         <RadioButton
             android:id="@+id/image_6"
-            android:tag="ir.android.persiantask:drawable/ic_white_chat"
+            android:tag="ir.android.taskroom:drawable/ic_white_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -98,7 +98,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_7"
-            android:tag="ir.android.persiantask:drawable/ic_white_restoorant"
+            android:tag="ir.android.taskroom:drawable/ic_white_restoorant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -107,7 +107,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_8"
-            android:tag="ir.android.persiantask:drawable/ic_white_airport"
+            android:tag="ir.android.taskroom:drawable/ic_white_airport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -116,7 +116,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_9"
-            android:tag="ir.android.persiantask:drawable/ic_white_flower"
+            android:tag="ir.android.taskroom:drawable/ic_white_flower"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -125,7 +125,7 @@
             android:button="@android:color/transparent"/>
         <RadioButton
             android:id="@+id/image_10"
-            android:tag="ir.android.persiantask:drawable/ic_white_hospital"
+            android:tag="ir.android.taskroom:drawable/ic_white_hospital"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"

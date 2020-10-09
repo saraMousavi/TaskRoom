@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ir.android.persiantask">
+    package="ir.android.taskroom">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SET_ALARM" />
@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name=".ui.activity.MyApplication"
+        android:name="ir.android.taskroom.ui.activity.MyApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name="ir.android.taskroom.ui.activity.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
@@ -38,28 +38,28 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity android:name=".ui.activity.setting.SupportActivity" />
-        <activity android:name=".ui.activity.reminder.AddShortCutReminderActivity" />
-        <activity android:name=".ui.activity.task.AddShortCutTaskActivity" />
+        <activity android:name="ir.android.taskroom.ui.activity.setting.SupportActivity" />
+        <activity android:name="ir.android.taskroom.ui.activity.reminder.AddShortCutReminderActivity" />
+        <activity android:name="ir.android.taskroom.ui.activity.task.AddShortCutTaskActivity" />
         <activity
-            android:name=".ui.activity.setting.AboutAppActivity"
+            android:name="ir.android.taskroom.ui.activity.setting.AboutAppActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.activity.theme.ThemeActivity" />
+        <activity android:name="ir.android.taskroom.ui.activity.theme.ThemeActivity" />
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name="ir.android.taskroom.ui.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ui.activity.task.AddEditTaskActivity"
+            android:name="ir.android.taskroom.ui.activity.task.AddEditTaskActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.activity.reminder.AddEditReminderActivity"
+            android:name="ir.android.taskroom.ui.activity.reminder.AddEditReminderActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.activity.category.CategoryActivity"
+            android:name="ir.android.taskroom.ui.activity.category.CategoryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.activity.AlarmActivity"
+            android:name="ir.android.taskroom.ui.activity.AlarmActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
@@ -68,7 +68,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="ir.android.persiantask"
+            android:authorities="ir.android.taskroom"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -76,7 +76,7 @@
                 android:resource="@xml/provider_paths"/>
         </provider>
         <service
-            android:name=".ui.services.AlarmJobService"
+            android:name="ir.android.taskroom.ui.services.AlarmJobService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 

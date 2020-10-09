@@ -15,7 +15,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ir.android.persiantask.utils.shape.Circle
+    <ir.android.taskroom.utils.shape.Circle
         android:id="@+id/alarmIcon"
         android:layout_width="@dimen/_250sdp"
         android:layout_height="@dimen/_250sdp"

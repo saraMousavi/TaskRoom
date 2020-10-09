@@ -3,7 +3,7 @@
     <data>
         <variable
             name="TaskViewModel"
-            type="ir.android.persiantask.viewmodels.TaskViewModel" />
+            type="ir.android.taskroom.viewmodels.TaskViewModel" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"

@@ -9,7 +9,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ir.android.persiantask.utils.calender.AccessibleLinearLayout
+    <ir.android.taskroom.utils.calender.AccessibleLinearLayout
         android:id="@+id/date_picker_month_and_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,9 +42,9 @@
             android:textColor="@color/mdtp_date_picker_selector"
             android:textSize="@dimen/mdtp_selected_date_day_size"
             tools:text="15"/>
-    </ir.android.persiantask.utils.calender.AccessibleLinearLayout>
+    </ir.android.taskroom.utils.calender.AccessibleLinearLayout>
 
-    <ir.android.persiantask.utils.calender.AccessibleTextView
+    <ir.android.taskroom.utils.calender.AccessibleTextView
         android:id="@+id/date_picker_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

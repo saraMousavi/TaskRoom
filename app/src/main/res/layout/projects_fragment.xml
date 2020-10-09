@@ -6,7 +6,7 @@
 
         <variable
             name="ProjectsViewModel"
-            type="ir.android.persiantask.viewmodels.ProjectViewModel" />
+            type="ir.android.taskroom.viewmodels.ProjectViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

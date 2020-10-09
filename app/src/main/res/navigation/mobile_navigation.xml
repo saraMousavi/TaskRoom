@@ -7,20 +7,20 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="ir.android.persiantask.ui.fragment.ProjectsFragment"
+        android:name="ir.android.taskroom.ui.fragment.ProjectsFragment"
         tools:layout="@layout/projects_fragment" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="ir.android.persiantask.ui.fragment.ReminderFragment"
+        android:name="ir.android.taskroom.ui.fragment.ReminderFragment"
         tools:layout="@layout/reminder_fragment" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="ir.android.persiantask.ui.fragment.CalenderFragment"
+        android:name="ir.android.taskroom.ui.fragment.CalenderFragment"
         tools:layout="@layout/calender_fragment" />
     <fragment
         android:id="@+id/navigation_setting"
-        android:name="ir.android.persiantask.ui.fragment.SettingFragment"
+        android:name="ir.android.taskroom.ui.fragment.SettingFragment"
         tools:layout="@layout/setting_fragment" />
 </navigation>

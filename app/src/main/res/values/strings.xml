@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PersianTask</string>
+    <string name="app_name">TaskRoom</string>
     <!--    bubble navigation words-->
     <string name="Projects">پروژه ها</string>
     <string name="Reminders">یادآورها</string>

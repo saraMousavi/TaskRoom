@@ -32,7 +32,7 @@
             android:layout_height="@dimen/mdtp_header_height"
             android:layout_gravity="center" />
     </LinearLayout>
-    <ir.android.persiantask.utils.calender.RadialPickerLayout
+    <ir.android.taskroom.utils.calender.RadialPickerLayout
         android:id="@+id/time_picker"
         android:layout_height="@dimen/mdtp_time_picker_height"
         android:layout_width="@dimen/mdtp_picker_dimen"
