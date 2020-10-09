@@ -259,4 +259,8 @@
     <string name="successEditCategory">دسته مورد نظر با موفقیت ویرایش گردید.</string>
     <string name="successEditReminder">ویرایش یادآور با موفقیت انجام شد.</string>
     <string name="successEditTask">ویرایش کار با موفقیت انجام شد.</string>
+    <string name="remindeTime">زمان باقیمانده:</string>
+    <string name="validstartdateandenddate">تاریخ پایان از تاریخ شروع کوچکتر است.</string>
+    <string name="remindInStartDate">در تاریخ شروع یادآوری شود.</string>
+    <string name="validstartdatepast">تاریخ شروع گذشته است.</string>
 </resources>

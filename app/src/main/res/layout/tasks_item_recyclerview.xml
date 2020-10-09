@@ -121,12 +121,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/dot2"
             app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
-
+<!--        //ic_orange_repeat-->
         <ImageView
             android:id="@+id/reminder_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_orange_repeat"
+            android:src="@drawable/ic_orange_alarm"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/reminder_attach"
             app:layout_constraintLeft_toLeftOf="parent"

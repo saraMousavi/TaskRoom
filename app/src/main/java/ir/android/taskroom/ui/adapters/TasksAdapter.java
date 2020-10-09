@@ -123,7 +123,13 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         //remind me in advance
         if (tasks.getTasks_remindertime() != 0) {
             holder.reminder_time.setVisibility(View.VISIBLE);
+            if(tasks.getTasks_repeateddays().isEmpty()) {
+                holder.reminder_time.setImageResource(R.drawable.ic_orange_alarm);
+            } else {
+                holder.reminder_time.setImageResource(R.drawable.ic_orange_repeat);
+            }
         }
+        //@TODO change icon to alarm off when alarm passed
         //set comment for task
         if (!tasks.getTasks_comment().isEmpty()) {
             holder.tasks_comment.setVisibility(View.VISIBLE);

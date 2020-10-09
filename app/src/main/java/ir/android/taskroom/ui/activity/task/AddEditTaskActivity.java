@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -111,7 +112,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Long tempTaskID;
     private boolean isEditActivity = false;
     private Tasks clickedTask;
-    private JobScheduler mScheduler;
     private int lastProjectID;
     private CollapsingToolbarLayout toolBarLayout;
     private LifeCycleCallBackManager lifeCycleCallBackManager;
@@ -184,7 +184,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         });
         ArrayList<String> remindTimeArray = new ArrayList<>();
         remindTimeArray.add(getString(R.string.dontRemind));
-        remindTimeArray.add(getString(R.string.remindInEndDate));
+        remindTimeArray.add(getString(R.string.remindInStartDate));
         //@TODO change this translation
         remindTimeArray.add(getString(R.string.remindInAdvance));
         ArrayAdapter<String> remindTimeAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
@@ -404,12 +404,20 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         repeatTypeVal.setText("");
                         break;
                     case 1:
+                    case 2:
                         reminderTypeConstraint.setVisibility(View.VISIBLE);
                         repeatTypeConstraint.setVisibility(View.GONE);
                         repeatTypeVal.setText("");
                         Init.fadeVisibelityView(reminderTypeConstraint);
+                        if(reminderTime.getAdapter().getCount() < 4){
+                            repeatTypeConstraint.setVisibility(View.VISIBLE);
+                            Init.fadeVisibelityView(repeatTypeConstraint);
+                            Snackbar
+                                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG)
+                                    .show();
+                        }
                         break;
-                    case 2:
+                    case 3:
                         reminderTypeConstraint.setVisibility(View.VISIBLE);
                         repeatTypeConstraint.setVisibility(View.VISIBLE);
                         Init.fadeVisibelityView(reminderTypeConstraint);
@@ -514,7 +522,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         startDateConstraint = findViewById(R.id.startDateConstraint);
         endDateConstraint = findViewById(R.id.endDateConstraint);
         startTextVal = findViewById(R.id.reminderTimeVal);
-        //@TODO why hour and minute  has inversed in ui
         startTextVal.setText(Init.getCurrentDate());
         endTextVal = findViewById(R.id.endTextVal);
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
@@ -541,7 +548,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         storageIcon = findViewById(R.id.storageIcon);
         uploadChoose = findViewById(R.id.uploadChoose);
         completeIcon.setTag(R.drawable.ic_black_circle);
-        mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        startDatepickerVal = Init.getCurrentDate();
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
 
         TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getInt("selectedProjectID", 0));
@@ -555,7 +562,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             clickedTask = (Tasks) intent.getExtras().getSerializable("clickedTask");
             editableTaskFields();
         }
-        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
             View someView = findViewById(R.id.nestedScroll);
             View root = someView.getRootView();
             root.setBackgroundColor(getResources().getColor(R.color.backgroundDarkWindow));
@@ -633,9 +640,20 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
         String workID = createWorkRequest();
+        if (workID.equals("-1")) {
+            Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdateandenddate), Snackbar.LENGTH_LONG)
+                    .show();
+            return;
+        } else if (workID.equals("-2")) {
+            Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdatepast), Snackbar.LENGTH_LONG)
+                    .show();
+            return;
+        }
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
-                reminderTypeVal,reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
+                reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
                 tasksComment.getText().toString(), workID, attachmentsAdapter.getItemCount() > 0);
         tasks.setTasks_id(tempTaskID);
@@ -646,17 +664,62 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private String createWorkRequest() {
-        DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-        DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
-//        DateTime dateTime3 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(endDatepickerVal));
-//        if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay() + "" + dateTime1.getMinuteOfHour())) {
-//            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
-//        }
-        Interval interval = new Interval(dateTime1, dateTime2);
-        return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(), reminderTypeVal,
-                Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
-                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), false);
+    public String createWorkRequest() {
+        DateTime dateTime1 = null;
+        DateTime dateTime2 = null;
+        if (reminderTime.getSelectedItemPosition() == 1) {
+            dateTime1 = Init.getCurrentDateTimeWithSecond();
+            dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+            if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    return "-2";//start date past
+                }
+            }
+        } else if (reminderTime.getAdapter().getCount() > 3) {
+            if (reminderTime.getSelectedItemPosition() == 3) {
+                dateTime1 = Init.getCurrentDateTimeWithSecond();
+                dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
+                }
+            } else if (reminderTime.getSelectedItemPosition() == 2) {
+                dateTime1 = Init.getCurrentDateTimeWithSecond();
+                dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(endDatepickerVal));
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    return "-1";
+                }
+            }
+        } else {
+            if (reminderTime.getSelectedItemPosition() == 2) {
+                dateTime1 = Init.getCurrentDateTimeWithSecond();
+                dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
+                }
+            }
+        }
+        if (dateTime1 != null && dateTime2 != null) {
+            if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                return "-1";
+            }
+            if (reminderTime.getSelectedItemPosition() != 0) {
+                Interval interval = new Interval(dateTime1, dateTime2);
+//            long hour = interval.toDuration().getStandardMinutes() / 60;
+//            long minute = interval.toDuration().getStandardMinutes() - hour * 60;
+//            long second = 0;
+//            if (minute == 0 && hour == 0) {
+//                second = interval.toDuration().getStandardSeconds();
+//            }
+//            Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
+                return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(), reminderTypeVal,
+                        Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
+                        interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), false);
+            }
+        }
+
+
+        return "0";
     }
 
     @Override
@@ -695,7 +758,15 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             endDatepickerVal += time;
             endTextVal.setText(endDatepickerVal);
             endTextVal.setVisibility(View.VISIBLE);
-            reminderTimeConstraint.setVisibility(View.VISIBLE);
+            ArrayList<String> remindTimeArray = new ArrayList<>();
+            remindTimeArray.add(getString(R.string.dontRemind));
+            remindTimeArray.add(getString(R.string.remindInStartDate));
+            remindTimeArray.add(getString(R.string.remindInEndDate));
+            //@TODO change this translation
+            remindTimeArray.add(getString(R.string.remindInAdvance));
+            ArrayAdapter<String> remindTimeAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
+                    android.R.layout.simple_spinner_dropdown_item, remindTimeArray);
+            reminderTime.setAdapter(remindTimeAdapter);
             Init.fadeVisibelityView(reminderTimeConstraint);
         }
     }

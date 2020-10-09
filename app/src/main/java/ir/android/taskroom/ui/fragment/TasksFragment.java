@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -206,8 +207,8 @@ public class TasksFragment extends Fragment {
             }
         });
         taskRecyclerView.setAdapter(taskAdapter);
-        taskRecyclerView.setLayoutManager(new RollingLayoutManager(getContext()));
-        taskRecyclerView.setNestedScrollingEnabled(false);
+        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        taskRecyclerView.setNestedScrollingEnabled(false);
 
     }
 

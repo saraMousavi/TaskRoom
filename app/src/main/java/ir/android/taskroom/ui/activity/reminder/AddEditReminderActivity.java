@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -336,7 +337,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         datepickerVal = Init.getCurrentTime();
         RadioButton radioButton = reminderTypeGroup.findViewWithTag("notification");
-        if(radioButton.isChecked()){
+        if (radioButton.isChecked()) {
             radioButton.setChecked(true);
         }
 
@@ -453,11 +454,21 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private String createWorkRequest() {
         DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-        DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0);
-        if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay() + "" + dateTime1.getMinuteOfHour())) {
-            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
+        DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+        if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
+                + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
+                "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
+            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1, false);
         }
         Interval interval = new Interval(dateTime1, dateTime2);
+        long hour = interval.toDuration().getStandardMinutes() / 60;
+        long minute = interval.toDuration().getStandardMinutes() - hour * 60;
+        long second = 0;
+        if(minute == 0 && hour == 0){
+            second = interval.toDuration().getStandardSeconds();
+        }
+
+        Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
         return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(), reminderTypeVal,
                 Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
                 interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), true);
@@ -466,7 +477,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
-        datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay) + ":" + (minute < 10 ? "0" + minute : minute);
+        datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay) + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
         reminderTime.setText(datepickerVal);
         isReminerTimeChange = true;
     }
