@@ -257,4 +257,6 @@
     <string name="cantDeleteDefaultCategory">امکان حذف دسته های پیش فرض وجود ندارد.</string>
     <string name="cantEditDefaultCategory">امکان ویرایش دسته های پیش فرض وجود ندارد.</string>
     <string name="successEditCategory">دسته مورد نظر با موفقیت ویرایش گردید.</string>
+    <string name="successEditReminder">ویرایش یادآور با موفقیت انجام شد.</string>
+    <string name="successEditTask">ویرایش کار با موفقیت انجام شد.</string>
 </resources>

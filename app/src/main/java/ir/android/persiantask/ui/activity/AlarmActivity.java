@@ -3,10 +3,13 @@ package ir.android.persiantask.ui.activity;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.AnalogClock;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -16,12 +19,16 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorCompat;
 
 import ir.android.persiantask.R;
 import ir.android.persiantask.ui.workers.AlarmWorker;
+import ir.android.persiantask.utils.animation.CircleAnimation;
+import ir.android.persiantask.utils.shape.Circle;
 
 public class AlarmActivity extends AppCompatActivity {
-    private ImageView alarmIcon;
+    //    private ImageView alarmIcon;
     private AnalogClock alarmClockIcon;
     private SwitchCompat alarmActive;
     private TextView alarmTitle;
@@ -60,19 +67,17 @@ public class AlarmActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         setContentView(R.layout.alarm_activity);
-        alarmIcon = findViewById(R.id.alarmIcon);
+//        alarmIcon = findViewById(R.id.alarmIcon);
         alarmClockIcon = findViewById(R.id.analogClock);
         alarmActive = findViewById(R.id.alarm_active);
         alarmTitle = findViewById(R.id.alarmTitle);
         alarmTitle.setText(getIntent().getExtras().getString("alarmTitle"));
-        Animation animation = AnimationUtils.loadAnimation(AlarmActivity.this,
-                R.anim.shake);
-        alarmIcon.startAnimation(animation);
-        alarmClockIcon.startAnimation(animation);
-//        Intent intent = new Intent(AlarmActivity.this, AlarmJobService.class);
-//        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//        PendingIntent pendingIntent = PendingIntent.getService(AlarmActivity.this, 0 , intent, 0);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+        Circle circle = findViewById(R.id.alarmIcon);
+
+        CircleAnimation circleAnimation = new CircleAnimation(circle, 360);
+        circleAnimation.setDuration(1500);
+        circleAnimation.setRepeatCount(Animation.INFINITE);
+        circle.startAnimation(circleAnimation);
     }
 
     @Override

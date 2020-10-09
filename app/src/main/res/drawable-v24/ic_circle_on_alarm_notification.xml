@@ -6,5 +6,5 @@
             <size android:width="@dimen/_55sdp" android:height="@dimen/_55sdp"/>
         </shape>
     </item>
-    <item android:drawable="@drawable/ic_green_on_notifications"/>
+    <item android:drawable="@drawable/ic_white_notification"/>
 </layer-list>

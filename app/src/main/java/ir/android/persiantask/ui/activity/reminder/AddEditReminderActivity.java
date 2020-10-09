@@ -106,6 +106,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private RecyclerView attachedRecyclerView;
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
+    private Integer reminderTypeVal;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -235,7 +236,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                if(uploadChoose.getVisibility() == View.VISIBLE){
+                if (uploadChoose.getVisibility() == View.VISIBLE) {
                     scaleAnimation(false);
                 } else {
                     scaleAnimation(true);
@@ -279,8 +280,8 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     };
 
     private void insertTempReminder() {
-        Reminders reminders = new Reminders(0,"","",
-                0,"","",0,0,1,"", false);
+        Reminders reminders = new Reminders(0, "", "",
+                0, "", "", 0, 0, 1, "", false);
 
         try {
             if (isEditActivity) {
@@ -302,7 +303,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (lifeCycleCallBackManager != null) {
+        if (lifeCycleCallBackManager != null && permissions.length != 0) {
             lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
@@ -347,6 +348,10 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         datepickerVal = Init.getCurrentTime();
+        RadioButton radioButton = reminderTypeGroup.findViewWithTag("notification");
+        if(radioButton.isChecked()){
+            radioButton.setChecked(true);
+        }
 
         Intent intent = getIntent();
 
@@ -409,12 +414,14 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         } else if (priorityVal.getText().toString().equals(getString(R.string.high))) {
             priorityIntVal = 3;
         }
-        RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
-        String workID = createWorkRequest();
 
-        Reminders reminders = new Reminders(reminderType == null ? null : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1
+        RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
+        reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
+        String workID = createWorkRequest();
+        Reminders reminders = new Reminders(reminderTypeVal
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
-                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0, 0, workID, attachmentsAdapter.getItemCount() > 0);
+                repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0,
+                0, workID, attachmentsAdapter.getItemCount() > 0);
         if (isEditActivity) {
             if (isReminerTimeChange) {
                 if (clickedReminder.getWork_id().contains(",")) {
@@ -433,7 +440,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     }
 
     private void scaleAnimation(boolean visible) {
-        if(visible){
+        if (visible) {
             Animation anim = new ScaleAnimation(
                     0, 1f, // Start and end values for the X axis scaling
                     1f, 1f, // Start and end values for the Y axis scaling
@@ -460,14 +467,13 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private String createWorkRequest() {
         DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
         DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0);
-        System.out.println("datepickerVal = " + datepickerVal);
         if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay() + "" + dateTime1.getMinuteOfHour())) {
             dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
         }
         Interval interval = new Interval(dateTime1, dateTime2);
-        return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(),
+        return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(), reminderTypeVal,
                 Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
-                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty());
+                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), true);
     }
 
 

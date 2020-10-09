@@ -427,12 +427,15 @@ public class Init {
      * create work request and add it two wrk manager
      */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static String requestWork(Context context, String alarmTitle, Map<Integer, Object> repeatIntervalMap, long duration, boolean isPeriodic) {
+    public static String requestWork(Context context, String alarmTitle, Integer reminderType, Map<Integer,
+            Object> repeatIntervalMap, long duration, boolean isPeriodic, boolean isReminder) {
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
                 .build();
-        Data data = new Data.Builder().putString("alarmTitle", alarmTitle).build();
+        Data data = new Data.Builder().putString("alarmTitle", alarmTitle)
+                .putBoolean("isReminder", isReminder)
+                .putInt("reminderType", reminderType).build();
         if (isPeriodic) {
             Integer repeatInterval = 1;
             long repeatIntervalLong = 0;

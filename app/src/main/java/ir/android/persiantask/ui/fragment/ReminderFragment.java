@@ -222,6 +222,12 @@ public class ReminderFragment extends Fragment {
             reminders.setReminders_id(sharedPreferences.getLong("tempReminderID", 0));
             reminderViewModel.delete(reminders);
         }
+        if (requestCode == EDIT_REMINDER_REQUEST && resultCode == RESULT_OK) {
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditReminder), Snackbar.LENGTH_LONG)
+                    .show();
+            reminderAdapter.notifyDataSetChanged();
+        }
     }
 
 }

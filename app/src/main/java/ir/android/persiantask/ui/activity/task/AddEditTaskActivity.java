@@ -123,6 +123,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
     private LinearLayout uploadChoose;
+    private Integer reminderTypeVal;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -449,7 +450,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
                 lifeCycleCallBackManager = filePickUtils.getCallBackManager();
                 filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
-//                requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
             }
         });
         storageIcon.setOnClickListener(new View.OnClickListener() {
@@ -635,11 +635,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     .show();
             return;
         }
+        reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
         String workID = createWorkRequest();
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
-                reminderType == null ? null : (reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1),
-                reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
+                reminderTypeVal,reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
                 tasksComment.getText().toString(), workID, attachmentsAdapter.getItemCount() > 0);
         tasks.setTasks_id(tempTaskID);
@@ -658,9 +658,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 //            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1);
 //        }
         Interval interval = new Interval(dateTime1, dateTime2);
-        return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(),
+        return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(), reminderTypeVal,
                 Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
-                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty());
+                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), false);
     }
 
     @Override
@@ -745,7 +745,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (lifeCycleCallBackManager != null) {
+        if (lifeCycleCallBackManager != null && permissions.length != 0) {
+            System.out.println("permissions = " + permissions);
             lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }

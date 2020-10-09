@@ -45,7 +45,10 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
         @SuppressLint("DiffUtilEquals")
         @Override
         public boolean areContentsTheSame(@NonNull Reminders oldItem, @NonNull Reminders newItem) {
-            return oldItem.getReminders_title().equals(newItem.getReminders_title());
+            return oldItem.getReminders_title().equals(newItem.getReminders_title()) &&
+                    oldItem.getReminders_time().equals(newItem.getReminders_time()) &&
+                    oldItem.getReminders_repeatedtype().equals(newItem.getReminders_repeatedtype()) &&
+                    oldItem.getReminders_repeatedday().equals(newItem.getReminders_repeatedday());
         }
     };
     private Context context;

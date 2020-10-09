@@ -41,7 +41,10 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         @SuppressLint("DiffUtilEquals")
         @Override
         public boolean areContentsTheSame(@NonNull Tasks oldItem, @NonNull Tasks newItem) {
-            return oldItem.getTasks_title().equals(newItem.getTasks_title());
+            return oldItem.getTasks_title().equals(newItem.getTasks_title()) &&
+                    oldItem.getTasks_startdate().equals(newItem.getTasks_startdate()) &&
+                    oldItem.getTasks_enddate().equals(newItem.getTasks_enddate()) &&
+                    oldItem.getTasks_priority().equals(newItem.getTasks_priority());
         }
     };
     private SharedPreferences sharedPreferences;

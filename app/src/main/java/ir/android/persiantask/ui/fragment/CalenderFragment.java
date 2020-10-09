@@ -318,10 +318,12 @@ public class CalenderFragment extends Fragment {
             public void onChanged(List<Tasks> tasks) {
                 for (Tasks task : tasks) {
                     DateTime dateTime1 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
-                    DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
-                    int duration = Days.daysBetween(dateTime1, dateTime2).getDays();
-                    for (int i = 0; i < duration; i++) {
-                        markSomeDays(dateTime1.plusDays(i));
+                    if(!task.getTasks_enddate().isEmpty()){
+                        DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
+                        int duration = Days.daysBetween(dateTime1, dateTime2).getDays();
+                        for (int i = 0; i < duration; i++) {
+                            markSomeDays(dateTime1.plusDays(i));
+                        }
                     }
                 }
             }

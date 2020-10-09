@@ -523,6 +523,7 @@
                 android:background="@drawable/corner_shape_upload_choose"
                 android:orientation="horizontal"
                 android:padding="@dimen/_3sdp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/attachedRecyclerView"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">

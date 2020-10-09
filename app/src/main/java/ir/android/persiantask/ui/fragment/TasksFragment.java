@@ -235,6 +235,12 @@ public class TasksFragment extends Fragment {
             tasks.setTasks_id(sharedPreferences.getLong("tempTaskID", 0));
             taskViewModel.delete(tasks);
         }
+        if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+            taskAdapter.notifyDataSetChanged();
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditTask), Snackbar.LENGTH_LONG)
+                    .show();
+        }
     }
 
 }
