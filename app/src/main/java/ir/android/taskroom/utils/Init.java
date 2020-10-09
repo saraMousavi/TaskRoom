@@ -124,6 +124,20 @@ public class Init {
     }
 
     /**
+     * current date time without hour
+     *
+     * @return
+     */
+    public static DateTime getCurrentDateWhitoutTime() {
+        PersianCalendar persianCalendar = new PersianCalendar();
+        int month = persianCalendar.getPersianMonth() + 1;
+
+        return convertIntegerToDateTime(integerFormatFromStringDate(persianCalendar.getPersianYear() + "/"
+                + (month < 10 ? "0" + month : month) + "/"
+                + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())));
+    }
+
+    /**
      * current date time with second
      *
      * @return
@@ -134,7 +148,6 @@ public class Init {
         if(isDate){
             time = time.split(" ")[1];
         }
-        System.out.println("time = " + time);
         int hour = Integer.parseInt(time.split(":")[0]);
         int minute = Integer.parseInt(time.split(":")[1]);
         int second = Integer.parseInt(time.split(":")[2]);
@@ -232,7 +245,6 @@ public class Init {
         if (integerTime < 1000000) {
             return null;
         }
-        System.out.println("integerTime = " + integerTime);
         if (integerTime > 99999999) {
             long year = integerTime / 10000000000L;
             long month = (integerTime % 10000000000L) / 100000000L;
@@ -565,7 +577,6 @@ public class Init {
                             .setInputData(data)
                             .setInitialDelay(duration, TimeUnit.MILLISECONDS)
                             .build();
-            System.out.println("duration = " + duration);
             WorkManager
                     .getInstance(context)
                     .enqueue(oneTimeWorkRequest);
@@ -580,21 +591,21 @@ public class Init {
         } else if (repeatType.equals(mResourse.getString(R.string.weekly))) {
             intervalRepeat.put(7, TimeUnit.DAYS);
         } else if (repeatType.equals(mResourse.getString(R.string.monthly))) {
-            Calendar calendar = Calendar.getInstance();
-            int currentMonth = calendar.get(Calendar.MONTH);
             DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-            DateTime dateTime2 = new DateTime(calendar.get(Calendar.YEAR), currentMonth == 12 ? 1 : currentMonth + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
-                    calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
+            DateTime dateTime2 = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
+                    Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
+                    Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
+                    , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
+                    Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
             Interval interval = new Interval(dateTime1, dateTime2);
             intervalRepeat.put(1, interval.toDurationMillis());
         } else if (repeatType.equals(mResourse.getString(R.string.yearly))) {
-            Calendar calendar = Calendar.getInstance();
-            int currentYear = calendar.get(Calendar.YEAR);
             DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-            DateTime dateTime2 = new DateTime(calendar.get(Calendar.YEAR), currentYear + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
-                    calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
+            DateTime dateTime2 = new DateTime(Init.getCurrentDateTimeWithSecond().getYear() + 1,
+                    Init.getCurrentDateTimeWithSecond().getMonthOfYear(),
+                    Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
+                    , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
+                    Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
             Interval interval = new Interval(dateTime1, dateTime2);
             intervalRepeat.put(1, interval.toDurationMillis());
         } else if (repeatType.contains(",")) {

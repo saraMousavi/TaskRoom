@@ -410,6 +410,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
                 repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0,
                 0, workID, attachmentsAdapter.getItemCount() > 0);
+
         if (isEditActivity) {
             if (isReminerTimeChange) {
                 if (clickedReminder.getWork_id().contains(",")) {
@@ -420,6 +421,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                     WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
                 }
             }
+            reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
+        } else {
+            reminders.setReminders_crdate(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
         }
         reminders.setReminders_id(tempReminderID);
         reminderViewModel.update(reminders);

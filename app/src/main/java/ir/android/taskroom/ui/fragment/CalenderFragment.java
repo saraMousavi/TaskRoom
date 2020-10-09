@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import org.joda.time.Days;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ir.android.taskroom.R;
@@ -104,6 +106,7 @@ public class CalenderFragment extends Fragment {
         this.inflater = view;
         init();
         markDaysThatHaveTask();
+        markDaysThatHaveReminder();
         onClickListener();
         onTouchListener();
         Init.initShowCaseView(getContext(), this.inflater.findViewById(R.id.persianCalendar),
@@ -119,7 +122,6 @@ public class CalenderFragment extends Fragment {
 
             @Override
             public void onDateSelected(DateTime dateTime) {
-                Log.i(TAG, "onDateSelected: " + dateTime.toString());
                 /**
                  * update recycler view with select each day and show task that the chosen day is between start
                  * date and end date of it
@@ -135,7 +137,6 @@ public class CalenderFragment extends Fragment {
 
             @Override
             public void onChangeViewPager(PersianViewPagerType persianViewPagerType) {
-                Log.i(TAG, "onChangeViewPager: " + persianViewPagerType.name());
             }
         });
 
@@ -151,8 +152,39 @@ public class CalenderFragment extends Fragment {
         });
 
 
-
         return view;
+    }
+
+    private void markDaysThatHaveReminder() {
+        reminderViewModel.getAllReminders().observe(getViewLifecycleOwner(), new Observer<List<Reminders>>() {
+
+            @Override
+            public void onChanged(List<Reminders> reminders) {
+                for (Reminders reminder : reminders) {
+                    DateTime startDate = Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                    if (reminder.getReminders_repeatedday().isEmpty()) {
+                        if (reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                            markVerticalSomeDays(startDate);
+                        }
+                    } else {
+                        if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                            DateTime enddate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
+                                    Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
+                                    Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
+                                    , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
+                                    Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
+                            int duration = Days.daysBetween(startDate, enddate).getDays();
+                            for (int i = 0; i < duration; i++) {
+                                markVerticalSomeDays(startDate.plusDays(i));
+                            }
+                        }
+                    }
+
+                }
+                reminderAdapter.submitList(reminders);
+                recyclerView.setAdapter(reminderAdapter);
+            }
+        });
     }
 
     private void initTaskRecyclerView() {
@@ -162,9 +194,35 @@ public class CalenderFragment extends Fragment {
                 public void onChanged(List<Tasks> tasks) {
                     List<Tasks> filteredTasks = new ArrayList<>();
                     for (Tasks task : tasks) {
-                        if (Init.integerFormatFromStringDate(task.getTasks_startdate()) <= Init.integerFormatDate(clickedDateTime) &&
-                                Init.integerFormatDate(clickedDateTime) <= Init.integerFormatFromStringDate(task.getTasks_enddate())) {
-                            filteredTasks.add(task);
+                        if (task.getTasks_remindertime() == 0) {
+                            if (task.getTasks_enddate().isEmpty()) {
+                                if ((Init.integerFormatFromStringDate(task.getTasks_startdate()) / 1000000) == Init.integerFormatDate(clickedDateTime)) {
+                                    filteredTasks.add(task);
+                                }
+                            } else {
+                                if (Init.integerFormatFromStringDate(task.getTasks_startdate()) <= Init.integerFormatDate(clickedDateTime) &&
+                                        Init.integerFormatDate(clickedDateTime) <= Init.integerFormatFromStringDate(task.getTasks_enddate())) {
+                                    filteredTasks.add(task);
+                                }
+                            }
+                        }
+                        if (task.getTasks_remindertime() == 1) {
+                            if ((Init.integerFormatFromStringDate(task.getTasks_startdate()) / 1000000) == Init.integerFormatDate(clickedDateTime)) {
+                                filteredTasks.add(task);
+                            }
+                        } else if (task.getTasks_remindertime() == 2 && task.getTasks_repeateddays().isEmpty()) {
+                            if (Init.integerFormatDate(clickedDateTime) == Init.integerFormatFromStringDate(task.getTasks_enddate()) / 1000000) {
+                                filteredTasks.add(task);
+                            }
+                        } else if (task.getTasks_remindertime() == 2 && !task.getTasks_repeateddays().isEmpty()) {
+                            if (Init.integerFormatFromStringDate(task.getTasks_startdate()) / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                filteredTasks.add(task);
+                            }
+                        } else if (task.getTasks_remindertime() == 3) {
+                            if (Init.integerFormatFromStringDate(task.getTasks_startdate()) / 1000000 <= Init.integerFormatDate(clickedDateTime) &&
+                                    Init.integerFormatDate(clickedDateTime) <= Init.integerFormatFromStringDate(task.getTasks_enddate()) / 1000000) {
+                                filteredTasks.add(task);
+                            }
                         }
                     }
                     tasksAdapter.submitList(filteredTasks);
@@ -180,14 +238,17 @@ public class CalenderFragment extends Fragment {
 
                 @Override
                 public void onChanged(List<Reminders> reminders) {
-                    List<Tasks> filteredTasks = new ArrayList<>();
+                    List<Reminders> filterReminders = new ArrayList<>();
                     for (Reminders reminder : reminders) {
-//                    if (Init.integerFormatFromStringDate(reminder.getTasks_startdate()) <= Init.integerFormatDate(clickedDateTime) &&
-//                            Init.integerFormatDate(clickedDateTime) <= Init.integerFormatFromStringDate(task.getTasks_enddate())) {
-//                        filteredTasks.add(task);
-//                    }
+                        if (reminder.getReminders_repeatedday().isEmpty()) {
+                            if (reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                                filterReminders.add(reminder);
+                            }
+                        } else if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                            filterReminders.add(reminder);
+                        }
                     }
-                    reminderAdapter.submitList(reminders);
+                    reminderAdapter.submitList(filterReminders);
                     recyclerView.setAdapter(reminderAdapter);
                 }
             });
@@ -257,10 +318,11 @@ public class CalenderFragment extends Fragment {
         tasksAdapter.setOnItemClickListener(new TasksAdapter.TaskClickListener() {
             @Override
             public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
-                ft.addToBackStack(null);
-                ft.commit();
+                //@TODO
+//                FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
+//                ft.addToBackStack(null);
+//                ft.commit();
             }
 
             @Override
@@ -315,12 +377,47 @@ public class CalenderFragment extends Fragment {
             @Override
             public void onChanged(List<Tasks> tasks) {
                 for (Tasks task : tasks) {
-                    DateTime dateTime1 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
-                    if(!task.getTasks_enddate().isEmpty()){
-                        DateTime dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
-                        int duration = Days.daysBetween(dateTime1, dateTime2).getDays();
-                        for (int i = 0; i < duration; i++) {
-                            markSomeDays(dateTime1.plusDays(i));
+                    DateTime startdate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
+                    //remind in start date
+                    if (task.getTasks_remindertime() == 0) {
+                        if (task.getTasks_enddate().isEmpty()) {
+                            markSomeDays(startdate);
+                        } else {
+                            DateTime enddate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
+                            int duration = Days.daysBetween(startdate, enddate).getDays();
+                            for (int i = 0; i < duration; i++) {
+                                markSomeDays(startdate.plusDays(i));
+                            }
+                        }
+                    }
+                    if (task.getTasks_remindertime() == 1) {
+                        markSomeDays(startdate);
+                    }
+                    if (task.getTasks_repeateddays().isEmpty()) {
+                        //remind in end date
+                        if (task.getTasks_remindertime() == 2) {
+                            DateTime enddate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
+                            markSomeDays(enddate);
+                        }
+                    } else {
+                        //remind in custom until end date
+                        if (!task.getTasks_enddate().isEmpty()) {
+                            DateTime enddate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
+                            int duration = Days.daysBetween(startdate, enddate).getDays();
+                            for (int i = 0; i < duration; i++) {
+                                markSomeDays(startdate.plusDays(i));
+                            }
+                        } else {
+                            //remind in custom without end date until next month
+                            DateTime enddate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
+                                    Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
+                                    Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
+                                    , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
+                                    Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
+                            int duration = Days.daysBetween(startdate, enddate).getDays();
+                            for (int i = 0; i < duration; i++) {
+                                markSomeDays(startdate.plusDays(i));
+                            }
                         }
                     }
                 }
@@ -352,6 +449,7 @@ public class CalenderFragment extends Fragment {
         fab2 = this.inflater.findViewById(R.id.fab2);
         taskText = this.inflater.findViewById(R.id.taskText);
         reminderText = this.inflater.findViewById(R.id.reminderText);
+        clickedDateTime = Init.getCurrentDateWhitoutTime();
 
         //Only main FAB is visible in the beginning
         closeSubMenusFab();
@@ -360,6 +458,10 @@ public class CalenderFragment extends Fragment {
 
     public void markSomeDays(DateTime perChr) {
         this.persianHorizontalExpCalendar.markDate(new DateTime(perChr), PersianCustomMarks.SmallOval_Bottom, Color.RED).updateMarks();
+    }
+
+    public void markVerticalSomeDays(DateTime perChr) {
+        this.persianHorizontalExpCalendar.markDate(new DateTime(perChr), PersianCustomMarks.VerticalLine_Right, Color.YELLOW).updateMarks();
     }
 
     public void cutomMarkTodaySelectedDay() {

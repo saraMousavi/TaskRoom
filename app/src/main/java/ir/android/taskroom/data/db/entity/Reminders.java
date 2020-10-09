@@ -29,7 +29,7 @@ public class Reminders implements Serializable {
     @ColumnInfo(name = "reminders_id")
     private Long reminders_id;
     @ColumnInfo(name = "reminders_update")
-    private Integer reminders_update;
+    private Long reminders_update;
     @ColumnInfo(name = "reminders_type")
     private Integer reminders_type;
     @ColumnInfo(name = "reminders_comment")
@@ -45,7 +45,7 @@ public class Reminders implements Serializable {
     @ColumnInfo(name = "reminders_repeatedday")
     private String reminders_repeatedday;
     @ColumnInfo(name = "reminders_crdate")
-    private Integer reminders_crdate;
+    private Long reminders_crdate;
     @ColumnInfo(name = "reminders_repeatedtype")
     private Integer reminders_repeatedtype;
     @ColumnInfo(name = "reminders_active")
@@ -76,11 +76,11 @@ public class Reminders implements Serializable {
         this.has_attach = has_attach;
     }
 
-    public void setReminders_update(Integer reminders_update) {
+    public void setReminders_update(Long reminders_update) {
         this.reminders_update = reminders_update;
     }
 
-    public Integer getReminders_update() {
+    public Long getReminders_update() {
         return reminders_update;
     }
 
@@ -157,11 +157,11 @@ public class Reminders implements Serializable {
         return reminders_repeatedday;
     }
 
-    public void setReminders_crdate(Integer reminders_crdate) {
+    public void setReminders_crdate(Long reminders_crdate) {
         this.reminders_crdate = reminders_crdate;
     }
 
-    public Integer getReminders_crdate() {
+    public Long getReminders_crdate() {
         return reminders_crdate;
     }
 
