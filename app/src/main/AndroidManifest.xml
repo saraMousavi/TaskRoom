@@ -75,10 +75,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
-        <service
-            android:name="ir.android.taskroom.ui.services.AlarmJobService"
-            android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 
