@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
 
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Reminders;
@@ -124,6 +126,13 @@ public class ReminderFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Reminders selectedReminder = reminderAdapter.getReminderAt(viewHolder.getAdapterPosition());
+                if (selectedReminder.getWork_id().contains(",")) {
+                    for (String requestId : selectedReminder.getWork_id().split(",")) {
+                        WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                    }
+                } else {
+                    WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
+                }
                 reminderViewModel.delete(selectedReminder);
 
                 Snackbar

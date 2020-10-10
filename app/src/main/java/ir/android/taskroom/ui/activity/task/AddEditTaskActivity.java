@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.R;
@@ -120,6 +122,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private AttachmentsViewModel attachmentsViewModel;
     private LinearLayout uploadChoose;
     private Integer reminderTypeVal;
+    private boolean isReminerTimeChange = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -404,12 +407,17 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         repeatTypeVal.setText("");
                         break;
                     case 1:
+                        reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        repeatTypeConstraint.setVisibility(View.GONE);
+                        repeatTypeVal.setText("");
+                        Init.fadeVisibelityView(reminderTypeConstraint);
+                        break;
                     case 2:
                         reminderTypeConstraint.setVisibility(View.VISIBLE);
                         repeatTypeConstraint.setVisibility(View.GONE);
                         repeatTypeVal.setText("");
                         Init.fadeVisibelityView(reminderTypeConstraint);
-                        if(reminderTime.getAdapter().getCount() < 4){
+                        if (reminderTime.getAdapter().getCount() < 4) {
                             repeatTypeConstraint.setVisibility(View.VISIBLE);
                             Init.fadeVisibelityView(repeatTypeConstraint);
                             Snackbar
@@ -618,6 +626,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         priorityVal.setText(priorityStringVal);
         tasksComment.setText(clickedTask.getTasks_comment());
         isEditActivity = true;
+        System.out.println("clickedTask = " + clickedTask.getWork_id());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -639,6 +648,17 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             return;
         }
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
+        if (isEditActivity) {
+            if (isReminerTimeChange) {
+                if (clickedTask.getWork_id().contains(",")) {
+                    for (String requestId : clickedTask.getWork_id().split(",")) {
+                        WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
+                    }
+                } else {
+                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
+                }
+            }
+        }
         String workID = createWorkRequest();
         if (workID.equals("-1")) {
             Snackbar
@@ -651,11 +671,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     .show();
             return;
         }
+
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
                 tasksComment.getText().toString(), workID, attachmentsAdapter.getItemCount() > 0);
+
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
         setResult(RESULT_OK);
@@ -744,6 +766,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             endDatepickerVal += date;
             timePickerDialog.show(getSupportFragmentManager(), "endTimePickerDialog");
         }
+        isReminerTimeChange = true;
     }
 
     @Override

@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,6 +30,7 @@ import net.vrgsoft.layoutmanager.RollingLayoutManager;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -139,6 +141,13 @@ public class TasksFragment extends Fragment {
                     public void onChanged(List<Subtasks> subtasks) {
                         for (Subtasks subtask : subtasks) {
                             subTasksViewModel.delete(subtask);
+                        }
+                        if (selectedTask.getWork_id().contains(",")) {
+                            for (String requestId : selectedTask.getWork_id().split(",")) {
+                                WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                            }
+                        } else {
+                            WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                         }
                         taskViewModel.delete(selectedTask);
                     }
