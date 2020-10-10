@@ -236,7 +236,7 @@ public class TasksFragment extends Fragment {
         } else if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED) {
             Tasks tasks = new Tasks("", 0, 0, 0,
                     selectedProject.getProject_id(), "", 0, 0,
-                    "", "", 0, "", "", false);
+                    "", "", 0, "", "", false, "");
             tasks.setTasks_id(sharedPreferences.getLong("tempTaskID", 0));
             taskViewModel.delete(tasks);
         }

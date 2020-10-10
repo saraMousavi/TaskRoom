@@ -72,11 +72,14 @@ public class Tasks implements Serializable {
     private String work_id;
     @ColumnInfo(name = "has_attach")
     private Boolean has_attach;
+    @ColumnInfo(name = "complete_date")
+    private String complete_date;
 
 
     public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype,
                  Integer projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime,
-                 String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment, String work_id, Boolean has_attach) {
+                 String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment, String work_id,
+                 Boolean has_attach, String complete_date) {
         this.tasks_priority = tasks_priority;
         this.tasks_iscompleted = tasks_iscompleted;
         this.tasks_repeatedtype = tasks_repeatedtype;
@@ -91,6 +94,7 @@ public class Tasks implements Serializable {
         this.tasks_comment = tasks_comment;
         this.work_id = work_id;
         this.has_attach = has_attach;
+        this.complete_date = complete_date;
     }
 
     public void setTasks_priority(Integer tasks_priority) {
@@ -211,5 +215,13 @@ public class Tasks implements Serializable {
 
     public void setHas_attach(Boolean has_attach) {
         this.has_attach = has_attach;
+    }
+
+    public String getComplete_date() {
+        return complete_date;
+    }
+
+    public void setComplete_date(String complete_date) {
+        this.complete_date = complete_date;
     }
 }

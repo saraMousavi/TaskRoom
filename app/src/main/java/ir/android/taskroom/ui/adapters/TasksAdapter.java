@@ -105,7 +105,8 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Tasks task = new Tasks(tasks.getTasks_title(), tasks.getTasks_priority(), 0, tasks.getTasks_repeatedtype(), tasks.getProjects_id(), tasks.getTasks_startdate(), tasks.getTasks_remindertype()
-                        , tasks.getTasks_remindertime(), tasks.getTasks_repeateddays(), tasks.getTasks_enddate(), tasks.getLabel_id(), tasks.getTasks_comment(), tasks.getWork_id(), tasks.getHas_attach());
+                        , tasks.getTasks_remindertime(), tasks.getTasks_repeateddays(), tasks.getTasks_enddate(),
+                        tasks.getLabel_id(), tasks.getTasks_comment(), tasks.getWork_id(), tasks.getHas_attach(), tasks.getComplete_date());
                 if (tasks.getTasks_iscompleted() == 0) {
                     task.setTasks_iscompleted(1);
                     task.setTasks_enddate(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +

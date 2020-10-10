@@ -141,7 +141,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void insertTempTask() {
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
-                "", "", 0, "", "", false);
+                "", "", 0, "", "", false, "");
         try {
             if (isEditActivity) {
                 tempTaskID = clickedTask.getTasks_id();
@@ -608,7 +608,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             completeIcon.setTag(R.drawable.ic_radio_button_checked_green);
             completedDate.setVisibility(View.VISIBLE);
             isCompleted = true;
-            completedDate.setText(clickedTask.getTasks_enddate());
+            completedDate.setText(clickedTask.getComplete_date());
         }
         priorityVal.setVisibility(View.VISIBLE);
         String priorityStringVal = getString(R.string.nonePriority);
@@ -671,12 +671,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     .show();
             return;
         }
-
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
-                completedDateVal.isEmpty() ? endTextVal.getText().toString() : completedDateVal, 1,
-                tasksComment.getText().toString(), workID, attachmentsAdapter.getItemCount() > 0);
+                endTextVal.getText().toString(), 1,tasksComment.getText().toString(),
+                workID, attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
 
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
