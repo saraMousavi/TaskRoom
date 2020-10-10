@@ -655,7 +655,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                     }
                 } else {
-                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
+                    if(clickedTask.getWork_id() != "0") {
+                        WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
+                    }
                 }
             }
         }

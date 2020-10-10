@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,6 +44,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -275,6 +277,15 @@ public class CalenderFragment extends Fragment {
                             for (Subtasks subtask : subtasks) {
                                 subTasksViewModel.delete(subtask);
                             }
+                            if (selectedTask.getWork_id().contains(",")) {
+                                for (String requestId : selectedTask.getWork_id().split(",")) {
+                                    WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                                }
+                            } else {
+                                if(!selectedTask.getWork_id().equals("0")) {
+                                    WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
+                                }
+                            }
                             taskViewModel.delete(selectedTask);
                         }
                     });
@@ -503,6 +514,17 @@ public class CalenderFragment extends Fragment {
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
                     .show();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
+            Reminders reminders = new Reminders(0,"","",
+                    0,"","",0,0,1,"", false);
+
+            reminders.setReminders_id(sharedPreferences.getLong("tempReminderID", 0));
+            reminderViewModel.delete(reminders);
+        }
+        if (requestCode == EDIT_REMINDER_REQUEST && resultCode == RESULT_OK) {
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditReminder), Snackbar.LENGTH_LONG)
+                    .show();
+            reminderAdapter.notifyDataSetChanged();
         }
         if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_OK) {
             Projects projects = selectedProject;
@@ -518,6 +540,12 @@ public class CalenderFragment extends Fragment {
                     "", "", 0, "", "", false, "");
             tasks.setTasks_id(sharedPreferences.getLong("tempTaskID", 0));
             taskViewModel.delete(tasks);
+        }
+        if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+            tasksAdapter.notifyDataSetChanged();
+            Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditTask), Snackbar.LENGTH_LONG)
+                    .show();
         }
         closeSubMenusFab();
     }

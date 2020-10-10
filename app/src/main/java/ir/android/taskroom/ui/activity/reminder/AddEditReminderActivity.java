@@ -422,6 +422,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 }
             }
             reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
+            reminders.setReminders_crdate(clickedReminder.getReminders_crdate());
         } else {
             reminders.setReminders_crdate(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
         }

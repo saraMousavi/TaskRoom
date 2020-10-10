@@ -109,12 +109,12 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                         tasks.getLabel_id(), tasks.getTasks_comment(), tasks.getWork_id(), tasks.getHas_attach(), tasks.getComplete_date());
                 if (tasks.getTasks_iscompleted() == 0) {
                     task.setTasks_iscompleted(1);
-                    task.setTasks_enddate(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +
+                    task.setComplete_date(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +
                             " " + mFragmentActivity.getString(R.string.completed));
                 } else {
                     task.setTasks_iscompleted(0);
                     //@TODO add column to task for save last enddate
-                    task.setTasks_enddate(Init.getCurrentDate());
+                    task.setComplete_date("");
                 }
                 task.setTasks_id(tasks.getTasks_id());
                 taskViewModel.update(task);

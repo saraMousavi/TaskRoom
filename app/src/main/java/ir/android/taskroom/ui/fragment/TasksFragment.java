@@ -147,7 +147,10 @@ public class TasksFragment extends Fragment {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                             }
                         } else {
-                            WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
+                            System.out.println("selectedTask.getWork_id() = " + selectedTask.getWork_id());
+                            if(!selectedTask.getWork_id().equals("0")) {
+                                WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
+                            }
                         }
                         taskViewModel.delete(selectedTask);
                     }
