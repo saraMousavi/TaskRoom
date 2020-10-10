@@ -16,7 +16,7 @@ public class TasksRepository {
     private TasksDao tasksDao;
     private LiveData<List<Tasks>> allProjectsTasks, allTasks;
 
-    public TasksRepository(Application application, Integer projectID) {
+    public TasksRepository(Application application, Long projectID) {
         TaskRoomDb taskRoomDb = TaskRoomDb.getInstance(application);
         tasksDao = taskRoomDb.tasksDao();
         allProjectsTasks = tasksDao.getAllTasks(projectID);

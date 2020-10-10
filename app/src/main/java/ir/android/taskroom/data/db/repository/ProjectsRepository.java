@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.data.db.dao.ProjectsDao;
 import ir.android.taskroom.data.db.database.TaskRoomDb;
@@ -16,15 +17,15 @@ public class ProjectsRepository {
     private LiveData<List<Projects>> allProjects;
     private LiveData<Projects> projectByID;
 
-    public ProjectsRepository(Application application, Integer projectID) {
+    public ProjectsRepository(Application application, Long projectID) {
         TaskRoomDb taskRoomDb = TaskRoomDb.getInstance(application);
         projectsDao = taskRoomDb.projectsDao();
         allProjects = projectsDao.getAllProjects();
         projectByID = projectsDao.getProjectsByID(projectID);
     }
 
-    public void insert(Projects projects) {
-        new ProjectsRepository.InsertProjectsAsyncTask(projectsDao).execute(projects);
+    public long insert(Projects projects) throws ExecutionException, InterruptedException {
+        return new ProjectsRepository.InsertProjectsAsyncTask(projectsDao).execute(projects).get();
     }
 
     public void update(Projects projects) {
@@ -43,7 +44,7 @@ public class ProjectsRepository {
         return projectByID;
     }
 
-    private static class InsertProjectsAsyncTask extends AsyncTask<Projects, Void, Void> {
+    private static class InsertProjectsAsyncTask extends AsyncTask<Projects, Void, Long> {
 
         private ProjectsDao projectsDao;
 
@@ -52,9 +53,8 @@ public class ProjectsRepository {
         }
 
         @Override
-        protected Void doInBackground(Projects... projects) {
-            projectsDao.insert(projects[0]);
-            return null;
+        protected Long doInBackground(Projects... projects) {
+            return projectsDao.insert(projects[0]);
         }
     }
 

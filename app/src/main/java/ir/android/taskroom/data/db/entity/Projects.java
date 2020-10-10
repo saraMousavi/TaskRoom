@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class Projects implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "project_id")
-    private Integer project_id;
+    private Long project_id;
     @ColumnInfo(name = "projects_crdate")
     private Integer projects_crdate;
     @ColumnInfo(name = "projects_iscompleted")
@@ -72,11 +72,11 @@ public class Projects implements Serializable {
         return category_id;
     }
 
-    public void setProject_id(Integer project_id) {
+    public void setProject_id(Long project_id) {
         this.project_id = project_id;
     }
 
-    public Integer getProject_id() {
+    public Long getProject_id() {
         return project_id;
     }
 

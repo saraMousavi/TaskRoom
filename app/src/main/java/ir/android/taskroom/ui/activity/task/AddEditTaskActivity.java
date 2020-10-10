@@ -114,7 +114,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Long tempTaskID;
     private boolean isEditActivity = false;
     private Tasks clickedTask;
-    private int lastProjectID;
+    private long lastProjectID;
     private CollapsingToolbarLayout toolBarLayout;
     private LifeCycleCallBackManager lifeCycleCallBackManager;
     private RecyclerView attachedRecyclerView;
@@ -231,7 +231,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         attachmentsViewModel.getAllTasksAttachments().observe(this, new Observer<List<Attachments>>() {
             @Override
             public void onChanged(List<Attachments> attachments) {
-                System.out.println("attachments.size() = " + attachments.size());
                 attachmentsAdapter.submitList(attachments);
                 attachedRecyclerView.setAdapter(attachmentsAdapter);
             }
@@ -559,7 +558,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         startDatepickerVal = Init.getCurrentDate();
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
 
-        TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getInt("selectedProjectID", 0));
+        TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getLong("selectedProjectID", 0));
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskViewModel = ViewModelProviders.of(this, taskFactory).get(TaskViewModel.class);
 
@@ -626,7 +625,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         priorityVal.setText(priorityStringVal);
         tasksComment.setText(clickedTask.getTasks_comment());
         isEditActivity = true;
-        System.out.println("clickedTask = " + clickedTask.getWork_id());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -678,7 +676,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 endTextVal.getText().toString(), 1,tasksComment.getText().toString(),
                 workID, attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
-
+        System.out.println("tempTaskID = " + tempTaskID);
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
         setResult(RESULT_OK);

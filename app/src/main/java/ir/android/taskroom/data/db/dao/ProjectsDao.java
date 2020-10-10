@@ -30,6 +30,6 @@ public interface ProjectsDao {
     LiveData<List<Projects>> getProjects(Integer projects_cruer);
 
     @Query("SELECT * FROM Projects WHERE project_id = :project_id")
-    LiveData<Projects> getProjectsByID(Integer project_id);
+    LiveData<Projects> getProjectsByID(Long project_id);
 
 }

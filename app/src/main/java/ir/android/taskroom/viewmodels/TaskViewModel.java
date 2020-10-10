@@ -16,7 +16,7 @@ public class TaskViewModel extends AndroidViewModel {
     private TasksRepository tasksRepository;
     private LiveData<List<Tasks>> allProjectsTasks, allTasks;
 
-    public TaskViewModel(@NonNull Application application, Integer projectID) {
+    public TaskViewModel(@NonNull Application application, Long projectID) {
         super(application);
         tasksRepository = new TasksRepository(application, projectID);
         allProjectsTasks = tasksRepository.getAllProjectsTasks();

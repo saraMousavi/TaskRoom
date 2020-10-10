@@ -27,5 +27,5 @@ public interface TasksDao {
     LiveData<List<Tasks>> getAllTasks();
 
     @Query("SELECT * FROM Tasks WHERE projects_id=:projects_id ORDER BY tasks_id")
-    LiveData<List<Tasks>> getAllTasks(Integer projects_id);
+    LiveData<List<Tasks>> getAllTasks(Long projects_id);
 }

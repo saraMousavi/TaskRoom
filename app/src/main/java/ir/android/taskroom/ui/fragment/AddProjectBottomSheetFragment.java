@@ -153,13 +153,5 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         viewMap.put(insertProjectBtn, true);
         views.add(viewMap);
         Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
-//        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
-//            projectsTitle.setHintTextColor(getResources().getColor(R.color.white));
-//            editText.setBoxStrokeColor(getResources().getColor(R.color.white));
-//            editText.setBoxStrokeWidth(1);
-//            editText.setBoxStrokeWidthFocused(1);
-//        }
-
-
     }
 }

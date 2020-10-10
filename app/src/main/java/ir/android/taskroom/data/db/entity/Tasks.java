@@ -51,7 +51,7 @@ public class Tasks implements Serializable {
     @ColumnInfo(name = "tasks_repeatedtype")
     private Integer tasks_repeatedtype;
     @ColumnInfo(name = "projects_id")
-    private Integer projects_id;
+    private Long projects_id;
     @ColumnInfo(name = "tasks_title")
     private String tasks_title;
     @ColumnInfo(name = "tasks_startdate")
@@ -77,7 +77,7 @@ public class Tasks implements Serializable {
 
 
     public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype,
-                 Integer projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime,
+                 Long projects_id, String tasks_startdate, Integer tasks_remindertype, Integer tasks_remindertime,
                  String tasks_repeateddays, String tasks_enddate, Integer label_id, String tasks_comment, String work_id,
                  Boolean has_attach, String complete_date) {
         this.tasks_priority = tasks_priority;
@@ -121,11 +121,11 @@ public class Tasks implements Serializable {
         return tasks_repeatedtype;
     }
 
-    public void setProjects_id(Integer projects_id) {
+    public void setProjects_id(Long projects_id) {
         this.projects_id = projects_id;
     }
 
-    public Integer getProjects_id() {
+    public Long getProjects_id() {
         return projects_id;
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.repository.ProjectsRepository;
@@ -16,15 +17,15 @@ public class ProjectViewModel extends AndroidViewModel {
     private LiveData<List<Projects>> allProjects;
     private LiveData<Projects> projectByID;
 
-    public ProjectViewModel(@NonNull Application application, Integer projectID) {
+    public ProjectViewModel(@NonNull Application application, Long projectID) {
         super(application);
         projectsRepository = new ProjectsRepository(application, projectID);
         allProjects = projectsRepository.getAllProjects();
         projectByID = projectsRepository.getProjectsByID();
     }
 
-    public void insert(Projects projects){
-        projectsRepository.insert(projects);
+    public Long insert(Projects projects) throws ExecutionException, InterruptedException {
+        return projectsRepository.insert(projects);
     }
 
     public void update(Projects projects){

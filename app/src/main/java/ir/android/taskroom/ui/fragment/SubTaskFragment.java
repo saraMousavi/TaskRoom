@@ -77,7 +77,7 @@ public class SubTaskFragment extends Fragment {
                     int subtaskLineWidth = subtaskListLine.getWidth() / subtasks.size();
                     expandItem.setVisibility(View.VISIBLE);
                     for (Subtasks subtask : subtasks) {
-                        View line = new View(getActivity());
+                        View line = new View(getContext());
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(subtaskLineWidth, 2);
                         params.setMargins(3, 0, 3, 0);
                         line.setLayoutParams(params);

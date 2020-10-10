@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import ir.android.taskroom.R;
@@ -66,15 +67,16 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private CollapsingToolbarLayout toolBarLayout;
     private ProjectsFragmentBinding projectsFragmentBinding;
     private ProjectViewModel projectViewModel;
-    private TaskViewModel taskViewModel;
     private SubTasksViewModel subTasksViewModel;
     private AppBarLayout mAppBarLayout;
     private Button firstAddProjectBtn;
-    private HashMap<Integer, Fragment> taskFragList;
+    private HashMap<Long, Fragment> taskFragList;
     private SharedPreferences sharedPreferences;
     private List<Tasks> tempTaskList = new ArrayList<>();
-    private List<Subtasks> tempSubTaskList = new ArrayList<>();
+    private Map<Long, List<Subtasks>> tempSubTaskMap = new HashMap<>();
+    private ArrayList<Subtasks> subtaskList = new ArrayList<>();
     private boolean notUndoDelete = true;
+    private boolean observeTask = true;
 
 
     @Override
@@ -141,7 +143,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 for (Projects project : projects) {
                     TasksFragment tasksFragment = new TasksFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putInt("projectID", project.getProject_id());
+                    bundle.putLong("projectID", project.getProject_id());
                     tasksFragment.setArguments(bundle);
                     taskFragList.put(project.getProject_id(), tasksFragment);
                 }
@@ -257,7 +259,11 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         String msg = "";
         switch (actionTypes) {
             case ADD:
-                projectViewModel.insert(projects);
+                try {
+                    projectViewModel.insert(projects);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 msg = getString(R.string.successInsertProject);
 
                 Snackbar
@@ -276,25 +282,37 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 Projects tempProject = projects;
                 TasksViewModelFactory taskfactory = new TasksViewModelFactory(getActivity().getApplication(), projects.getProject_id());
                 TaskViewModel tasksViewModel = ViewModelProviders.of(getActivity(), taskfactory).get(TaskViewModel.class);
-                tasksViewModel.getAllTasks().observeForever(new Observer<List<Tasks>>() {
+                tasksViewModel.getAllProjectsTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
                     @Override
                     public void onChanged(List<Tasks> tasks) {
-                        for (Tasks task : tasks) {
-                            tempTaskList.add(task);
-                            SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), task.getTasks_id());
-                            SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
-                            subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
-                                @Override
-                                public void onChanged(List<Subtasks> subtasks) {
-                                    for (Subtasks subtask : subtasks) {
-                                        tempSubTaskList.add(subtask);
-                                        subTasksViewModel.delete(subtask);
+                        if (notUndoDelete) {
+                            for (Tasks task : tasks) {
+                                tempTaskList.add(task);
+                                SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), task.getTasks_id());
+                                subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
+                                subTasksViewModel.getAllSubtasks().observe(getViewLifecycleOwner(), new Observer<List<Subtasks>>() {
+                                    @Override
+                                    public void onChanged(List<Subtasks> subtasks) {
+                                        if(observeTask) {
+                                            subtaskList = new ArrayList<>();
+                                            for (Subtasks subtask : subtasks) {
+                                                subtaskList.add(subtask);
+                                                subTasksViewModel.delete(subtask);
+                                            }
+                                            tempSubTaskMap.put(task.getTasks_id(), subtaskList);
+                                            tasksViewModel.delete(task);
+                                            observeTask = false;
+                                        }
                                     }
+                                });
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    projectViewModel.delete(projects);
                                 }
-                            });
-                            tasksViewModel.delete(task);
+                            }, 700);
                         }
-                        projectViewModel.delete(projects);
                     }
                 });
 
@@ -304,16 +322,27 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     @Override
                     public void onClick(View v) {
                         //@TODO add timer for undo
-                        projectViewModel.insert(tempProject);
+                        long prjID = 0;
+                        try {
+                            prjID = projectViewModel.insert(tempProject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         for (Tasks task : tempTaskList) {
                             try {
-                                tasksViewModel.insert(task);
+                                task.setProjects_id(prjID);
+                                for (Map.Entry<Long, List<Subtasks>> entry : tempSubTaskMap.entrySet()) {
+                                    long taskID = tasksViewModel.insert(task);
+                                    if (task.getTasks_id().equals(entry.getKey())) {
+                                        for (Subtasks subtasks : entry.getValue()) {
+                                            subtasks.setTasks_id(taskID);
+                                            subTasksViewModel.insert(subtasks);
+                                        }
+                                    }
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }
-                        for (Subtasks subtask : tempSubTaskList) {
-                            subTasksViewModel.insert(subtask);
                         }
                         notUndoDelete = false;
                         snackbar.dismiss();
@@ -325,6 +354,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     public void run() {
                         if (notUndoDelete) {
                             taskFragList.remove(projects.getProject_id());
+                        } else {
+                            notUndoDelete = true;
+                            observeTask = true;
                         }
                     }
                 }, 3000);

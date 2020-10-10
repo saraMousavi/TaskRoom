@@ -9,10 +9,10 @@ import ir.android.taskroom.viewmodels.TaskViewModel;
 
 public class TasksViewModelFactory implements ViewModelProvider.Factory {
     private Application mApplication;
-    private Integer mProjectsID;
+    private Long mProjectsID;
 
 
-    public TasksViewModelFactory(Application application, Integer projectsID) {
+    public TasksViewModelFactory(Application application, Long projectsID) {
         mApplication = application;
         mProjectsID = projectsID;
     }
