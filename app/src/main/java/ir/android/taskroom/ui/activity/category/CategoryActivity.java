@@ -30,12 +30,15 @@ import java.util.Map;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Category;
+import ir.android.taskroom.data.db.entity.Projects;
+import ir.android.taskroom.data.db.factory.ProjectsViewModelFactory;
 import ir.android.taskroom.databinding.CategoryActivityBinding;
 import ir.android.taskroom.ui.adapters.CategoryAdapter;
 import ir.android.taskroom.ui.fragment.AddCategoryBottomSheetFragment;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.enums.ActionTypes;
 import ir.android.taskroom.viewmodels.CategoryViewModel;
+import ir.android.taskroom.viewmodels.ProjectViewModel;
 
 public class CategoryActivity extends AppCompatActivity implements AddCategoryBottomSheetFragment.SubmitClickListener {
     private CategoryActivityBinding categoryActivityBinding;
@@ -106,12 +109,27 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                     categoryAdapter.notifyDataSetChanged();
                     return;
                 }
-                //@TODO cant delete category that use in project
-                CategoryViewModel categoryViewModel = ViewModelProviders.of(CategoryActivity.this).get(CategoryViewModel.class);
-                categoryViewModel.delete(selectedCategory);
-                Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteCategory), Snackbar.LENGTH_LONG)
-                        .show();
+                ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
+                ProjectViewModel projectViewModel = ViewModelProviders.of(CategoryActivity.this, projectFactory).get(ProjectViewModel.class);
+                projectViewModel.getAllProjects().observe(CategoryActivity.this, new Observer<List<Projects>>() {
+                    @Override
+                    public void onChanged(List<Projects> projects) {
+                        for(Projects project:projects){
+                            if(project.getCategory_id().equals(selectedCategory.getCategory_id())){
+                                Snackbar
+                                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstDeleteProjectsInCategory), Snackbar.LENGTH_LONG)
+                                        .show();
+                                categoryAdapter.notifyDataSetChanged();
+                                return;
+                            }
+                        }
+                        CategoryViewModel categoryViewModel = ViewModelProviders.of(CategoryActivity.this).get(CategoryViewModel.class);
+                        categoryViewModel.delete(selectedCategory);
+                        Snackbar
+                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteCategory), Snackbar.LENGTH_LONG)
+                                .show();
+                    }
+                });
             }
         }).attachToRecyclerView(categoryRecyclerView);
     }
