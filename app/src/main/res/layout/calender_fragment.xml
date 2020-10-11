@@ -88,7 +88,7 @@
             android:layout_height="40dp"
             android:layout_gravity="bottom|end"
             android:background="@drawable/ic_fill_orange_circle_shape"
-            android:src="@drawable/ic_white_task" />
+            android:src="@drawable/ic_white_add_task" />
 
         <TextView
             android:id="@+id/taskText"
@@ -115,7 +115,7 @@
             android:layout_height="40dp"
             android:background="@drawable/ic_fill_orange_circle_shape"
             android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_white_reminder" />
+            android:src="@drawable/ic_white_add_alarm" />
 
         <TextView
             android:id="@+id/reminderText"
