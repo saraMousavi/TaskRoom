@@ -37,7 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@drawable/ic_black_art"
-            android:checked="true"
             android:gravity="bottom"
             android:button="@android:color/transparent"/>
         <RadioButton
@@ -93,7 +92,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:background="@drawable/ic_black_chat"
-            android:checked="true"
             android:gravity="bottom"
             android:button="@android:color/transparent"/>
         <RadioButton
