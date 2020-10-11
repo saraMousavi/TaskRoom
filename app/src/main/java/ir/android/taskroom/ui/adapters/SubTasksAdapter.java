@@ -44,24 +44,26 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
         public boolean areContentsTheSame(@NonNull Subtasks oldItem, @NonNull Subtasks newItem) {
             return oldItem.getSubtasks_title().equals(newItem.getSubtasks_title());
         }
-    } ;
-    public SubTasksAdapter(FragmentActivity fragmentActivity, SubTasksViewModel subTasksViewModel){
+    };
+
+    public SubTasksAdapter(FragmentActivity fragmentActivity, SubTasksViewModel subTasksViewModel) {
         super(DIFF_CALLBACK);
         this.mFragmentActivity = fragmentActivity;
         this.subTasksViewModel = subTasksViewModel;
-        this.sharedPreferences  = PreferenceManager
+        this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(mFragmentActivity);
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == VIEW_TYPE_ITEM) {
-            Context context = parent.getContext();
+        Context context = parent.getContext();
+        setMasterTheme(context);
+        if (viewType == VIEW_TYPE_ITEM) {
             LayoutInflater inflater = LayoutInflater.from(context);
             View subtasksView = inflater.inflate(R.layout.subtasks_item_recyclerview, parent, false);
             return new SubTasksItemViewHolder(subtasksView);
-        } else if(viewType == VIEW_TYPE_ADD){
-            Context context = parent.getContext();
+        } else if (viewType == VIEW_TYPE_ADD) {
             LayoutInflater inflater = LayoutInflater.from(context);
             View addSubtasksView = inflater.inflate(R.layout.subtasks_item_add, parent, false);
             return new SubTasksAddItemViewHolder(addSubtasksView);
@@ -71,7 +73,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof SubTasksItemViewHolder) {
+        if (holder instanceof SubTasksItemViewHolder) {
             SubTasksItemViewHolder subTasksItemViewHolder = (SubTasksItemViewHolder) holder;
             Subtasks subtasks = getItem(position);
             Init.toggleCompleteCircle(subTasksItemViewHolder.subtasksTitle, subTasksItemViewHolder.subtasksCompletedIcon, subtasks.getSubtasks_iscompleted());
@@ -113,7 +115,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                     });
                 }
             });
-        } else if(holder instanceof SubTasksAddItemViewHolder){
+        } else if (holder instanceof SubTasksAddItemViewHolder) {
             subTasksAddItemViewHolder = (SubTasksAddItemViewHolder) holder;
             subTasksAddItemViewHolder.itemView.setVisibility(View.VISIBLE);
             subTasksAddItemViewHolder.removeAddRow.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +130,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
             subTasksAddItemViewHolder.insertSubstasksIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(subTasksAddItemViewHolder.addNewSubtasks.getText().toString().isEmpty()){
+                    if (subTasksAddItemViewHolder.addNewSubtasks.getText().toString().isEmpty()) {
                         Snackbar
                                 .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content),
                                         mFragmentActivity.getString(R.string.enterSubTaskName), Snackbar.LENGTH_LONG)
@@ -157,12 +159,13 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
         return position + 1 == getItemCount() ? VIEW_TYPE_ADD : VIEW_TYPE_ITEM;
     }
 
-    public class SubTasksItemViewHolder extends RecyclerView.ViewHolder{
+    public class SubTasksItemViewHolder extends RecyclerView.ViewHolder {
         ImageView subtasksCompletedIcon;
         TextView subtasksTitle;
         ConstraintLayout editSubtaskConstarintLayout, subtaskRow;
         EditText editSubtasksEditText;
         ImageView editSubstasksIcon, removeEditRow;
+
         public SubTasksItemViewHolder(@NonNull View itemView) {
             super(itemView);
             subtasksCompletedIcon = itemView.findViewById(R.id.subtasksCompletedIcon);
@@ -175,10 +178,11 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
         }
     }
 
-    public class SubTasksAddItemViewHolder extends RecyclerView.ViewHolder{
+    public class SubTasksAddItemViewHolder extends RecyclerView.ViewHolder {
         ImageView removeAddRow;
         ImageView insertSubstasksIcon;
         EditText addNewSubtasks;
+
         public SubTasksAddItemViewHolder(@NonNull View itemView) {
             super(itemView);
             removeAddRow = itemView.findViewById(R.id.removeAddRow);
@@ -187,7 +191,41 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
         }
     }
 
-    public Subtasks getSubTaskAt(int position){
+    public Subtasks getSubTaskAt(int position) {
         return getItem(position);
+    }
+
+    public void setMasterTheme(Context context) {
+        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+            context.setTheme(R.style.FeedActivityThemeDark);
+            return;
+        }
+        switch (getFlag(context)) {
+            case 2:
+                context.setTheme(R.style.AppTheme2);
+                break;
+            case 3:
+                context.setTheme(R.style.AppTheme3);
+                break;
+            case 4:
+                context.setTheme(R.style.AppTheme4);
+                break;
+            case 5:
+                context.setTheme(R.style.AppTheme5);
+                break;
+            case 6:
+                context.setTheme(R.style.AppTheme6);
+                break;
+            default:
+                context.setTheme(R.style.AppTheme);
+                break;
+        }
+    }
+
+
+    public Integer getFlag(Context context) {
+        SharedPreferences sharedpreferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        return sharedpreferences.getInt("theme", 1);
     }
 }
