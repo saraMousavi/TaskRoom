@@ -26,8 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
-import net.vrgsoft.layoutmanager.RollingLayoutManager;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -136,23 +134,23 @@ public class TasksFragment extends Fragment {
                 Tasks selectedTask = taskAdapter.getTaskAt(viewHolder.getAdapterPosition());
                 SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTask.getTasks_id());
                 SubTasksViewModel subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
-                subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
+                subTasksViewModel.getAllTasksSubtasks().observe(getViewLifecycleOwner(), new Observer<List<Subtasks>>() {
                     @Override
                     public void onChanged(List<Subtasks> subtasks) {
                         for (Subtasks subtask : subtasks) {
                             subTasksViewModel.delete(subtask);
                         }
+                        taskViewModel.delete(selectedTask);
                         if (selectedTask.getWork_id().contains(",")) {
                             for (String requestId : selectedTask.getWork_id().split(",")) {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                             }
                         } else {
-                            System.out.println("selectedTask.getWork_id() = " + selectedTask.getWork_id());
                             if(!selectedTask.getWork_id().equals("0")) {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                             }
                         }
-                        taskViewModel.delete(selectedTask);
+
                     }
                 });
                 Projects projects = selectedProject;

@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.utils.Init;
@@ -78,7 +80,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
             subTasksItemViewHolder.subtasksCompletedIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Subtasks newSubtasks = new Subtasks(subtasks.getSubtasks_title(), subtasks.getSubtasks_iscompleted() == 1 ? 0 : 1, subtasks.getTasks_id());
+                    Subtasks newSubtasks = new Subtasks(subtasks.getSubtasks_title(), subtasks.getSubtasks_iscompleted() == 1 ? 0 : 1, subtasks.getTasks_id(), subtasks.getProjects_id());
                     newSubtasks.setSubtasks_id(subtasks.getSubtasks_id());
                     subTasksViewModel.update(newSubtasks);
                     notifyDataSetChanged();
@@ -94,7 +96,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             Subtasks subtask = new Subtasks(subTasksItemViewHolder.editSubtasksEditText.getText().toString(),
-                                    subtasks.getSubtasks_iscompleted(), subtasks.getTasks_id());
+                                    subtasks.getSubtasks_iscompleted(), subtasks.getTasks_id(), subtasks.getProjects_id());
                             subtask.setSubtasks_id(subtasks.getSubtasks_id());
                             subTasksViewModel.update(subtask);
                             notifyDataSetChanged();
@@ -133,7 +135,10 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                                 .show();
                         return;
                     }
-                    Subtasks subtasks = new Subtasks(subTasksAddItemViewHolder.addNewSubtasks.getText().toString(), 0, sharedPreferences.getLong("tempTaskID", 0));
+                    Gson gson = new Gson();
+                    String projectJson = sharedPreferences.getString("selectedProject", "");
+                    Projects projects = gson.fromJson(projectJson, Projects.class);
+                    Subtasks subtasks = new Subtasks(subTasksAddItemViewHolder.addNewSubtasks.getText().toString(), 0, sharedPreferences.getLong("tempTaskID", 0), projects.getProject_id());
                     subTasksViewModel.insert(subtasks);
                     subTasksAddItemViewHolder.addNewSubtasks.setText("");
                 }

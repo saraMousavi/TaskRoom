@@ -70,7 +70,7 @@ public class SubTaskFragment extends Fragment {
         factory = new SubTasksViewModelFactory(getActivity().getApplication(), selectedTaskID);
         subTasksViewModel = ViewModelProviders.of(this, factory).get(SubTasksViewModel.class);
         SubTasksAdapter subTasksAdapter = new SubTasksAdapter(getActivity(), subTasksViewModel);
-        subTasksViewModel.getAllSubtasks().observeForever(new Observer<List<Subtasks>>() {
+        subTasksViewModel.getAllTasksSubtasks().observe(getViewLifecycleOwner(), new Observer<List<Subtasks>>() {
             @Override
             public void onChanged(List<Subtasks> subtasks) {
                 if (subtasks.size() > 0) {

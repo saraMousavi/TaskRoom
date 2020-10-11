@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -50,6 +52,9 @@ import ir.android.taskroom.ui.adapters.ProjectsAdapter;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.enums.ActionTypes;
 import ir.android.taskroom.utils.enums.ShowCaseSharePref;
+import ir.android.taskroom.utils.interfaces.ViewModelCallBackProjects;
+import ir.android.taskroom.utils.interfaces.ViewModelCallBackSubTasks;
+import ir.android.taskroom.utils.interfaces.ViewModelCallBackTasks;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
 import ir.android.taskroom.viewmodels.SubTasksViewModel;
 import ir.android.taskroom.viewmodels.TaskViewModel;
@@ -68,15 +73,18 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private ProjectsFragmentBinding projectsFragmentBinding;
     private ProjectViewModel projectViewModel;
     private SubTasksViewModel subTasksViewModel;
+    private TaskViewModel tasksViewModel;
     private AppBarLayout mAppBarLayout;
     private Button firstAddProjectBtn;
     private HashMap<Long, Fragment> taskFragList;
     private SharedPreferences sharedPreferences;
     private List<Tasks> tempTaskList = new ArrayList<>();
-    private Map<Long, List<Subtasks>> tempSubTaskMap = new HashMap<>();
-    private ArrayList<Subtasks> subtaskList = new ArrayList<>();
-    private boolean notUndoDelete = true;
-    private boolean observeTask = true;
+    private Map<Tasks, List<Subtasks>> tempSubTaskMap = new HashMap<>();
+    private ArrayList<Subtasks> tempSubtaskList = new ArrayList<>();
+    private ProgressBar progressBar;
+    private Integer tasknum, progressNum, progressPercent;
+    private Projects tempProject;
+    private boolean notUndo = true;
 
 
     @Override
@@ -123,10 +131,14 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             @Override
             public void OnItemClick(Projects projects) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                Fragment selectedFragment = taskFragList.get(projects.getProject_id());
-                ft.replace(R.id.taskFragmentContainer, selectedFragment);
-                ft.addToBackStack(null);
-                ft.commit();
+                if (projects != null) {
+                    Fragment selectedFragment = taskFragList.get(projects.getProject_id());
+                    if (selectedFragment != null) {
+                        ft.replace(R.id.taskFragmentContainer, selectedFragment);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
+                }
             }
         });
 
@@ -245,6 +257,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         firstAddProjectBtn = this.inflatedView.findViewById(R.id.firstAddProjectBtn);
         projectsAdapter = new ProjectsAdapter(getChildFragmentManager(), getActivity());
         projectsEmptyPage = inflatedView.findViewById(R.id.projectsEmptyPage);
+        progressBar = inflatedView.findViewById(R.id.progressBar);
 
 
         final Toolbar toolbar = (Toolbar) this.inflatedView.findViewById(R.id.toolbar);
@@ -278,88 +291,28 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                         .show();
                 break;
             case DELETE:
-                msg = getString(R.string.successDeleteProject);
-                Projects tempProject = projects;
-                TasksViewModelFactory taskfactory = new TasksViewModelFactory(getActivity().getApplication(), projects.getProject_id());
-                TaskViewModel tasksViewModel = ViewModelProviders.of(getActivity(), taskfactory).get(TaskViewModel.class);
-                tasksViewModel.getAllProjectsTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
+                notUndo = true;
+                tasknum = projects.getProjects_tasks_num();
+                progressNum = 0;
+                progressPercent = 100 / tasknum;
+                deleteSubTasks(new ViewModelCallBackSubTasks() {
                     @Override
-                    public void onChanged(List<Tasks> tasks) {
-                        if (notUndoDelete) {
-                            for (Tasks task : tasks) {
-                                tempTaskList.add(task);
-                                SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), task.getTasks_id());
-                                subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
-                                subTasksViewModel.getAllSubtasks().observe(getViewLifecycleOwner(), new Observer<List<Subtasks>>() {
+                    public void onSuccess() {
+                        deleteTasks(new ViewModelCallBackTasks() {
+                            @Override
+                            public void onSuccess() {
+                                deleteProject(new ViewModelCallBackProjects() {
                                     @Override
-                                    public void onChanged(List<Subtasks> subtasks) {
-                                        if(observeTask) {
-                                            subtaskList = new ArrayList<>();
-                                            for (Subtasks subtask : subtasks) {
-                                                subtaskList.add(subtask);
-                                                subTasksViewModel.delete(subtask);
-                                            }
-                                            tempSubTaskMap.put(task.getTasks_id(), subtaskList);
-                                            tasksViewModel.delete(task);
-                                            observeTask = false;
-                                        }
+                                    public void onSuccess() {
+                                        taskFragList.remove(tempProject.getProject_id());
+                                        notUndo = false;
+                                        undoDeleteProject();
                                     }
-                                });
+                                }, projects);
                             }
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    projectViewModel.delete(projects);
-                                }
-                            }, 700);
-                        }
+                        }, projects);
                     }
-                });
-
-                Snackbar snackbar = Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
-                snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //@TODO add timer for undo
-                        long prjID = 0;
-                        try {
-                            prjID = projectViewModel.insert(tempProject);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        for (Tasks task : tempTaskList) {
-                            try {
-                                task.setProjects_id(prjID);
-                                for (Map.Entry<Long, List<Subtasks>> entry : tempSubTaskMap.entrySet()) {
-                                    long taskID = tasksViewModel.insert(task);
-                                    if (task.getTasks_id().equals(entry.getKey())) {
-                                        for (Subtasks subtasks : entry.getValue()) {
-                                            subtasks.setTasks_id(taskID);
-                                            subTasksViewModel.insert(subtasks);
-                                        }
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        notUndoDelete = false;
-                        snackbar.dismiss();
-                    }
-                }).show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (notUndoDelete) {
-                            taskFragList.remove(projects.getProject_id());
-                        } else {
-                            notUndoDelete = true;
-                            observeTask = true;
-                        }
-                    }
-                }, 3000);
+                }, projects);
                 break;
         }
 
@@ -368,4 +321,77 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
     }
 
+    private void undoDeleteProject() {
+        Snackbar snackbar = Snackbar
+                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteProject), Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //@TODO add timer for undo
+                long prjID = 0;
+                try {
+                    prjID = projectViewModel.insert(tempProject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                for (Tasks tasks : tempTaskList) {
+                    tasks.setProjects_id(prjID);
+                    try {
+                        long newTaskID = tasksViewModel.insert(tasks);
+                        for (Subtasks subtasks : tempSubtaskList) {
+                            if (subtasks.getTasks_id().equals(tasks.getTasks_id())) {
+                                subtasks.setTasks_id(newTaskID);
+                                subTasksViewModel.insert(subtasks);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                snackbar.dismiss();
+            }
+        }).show();
+    }
+
+    private void deleteProject(ViewModelCallBackProjects callBackProjects, Projects projects) {
+        tempProject = projects;
+        projectViewModel.delete(projects);
+        callBackProjects.onSuccess();
+    }
+
+    private void deleteTasks(ViewModelCallBackTasks callBackTasks, Projects projects) {
+        TasksViewModelFactory taskfactory = new TasksViewModelFactory(getActivity().getApplication(), projects.getProject_id());
+        tasksViewModel = ViewModelProviders.of(getActivity(), taskfactory).get(TaskViewModel.class);
+        tasksViewModel.getAllProjectsTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
+            @Override
+            public void onChanged(List<Tasks> tasks) {
+                if (notUndo) {
+                    tempTaskList = new ArrayList<>();
+                    for (Tasks task : tasks) {
+                        tasksViewModel.delete(task);
+                        tempTaskList.add(task);
+                    }
+                    callBackTasks.onSuccess();
+                }
+            }
+        });
+    }
+
+    private void deleteSubTasks(ViewModelCallBackSubTasks callBackSubTasks, Projects projects) {
+        SubTasksViewModelFactory subfactory = new SubTasksViewModelFactory(getActivity().getApplication(), projects.getProject_id());
+        subTasksViewModel = ViewModelProviders.of(getActivity(), subfactory).get(SubTasksViewModel.class);
+        subTasksViewModel.getAllTasksSubTasksProjects().observe(getViewLifecycleOwner(), new Observer<List<Subtasks>>() {
+            @Override
+            public void onChanged(List<Subtasks> subtasks) {
+                if (notUndo) {
+                    tempSubtaskList = new ArrayList<>();
+                    for (Subtasks subtask : subtasks) {
+                        tempSubtaskList.add(subtask);
+                        subTasksViewModel.delete(subtask);
+                    }
+                    callBackSubTasks.onSuccess();
+                }
+            }
+        });
+    }
 }

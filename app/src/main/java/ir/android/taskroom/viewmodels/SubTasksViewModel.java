@@ -13,12 +13,16 @@ import ir.android.taskroom.data.db.repository.SubtasksRepository;
 
 public class SubTasksViewModel extends AndroidViewModel {
     private SubtasksRepository subTasksRepository;
+    private LiveData<List<Subtasks>> allTasksSubTasks;
+    private LiveData<List<Subtasks>> allTasksSubTasksProjects;
     private LiveData<List<Subtasks>> allSubTasks;
 
     public SubTasksViewModel(@NonNull Application application, Long taskID) {
         super(application);
         subTasksRepository = new SubtasksRepository(application, taskID);
+        allTasksSubTasks = subTasksRepository.getAllTasksSubtasks();
         allSubTasks = subTasksRepository.getAllSubtasks();
+        allTasksSubTasksProjects = subTasksRepository.getAllSubtasksProjects();
     }
 
     public void insert(Subtasks subTasks){
@@ -31,6 +35,14 @@ public class SubTasksViewModel extends AndroidViewModel {
 
     public void delete(Subtasks subTasks){
         subTasksRepository.delete(subTasks);
+    }
+
+    public LiveData<List<Subtasks>> getAllTasksSubtasks(){
+        return allTasksSubTasks;
+    }
+
+    public LiveData<List<Subtasks>> getAllTasksSubTasksProjects(){
+        return allTasksSubTasksProjects;
     }
 
     public LiveData<List<Subtasks>> getAllSubtasks(){

@@ -1,7 +1,6 @@
 package ir.android.taskroom.ui.activity.task;
 
 import android.annotation.SuppressLint;
-import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -200,7 +198,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         SubTasksViewModelFactory factory = new SubTasksViewModelFactory(getApplication(), tempTaskID);
         SubTasksViewModel subTasksViewModel = ViewModelProviders.of(this, factory).get(SubTasksViewModel.class);
         SubTasksAdapter subTasksAdapter = new SubTasksAdapter(AddEditTaskActivity.this, subTasksViewModel);
-        subTasksViewModel.getAllSubtasks().observe(this, new Observer<List<Subtasks>>() {
+        subTasksViewModel.getAllTasksSubtasks().observe(this, new Observer<List<Subtasks>>() {
             @Override
             public void onChanged(List<Subtasks> subtasks) {
                 subtasks.add(null);
@@ -676,7 +674,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 endTextVal.getText().toString(), 1,tasksComment.getText().toString(),
                 workID, attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
-        System.out.println("tempTaskID = " + tempTaskID);
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
         setResult(RESULT_OK);
@@ -835,7 +832,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (lifeCycleCallBackManager != null && permissions.length != 0) {
-            System.out.println("permissions = " + permissions);
             lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }

@@ -13,12 +13,16 @@ import ir.android.taskroom.data.db.entity.Subtasks;
 
 public class SubtasksRepository {
     private SubtasksDao subtasksDao;
+    private LiveData<List<Subtasks>> allTasksSubtasks;
+    private LiveData<List<Subtasks>> allTasksSubtasksProjects;
     private LiveData<List<Subtasks>> allSubtasks;
 
-    public SubtasksRepository(Application application, Long tasksID) {
+    public SubtasksRepository(Application application, Long id) {
         TaskRoomDb taskRoomDb = TaskRoomDb.getInstance(application);
         subtasksDao = taskRoomDb.subtasksDao();
-        allSubtasks = subtasksDao.getAllSubtasks(tasksID);
+        allTasksSubtasks = subtasksDao.getAllSubtasks(id);
+        allTasksSubtasksProjects = subtasksDao.getAllSubtasksProjects(id);
+        allSubtasks = subtasksDao.getAllSubtasks();
     }
 
     public void insert(Subtasks subtasks) {
@@ -31,6 +35,14 @@ public class SubtasksRepository {
 
     public void delete(Subtasks subtasks) {
         new SubtasksRepository.DeleteProjectAsyncTask(subtasksDao).execute(subtasks);
+    }
+
+    public LiveData<List<Subtasks>> getAllTasksSubtasks() {
+        return allTasksSubtasks;
+    }
+
+    public LiveData<List<Subtasks>> getAllSubtasksProjects() {
+        return allTasksSubtasksProjects;
     }
 
     public LiveData<List<Subtasks>> getAllSubtasks() {
