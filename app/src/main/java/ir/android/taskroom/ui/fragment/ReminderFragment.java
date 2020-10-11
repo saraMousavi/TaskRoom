@@ -130,7 +130,7 @@ public class ReminderFragment extends Fragment {
                     for (String requestId : selectedReminder.getWork_id().split(",")) {
                         WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                     }
-                } else {
+                } else if(!selectedReminder.getWork_id().equals("0")) {
                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
                 }
                 reminderViewModel.delete(selectedReminder);

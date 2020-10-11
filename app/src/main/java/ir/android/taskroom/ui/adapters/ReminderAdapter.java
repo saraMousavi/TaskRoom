@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,10 +20,15 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Reminders;
@@ -47,7 +53,8 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             return oldItem.getReminders_title().equals(newItem.getReminders_title()) &&
                     oldItem.getReminders_time().equals(newItem.getReminders_time()) &&
                     oldItem.getReminders_repeatedtype().equals(newItem.getReminders_repeatedtype()) &&
-                    oldItem.getReminders_repeatedday().equals(newItem.getReminders_repeatedday());
+                    oldItem.getReminders_repeatedday().equals(newItem.getReminders_repeatedday()) &&
+                    oldItem.getReminders_active().equals(newItem.getReminders_active());
         }
     };
     private Context context;
@@ -117,9 +124,9 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             holder.repeatedIcon.setVisibility(View.GONE);
         } else {
             holder.repeatedIcon.setVisibility(View.VISIBLE);
-            holder.remindersRepeat.setText("," +reminder.getReminders_repeatedday());
+            holder.remindersRepeat.setText("," + reminder.getReminders_repeatedday());
         }
-        if(reminder.getHas_attach()){
+        if (reminder.getHas_attach()) {
             holder.reminderAttachment.setVisibility(View.VISIBLE);
         } else {
             holder.reminderAttachment.setVisibility(View.GONE);
@@ -130,19 +137,19 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             holder.remindersRepeat.setTextColor(context.getResources().getColor(R.color.white));
         } else {
             ArrayList<Map<View, Boolean>> viewList = new ArrayList<>();
-            Map<View, Boolean> mapView =  new HashMap<>();
+            Map<View, Boolean> mapView = new HashMap<>();
             mapView.put(holder.remindersTitle, false);
             viewList.add(mapView);
-            mapView =  new HashMap<>();
+            mapView = new HashMap<>();
             mapView.put(holder.remindersRepeat, false);
             viewList.add(mapView);
             Init.setViewBackgroundDependOnTheme(viewList, context, false);
         }
-        if(reminder.getReminders_priority() == 1){
+        if (reminder.getReminders_priority() == 1) {
             holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape));
-        } else if(reminder.getReminders_priority() == 2){
+        } else if (reminder.getReminders_priority() == 2) {
             holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.orange_priority_corner_shape));
-        } else if(reminder.getReminders_priority() == 3){
+        } else if (reminder.getReminders_priority() == 3) {
             holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape));
         }
         holder.remindersActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -150,9 +157,45 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 reminder.setReminders_active(isChecked ? 1 : 0);
                 reminder.setReminders_id(reminder.getReminders_id());
+                reminder.setWork_id(cancelOrCreateRequest(getReminderAt(position), isChecked));
                 reminderViewModel.update(reminder);
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private String cancelOrCreateRequest(Reminders reminders, boolean isChecked) {
+        if(isChecked) {
+            String datepickerVal = reminders.getReminders_time();
+            DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
+            DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+            if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
+                    + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
+                    "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
+                dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1, false);
+            }
+            Interval interval = new Interval(dateTime1, dateTime2);
+            long hour = interval.toDuration().getStandardMinutes() / 60;
+            long minute = interval.toDuration().getStandardMinutes() - hour * 60;
+            long second = 0;
+            if (minute == 0 && hour == 0) {
+                second = interval.toDuration().getStandardSeconds();
+            }
+
+            Toast.makeText(mFragmentActivity.getApplicationContext(), mFragmentActivity.getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
+            return Init.requestWork(mFragmentActivity.getApplicationContext(), reminders.getReminders_title(), reminders.getReminders_type(),
+                    Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), reminders.getReminders_repeatedday()),
+                    interval.toDurationMillis(), !reminders.getReminders_repeatedday().isEmpty(), true);
+        } else {
+            if (reminders.getWork_id().contains(",")) {
+                for (String requestId : reminders.getWork_id().split(",")) {
+                    WorkManager.getInstance(mFragmentActivity.getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
+                }
+            } else if (!reminders.getWork_id().equals("0")) {
+                WorkManager.getInstance(mFragmentActivity.getApplicationContext()).cancelWorkById(UUID.fromString(reminders.getWork_id()));
+            }
+        }
+        return "0";
     }
 
     public Reminders getReminderAt(int position) {

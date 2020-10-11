@@ -383,7 +383,10 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         repeatTypeVal.setVisibility(View.VISIBLE);
         repeatTypeVal.setText(clickedReminder.getReminders_repeatedday());
         reminderComment.setText(clickedReminder.getReminders_comment());
+        ((RadioButton) reminderTypeGroup.getChildAt(clickedReminder.getReminders_type())).setChecked(true);
+        reminders_active.setChecked(clickedReminder.getReminders_active() == 1 ? true : false);
         isEditActivity = true;
+        datepickerVal = clickedReminder.getReminders_time();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -405,19 +408,22 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
-        String workID = createWorkRequest();
+        String workID = "0";
+        if (isActive) {
+            workID = createWorkRequest();
+        }
         Reminders reminders = new Reminders(reminderTypeVal
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
                 repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0,
                 0, workID, attachmentsAdapter.getItemCount() > 0);
 
         if (isEditActivity) {
-            if (isReminerTimeChange) {
+            if (isReminerTimeChange || !isActive) {
                 if (clickedReminder.getWork_id().contains(",")) {
                     for (String requestId : clickedReminder.getWork_id().split(",")) {
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                     }
-                } else {
+                } else if (!clickedReminder.getWork_id().equals("0")) {
                     WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
                 }
             }
@@ -469,7 +475,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         long hour = interval.toDuration().getStandardMinutes() / 60;
         long minute = interval.toDuration().getStandardMinutes() - hour * 60;
         long second = 0;
-        if(minute == 0 && hour == 0){
+        if (minute == 0 && hour == 0) {
             second = interval.toDuration().getStandardSeconds();
         }
 
