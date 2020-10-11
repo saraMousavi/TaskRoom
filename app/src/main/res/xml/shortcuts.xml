@@ -11,7 +11,7 @@
              do anything with it. Otherwise you're in for a crash! -->
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="ir.android.taskroom.ui.activity.task.AddEditTaskActivity"
+            android:targetClass="ir.android.taskroom.ui.activity.task.AddEditShortCutTaskActivity"
             android:targetPackage="ir.android.taskroom"/>
         <categories android:name="android.shortcut.conversation"/>
         <!-- If your shortcut is associated with multiple intents, include them

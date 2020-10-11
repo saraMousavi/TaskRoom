@@ -293,8 +293,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             case DELETE:
                 notUndo = true;
                 tasknum = projects.getProjects_tasks_num();
-                progressNum = 0;
-                progressPercent = 100 / tasknum;
+//                progressNum = 0;
+//                progressPercent = 100 / tasknum;
                 deleteSubTasks(new ViewModelCallBackSubTasks() {
                     @Override
                     public void onSuccess() {

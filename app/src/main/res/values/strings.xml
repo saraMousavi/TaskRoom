@@ -263,4 +263,5 @@
     <string name="validstartdateandenddate">تاریخ پایان از تاریخ شروع کوچکتر است.</string>
     <string name="remindInStartDate">در تاریخ شروع یادآوری شود.</string>
     <string name="validstartdatepast">تاریخ شروع گذشته است.</string>
+    <string name="firstdefineProject">برای تعریف کار ابتدا یک پروژه تعریف نمایید.</string>
 </resources>

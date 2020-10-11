@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -150,9 +151,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             editor.remove("tempTaskID");
             editor.putLong("tempTaskID", tempTaskID);
             editor.apply();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -651,7 +650,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                     }
                 } else {
-                    if(clickedTask.getWork_id() != "0") {
+                    if (clickedTask.getWork_id() != "0") {
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
                     }
                 }
@@ -672,7 +671,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
-                endTextVal.getText().toString(), 1,tasksComment.getText().toString(),
+                endTextVal.getText().toString(), 1, tasksComment.getText().toString(),
                 workID, attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
