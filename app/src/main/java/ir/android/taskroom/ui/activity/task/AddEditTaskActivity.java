@@ -59,6 +59,7 @@ import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Attachments;
+import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.data.db.entity.Tasks;
@@ -78,6 +79,7 @@ import ir.android.taskroom.utils.calender.DatePickerDialog;
 import ir.android.taskroom.utils.calender.PersianCalendar;
 import ir.android.taskroom.utils.calender.TimePickerDialog;
 import ir.android.taskroom.viewmodels.AttachmentsViewModel;
+import ir.android.taskroom.viewmodels.CategoryViewModel;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
 import ir.android.taskroom.viewmodels.SubTasksViewModel;
 import ir.android.taskroom.viewmodels.TaskViewModel;
@@ -172,7 +174,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                             @Override
                             public void run() {
                                 projectCategory.setSelection(projects.indexOf(selectedProject));
-                                Init.setProjectCategory(projectIcon, selectedProject.getCategory_id(), false);
+                                //show icon depend on category_id
+                                showCategoryIcon();
                             }
                         });
                     }
@@ -190,6 +193,20 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         ArrayAdapter<String> remindTimeAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, remindTimeArray);
         reminderTime.setAdapter(remindTimeAdapter);
+    }
+
+    private void showCategoryIcon() {
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(AddEditTaskActivity.this).get(CategoryViewModel.class);
+        categoryViewModel.getAllCategory().observe(AddEditTaskActivity.this, new Observer<List<Category>>() {
+            @Override
+            public void onChanged(List<Category> categories) {
+                for(Category category: categories){
+                    if(category.getCategory_id().equals(selectedProject.getCategory_id())){
+                        projectIcon.setImageResource(getResources().getIdentifier(category.getCategory_black_image(),"xml", null));
+                    }
+                }
+            }
+        });
     }
 
 
@@ -342,7 +359,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedProject = (Projects) parent.getItemAtPosition(position);
-                Init.setProjectCategory(projectIcon, selectedProject.getCategory_id(), false);
+                showCategoryIcon();
             }
 
             @Override

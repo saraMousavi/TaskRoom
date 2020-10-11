@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +27,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
+import java.util.List;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.ui.fragment.AddProjectBottomSheetFragment;
-import ir.android.taskroom.utils.Init;
+import ir.android.taskroom.viewmodels.CategoryViewModel;
 
 public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHolder> {
     private ProjectsAdapter.OnItemClickListener listener;
@@ -112,7 +116,19 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             final Projects mProjects = getItem(position);
             itemViewHolder.projectsTitle.setText(mProjects.getProjects_title());
             //show icon depend on category_id
-            Init.setProjectCategory(itemViewHolder.prjCategory, getProjectAt(position).getCategory_id(), true);
+            CategoryViewModel categoryViewModel = ViewModelProviders.of(mFragmentActivity).get(CategoryViewModel.class);
+            categoryViewModel.getAllCategory().observe(mFragmentActivity, new Observer<List<Category>>() {
+                @Override
+                public void onChanged(List<Category> categories) {
+                    for(Category category: categories){
+                        if(category.getCategory_id().equals(getProjectAt(position).getCategory_id())){
+                            itemViewHolder.prjCategory.setImageResource(mFragmentActivity.getResources().getIdentifier(category.getCategory_white_image(),"xml", null));
+                        }
+                    }
+                }
+            });
+
+//            Init.setProjectCategory(itemViewHolder.prjCategory, getProjectAt(position).getCategory_id(), true);
             itemViewHolder.projectsBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

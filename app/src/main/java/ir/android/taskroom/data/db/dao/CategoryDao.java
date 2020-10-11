@@ -24,7 +24,4 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM Category ORDER BY category_id DESC")
     LiveData<List<Category>> getAllCategory();
-
-    @Query("SELECT * FROM Category WHERE category_id=:category_id")
-    LiveData<List<Category>> getCategory(Integer category_id);
 }

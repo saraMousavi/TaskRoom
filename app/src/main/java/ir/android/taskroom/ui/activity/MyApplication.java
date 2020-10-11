@@ -24,11 +24,11 @@ public class MyApplication extends Application {
             @Override
             public void onChanged(List<Category> categories) {
                 if (categories.size() == 0) {
-                    Category artCategory = new Category(getString(R.string.art), "ir.android.taskroom:drawable/ic_white_art");
+                    Category artCategory = new Category(getString(R.string.art), "ir.android.taskroom:drawable/ic_white_art", "ir.android.taskroom:drawable/ic_black_art");
                     categoryViewModel.insert(artCategory);
-                    Category sportCategory = new Category(getString(R.string.sports), "ir.android.taskroom:drawable/ic_white_sports");
+                    Category sportCategory = new Category(getString(R.string.sports), "ir.android.taskroom:drawable/ic_white_sports", "ir.android.taskroom:drawable/ic_black_sports");
                     categoryViewModel.insert(sportCategory);
-                    Category scientificCategory = new Category(getString(R.string.scientific), "ir.android.taskroom:drawable/ic_white_scientific");
+                    Category scientificCategory = new Category(getString(R.string.scientific), "ir.android.taskroom:drawable/ic_white_scientific", "ir.android.taskroom:drawable/ic_black_scientific");
                     categoryViewModel.insert(scientificCategory);
                 }
             }

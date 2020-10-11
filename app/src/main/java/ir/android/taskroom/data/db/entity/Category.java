@@ -18,13 +18,16 @@ public class Category implements Serializable {
     private Integer category_id;
     @ColumnInfo(name = "category_title")
     private String category_title;
-    @ColumnInfo(name = "category_image")
-    private String category_image;
+    @ColumnInfo(name = "category_white_image")
+    private String category_white_image;
+    @ColumnInfo(name = "category_black_image")
+    private String category_black_image;
 
 
-    public Category(String category_title, String category_image) {
+    public Category(String category_title, String category_white_image, String category_black_image) {
         this.category_title = category_title;
-        this.category_image = category_image;
+        this.category_white_image = category_white_image;
+        this.category_black_image = category_black_image;
     }
 
     public void setCategory_title(String category_title) {
@@ -43,12 +46,20 @@ public class Category implements Serializable {
         return category_id;
     }
 
-    public String getCategory_image() {
-        return category_image;
+    public String getCategory_white_image() {
+        return category_white_image;
     }
 
-    public void setCategory_image(String category_image) {
-        this.category_image = category_image;
+    public void setCategory_white_image(String category_white_image) {
+        this.category_white_image = category_white_image;
+    }
+
+    public String getCategory_black_image() {
+        return category_black_image;
+    }
+
+    public void setCategory_black_image(String category_black_image) {
+        this.category_black_image = category_black_image;
     }
 
     @Override

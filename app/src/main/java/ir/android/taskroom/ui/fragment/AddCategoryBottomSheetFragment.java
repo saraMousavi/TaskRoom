@@ -161,7 +161,8 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
             insertCategoryBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Category category = new Category(categoryTitle.getText().toString(), categoryImage);
+                    Category category = new Category(categoryTitle.getText().toString(), categoryImage,
+                            categoryImage.replace("white", "black"));
                     category.setCategory_id(selectedCategory.getCategory_id());
                     submitClickListener.onClickSubmit(category, ActionTypes.EDIT);
                     dismiss();
@@ -177,7 +178,8 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
                                 .show();
                         return;
                     }
-                    Category category = new Category(categoryTitle.getText().toString(), categoryImage);
+                    Category category = new Category(categoryTitle.getText().toString(), categoryImage,
+                            categoryImage.replace("white", "black"));
                     submitClickListener.onClickSubmit(category, ActionTypes.ADD);
                     dismiss();
                 }

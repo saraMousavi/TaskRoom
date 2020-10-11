@@ -53,7 +53,7 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category category = getItem(position);
         holder.categoryTitle.setText(category.getCategory_title());
-        holder.categoryImage.setImageResource(mContext.getResources().getIdentifier(category.getCategory_image(), "xml", null));
+        holder.categoryImage.setImageResource(mContext.getResources().getIdentifier(category.getCategory_white_image(), "xml", null));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
