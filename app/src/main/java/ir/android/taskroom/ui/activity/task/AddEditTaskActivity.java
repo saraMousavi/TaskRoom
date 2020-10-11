@@ -142,7 +142,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private void insertTempTask() {
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
-                "", "", 0, "", "", false, "");
+                "", "", 0, "", "0", false, "");
         try {
             if (isEditActivity) {
                 tempTaskID = clickedTask.getTasks_id();
@@ -200,9 +200,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         categoryViewModel.getAllCategory().observe(AddEditTaskActivity.this, new Observer<List<Category>>() {
             @Override
             public void onChanged(List<Category> categories) {
-                for(Category category: categories){
-                    if(category.getCategory_id().equals(selectedProject.getCategory_id())){
-                        projectIcon.setImageResource(getResources().getIdentifier(category.getCategory_black_image(),"xml", null));
+                for (Category category : categories) {
+                    if (category.getCategory_id().equals(selectedProject.getCategory_id())) {
+                        projectIcon.setImageResource(getResources().getIdentifier(category.getCategory_black_image(), "xml", null));
                     }
                 }
             }
@@ -661,29 +661,32 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
         if (isEditActivity) {
-            if (isReminerTimeChange) {
+            if (isReminerTimeChange || isCompleted) {
                 if (clickedTask.getWork_id().contains(",")) {
                     for (String requestId : clickedTask.getWork_id().split(",")) {
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                     }
                 } else {
-                    if (clickedTask.getWork_id() != "0") {
+                    if (!clickedTask.getWork_id().equals("0")) {
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
                     }
                 }
             }
         }
-        String workID = createWorkRequest();
-        if (workID.equals("-1")) {
-            Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdateandenddate), Snackbar.LENGTH_LONG)
-                    .show();
-            return;
-        } else if (workID.equals("-2")) {
-            Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdatepast), Snackbar.LENGTH_LONG)
-                    .show();
-            return;
+        String workID = "0";
+        if (!isCompleted) {
+            workID = createWorkRequest();
+            if (workID.equals("-1")) {
+                Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdateandenddate), Snackbar.LENGTH_LONG)
+                        .show();
+                return;
+            } else if (workID.equals("-2")) {
+                Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdatepast), Snackbar.LENGTH_LONG)
+                        .show();
+                return;
+            }
         }
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
