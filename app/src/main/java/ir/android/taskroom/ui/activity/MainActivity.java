@@ -64,4 +64,8 @@ public class MainActivity extends AppCompatActivity {
                 .getDefaultSharedPreferences(this);
         return sharedpreferences.getInt("theme", 1);
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }
