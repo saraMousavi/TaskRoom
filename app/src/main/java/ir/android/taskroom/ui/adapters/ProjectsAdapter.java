@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
@@ -164,7 +165,8 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 } else {
                     TypedArray array = mFragmentActivity.getTheme().obtainStyledAttributes(getAppThemeStyle(mFragmentActivity), new int[]{R.attr.selectedBox});
                     int attrResourceId = array.getResourceId(0, 0);
-                    drawable = mFragmentActivity.getResources().getDrawable(attrResourceId);
+                    System.out.println("attrResourceId = " + attrResourceId);
+                    drawable = ResourcesCompat.getDrawable(mFragmentActivity.getResources(), attrResourceId, null);
                 }
                 itemViewHolder.projectsBox.setBackground(drawable);
                 itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));

@@ -34,7 +34,8 @@
         app:layout_constraintLeft_toRightOf="@+id/reminderContainer"
         app:layout_constraintRight_toLeftOf="@id/priorityView"
         app:layout_constraintTop_toTopOf="parent"
-        app:track="@drawable/custom_track" />
+        app:track="@drawable/custom_track"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reminderContainer"
