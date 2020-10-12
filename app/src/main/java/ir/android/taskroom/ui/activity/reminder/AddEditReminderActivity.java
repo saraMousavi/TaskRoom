@@ -269,7 +269,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private void insertTempReminder() {
         Reminders reminders = new Reminders(0, "", "",
-                0, "", "", 0, 0, 1, "", false);
+                0, "", "", 0, 0, 1, "0", false);
 
         try {
             if (isEditActivity) {

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -150,7 +152,6 @@ public class CalenderFragment extends Fragment {
             }
         });
 
-
         return view;
     }
 
@@ -180,8 +181,6 @@ public class CalenderFragment extends Fragment {
                     }
 
                 }
-                reminderAdapter.submitList(reminders);
-                recyclerView.setAdapter(reminderAdapter);
             }
         });
     }
@@ -232,6 +231,7 @@ public class CalenderFragment extends Fragment {
     }
 
     private void initReminderRecyclerView() {
+        System.out.println("clickedDateTime = " + clickedDateTime);
         if (clickedDateTime != null) {
             reminderViewModel.getAllReminders().observe(CalenderFragment.this, new Observer<List<Reminders>>() {
 
@@ -279,7 +279,7 @@ public class CalenderFragment extends Fragment {
                                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                                 }
                             } else {
-                                if(!selectedTask.getWork_id().equals("0")) {
+                                if (!selectedTask.getWork_id().equals("0")) {
                                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                                 }
                             }
@@ -327,10 +327,10 @@ public class CalenderFragment extends Fragment {
             @Override
             public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
                 //@TODO
-//                FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
-//                ft.addToBackStack(null);
-//                ft.commit();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
+                ft.addToBackStack(null);
+                ft.commit();
             }
 
             @Override
@@ -511,8 +511,8 @@ public class CalenderFragment extends Fragment {
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
                     .show();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
-            Reminders reminders = new Reminders(0,"","",
-                    0,"","",0,0,1,"", false);
+            Reminders reminders = new Reminders(0, "", "",
+                    0, "", "", 0, 0, 1, "", false);
 
             reminders.setReminders_id(sharedPreferences.getLong("tempReminderID", 0));
             reminderViewModel.delete(reminders);
