@@ -23,7 +23,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.task.AddEditShortCutTaskActivity"></activity>
+        <activity android:name=".ui.activity.ImagePreviewActivity"></activity>
+        <activity android:name=".ui.activity.task.AddEditShortCutTaskActivity" />
         <activity
             android:name=".ui.activity.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -46,7 +47,7 @@
         <activity android:name=".ui.activity.theme.ThemeActivity" />
         <activity
             android:name=".ui.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activity.task.AddEditTaskActivity"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -1,6 +1,7 @@
 package ir.android.taskroom.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -17,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Attachments;
+import ir.android.taskroom.ui.activity.ImagePreviewActivity;
 import ir.android.taskroom.viewmodels.AttachmentsViewModel;
 
 public class AttachmentsAdapter extends ListAdapter<Attachments, AttachmentsAdapter.ViewHolderItem> {
@@ -66,6 +69,19 @@ public class AttachmentsAdapter extends ListAdapter<Attachments, AttachmentsAdap
             @Override
             public void onClick(View v) {
                 deleteAttachmentEvent(attachments);
+            }
+        });
+        holder.attachemntImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, bStream);
+                byte[] byteArray = bStream.toByteArray();
+                Intent intent = new Intent();
+                intent.setClass(mFragmentActivity, ImagePreviewActivity.class);
+                intent.putExtra("image", byteArray);
+                mFragmentActivity.startActivity(intent);
             }
         });
     }
