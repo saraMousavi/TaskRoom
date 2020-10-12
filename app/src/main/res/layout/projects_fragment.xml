@@ -71,13 +71,14 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
+        <LinearLayout
             android:id="@+id/taskFragmentContainer"
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_height="match_parent"
             android:layout_marginTop="-20dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:orientation="vertical" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addTaskBtn"
@@ -88,6 +89,6 @@
             android:layout_marginBottom="@dimen/_14sdp"
             android:layout_gravity="bottom|end"
             android:visibility="gone"
-            android:src="@drawable/ic_add"/>
+            app:srcCompat="@drawable/ic_add"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

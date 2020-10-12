@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.RequiresApi;
@@ -159,7 +160,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     tasksFragment.setArguments(bundle);
                     taskFragList.put(project.getProject_id(), tasksFragment);
                 }
-                NestedScrollView taskFragmentContainer = inflatedView.findViewById(R.id.taskFragmentContainer);
+                LinearLayout taskFragmentContainer = inflatedView.findViewById(R.id.taskFragmentContainer);
                 if (projects.size() == 0) {
                     projectsEmptyPage.setVisibility(View.VISIBLE);
                     Animation animation = AnimationUtils.loadAnimation(getContext(),
