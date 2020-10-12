@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -146,7 +147,7 @@ public class TasksFragment extends Fragment {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                             }
                         } else {
-                            if(!selectedTask.getWork_id().equals("0")) {
+                            if (!selectedTask.getWork_id().equals("0")) {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                             }
                         }
@@ -206,12 +207,7 @@ public class TasksFragment extends Fragment {
                     taskList.setVisibility(View.VISIBLE);
                     taskEmptyList.setVisibility(View.GONE);
                     addTaskBtn.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Init.initShowCaseView(getContext(), taskRecyclerView.getChildAt(0), getString(R.string.editDeleteTaskGuide), ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue(), null);
-                        }
-                    }, 1000);
+                    Init.initShowCaseView(getContext(), taskRecyclerView, getString(R.string.editDeleteTaskGuide), ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue(), null);
                 }
                 taskAdapter.submitList(tasks);
             }
