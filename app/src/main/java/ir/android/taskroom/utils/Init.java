@@ -83,7 +83,7 @@ public class Init {
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
         int value = dateTime.getHourOfDay() % 24;
-        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 24 : value)));
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value)));
         int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
                 dateTime.getMinuteOfHour() == 60 ? 0 : dateTime.getMinuteOfHour())));
         int second = dateTime.getSecondOfMinute();
@@ -107,7 +107,7 @@ public class Init {
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
         int value = dateTime.getHourOfDay() % 24;
-        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 24 : value)));
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value)));
         int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
                 dateTime.getMinuteOfHour() == 60 ? 0 : dateTime.getMinuteOfHour())));
         int second = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
@@ -171,7 +171,7 @@ public class Init {
     public static String getCurrentTime() {
         DateTime dateTime = new DateTime();
         int value = dateTime.getHourOfDay() % 24;
-        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 24 : value)));
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value)));
         int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
                 dateTime.getMinuteOfHour() == 60 ? 0 : dateTime.getMinuteOfHour())));
         int second = dateTime.getSecondOfMinute();
@@ -251,6 +251,7 @@ public class Init {
             long month = (integerTime % 10000000000L) / 100000000L;
             long day = (integerTime % 100000000L) / 1000000L;
             long hour = (integerTime % 1000000L) / 10000L;
+            System.out.println("hour = " + hour);
             long minute = (integerTime % 10000L) / 100L;
             long second = (integerTime % 100);
             return new DateTime((int) year, (int) month, (int) day, (int) hour, (int) minute, (int) second);
