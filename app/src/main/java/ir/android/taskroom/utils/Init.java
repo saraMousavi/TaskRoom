@@ -242,7 +242,8 @@ public class Init {
      * @return
      */
     public static DateTime convertIntegerToDateTime(Long integerTime) {
-        if (integerTime < 1000000) {
+        System.out.println("integerTime = " + integerTime);
+        if (integerTime == null || integerTime < 1000000) {
             return null;
         }
         if (integerTime > 99999999) {

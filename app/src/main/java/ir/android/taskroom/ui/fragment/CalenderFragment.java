@@ -163,7 +163,7 @@ public class CalenderFragment extends Fragment {
                 for (Reminders reminder : reminders) {
                     DateTime startDate = Init.convertIntegerToDateTime(reminder.getReminders_crdate());
                     if (reminder.getReminders_repeatedday().isEmpty()) {
-                        if (reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                        if (reminder.getReminders_crdate() != null && reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
                             markVerticalSomeDays(startDate);
                         }
                     } else {
@@ -240,7 +240,7 @@ public class CalenderFragment extends Fragment {
                     List<Reminders> filterReminders = new ArrayList<>();
                     for (Reminders reminder : reminders) {
                         if (reminder.getReminders_repeatedday().isEmpty()) {
-                            if (reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                            if (reminder.getReminders_crdate() != null &&  reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
                                 filterReminders.add(reminder);
                             }
                         } else if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
