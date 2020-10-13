@@ -18,7 +18,6 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
-            android:fitsSystemWindows="true"
             android:background="?colorPrimary"
             android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -40,6 +39,7 @@
                     android:hint="@string/reminderTitle"
                     android:layoutDirection="rtl"
                     style="@style/TextInputLayoutStyle"
+                    app:hintTextColor="@color/white"
                     android:textColorHint="@color/white"
                     app:boxBackgroundColor="?colorPrimary">
 

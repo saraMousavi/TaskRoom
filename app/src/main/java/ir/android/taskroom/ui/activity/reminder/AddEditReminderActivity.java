@@ -248,7 +248,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 scaleAnimation(false);
                 FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
                 lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, false, false, true);
+                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, true, false, true);
             }
         });
     }
