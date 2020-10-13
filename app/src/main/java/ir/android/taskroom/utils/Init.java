@@ -79,14 +79,14 @@ public class Init {
      * @return
      */
     public static String getCurrentDate() {
-        GregorianCalendar galena = new GregorianCalendar();
+        DateTime dateTime = new DateTime();
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
-        int value = galena.get(Calendar.HOUR) % 12;
-        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value)));
+        int value = dateTime.getHourOfDay() % 24;
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 24 : value)));
         int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
-                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE))));
-        int second = galena.get(Calendar.SECOND);
+                dateTime.getMinuteOfHour() == 60 ? 0 : dateTime.getMinuteOfHour())));
+        int second = dateTime.getSecondOfMinute();
         return persianCalendar.getPersianYear() + "/"
                 + (month < 10 ? "0" + month : month) + "/"
                 + (persianCalendar.getPersianDay() < 10 ? "0" + persianCalendar.getPersianDay() : persianCalendar.getPersianDay())
@@ -103,15 +103,15 @@ public class Init {
      * @return
      */
     public static DateTime getCurrentDateTimeWithSecond() {
-        GregorianCalendar galena = new GregorianCalendar();
+        DateTime dateTime = new DateTime();
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
-        int value = galena.get(Calendar.HOUR) % 12;
-        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value)));
+        int value = dateTime.getHourOfDay() % 24;
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 24 : value)));
         int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
-                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE))));
+                dateTime.getMinuteOfHour() == 60 ? 0 : dateTime.getMinuteOfHour())));
         int second = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
-                galena.get(Calendar.SECOND) == 60 ? 0 : galena.get(Calendar.SECOND))));
+                dateTime.getSecondOfMinute() == 60 ? 0 : dateTime.getSecondOfMinute())));
 
         return convertIntegerToDateTime(integerFormatFromStringDate(persianCalendar.getPersianYear() + "/"
                 + (month < 10 ? "0" + month : month) + "/"
@@ -169,12 +169,12 @@ public class Init {
      * @return
      */
     public static String getCurrentTime() {
-        GregorianCalendar galena = new GregorianCalendar();
-        int value = galena.get(Calendar.HOUR) % 12;
-        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 12 : value)));
+        DateTime dateTime = new DateTime();
+        int value = dateTime.getHourOfDay() % 24;
+        int hour = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%d", value == 0 ? 24 : value)));
         int minute = Integer.parseInt(LanguageUtils.getPersianNumbers(String.format(Locale.getDefault(), "%02d",
-                galena.get(Calendar.MINUTE) == 60 ? 0 : galena.get(Calendar.MINUTE))));
-        int second = galena.get(Calendar.SECOND);
+                dateTime.getMinuteOfHour() == 60 ? 0 : dateTime.getMinuteOfHour())));
+        int second = dateTime.getSecondOfMinute();
         return (hour < 10 ? "0" + hour : hour)
                 + ":"
                 + (minute < 10 ? "0" + minute : minute)

@@ -184,11 +184,11 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         startDateConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GregorianCalendar galena = new GregorianCalendar();
+                DateTime dateTime = new DateTime();
                 TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
                         AddEditReminderActivity.this,
-                        galena.get(Calendar.HOUR),
-                        galena.get(Calendar.MINUTE),
+                        dateTime.getHourOfDay(),
+                        dateTime.getMinuteOfHour(),
                         true
                 );
                 timePickerDialog.show(getSupportFragmentManager(), "startTimePickerDialog");
