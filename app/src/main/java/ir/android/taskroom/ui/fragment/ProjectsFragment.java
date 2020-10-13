@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -33,12 +34,15 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.R;
@@ -326,6 +330,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         Snackbar snackbar = Snackbar
                 .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteProject), Snackbar.LENGTH_LONG);
         snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 //@TODO add timer for undo
@@ -338,6 +343,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 for (Tasks tasks : tempTaskList) {
                     tasks.setProjects_id(prjID);
                     try {
+                        tasks.setWork_id(createWorkRequest(tasks, tasks.getTasks_iscompleted() == 0 ? true:false));
                         long newTaskID = tasksViewModel.insert(tasks);
                         for (Subtasks subtasks : tempSubtaskList) {
                             if (subtasks.getTasks_id().equals(tasks.getTasks_id())) {
@@ -369,6 +375,15 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 if (notUndo) {
                     tempTaskList = new ArrayList<>();
                     for (Tasks task : tasks) {
+                        if (task.getWork_id().contains(",")) {
+                            for (String requestId : task.getWork_id().split(",")) {
+                                WorkManager.getInstance(getActivity()).cancelWorkById(UUID.fromString(requestId));
+                            }
+                        } else {
+                            if (!task.getWork_id().equals("0")) {
+                                WorkManager.getInstance(getActivity()).cancelWorkById(UUID.fromString(task.getWork_id()));
+                            }
+                        }
                         tasksViewModel.delete(task);
                         tempTaskList.add(task);
                     }
@@ -394,5 +409,75 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 }
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public String createWorkRequest(Tasks tasks, boolean isChecked) {
+        if(isChecked) {
+            DateTime dateTime1 = null;
+            DateTime dateTime2 = null;
+            if (tasks.getTasks_remindertime() == 1) {
+                dateTime1 = Init.getCurrentDateTimeWithSecond();
+                dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                    if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                        return "-2";//start date past
+                    }
+                }
+            } else if (!tasks.getTasks_repeateddays().isEmpty()) {
+                if (tasks.getTasks_remindertime() == 3) {
+                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
+                    if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                        dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                    }
+                } else if (tasks.getTasks_remindertime() == 2) {
+                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_enddate()));
+                    if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                        return "-1";
+                    }
+                }
+            } else {
+                if (tasks.getTasks_remindertime() == 2) {
+                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
+                    if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                        dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                    }
+                }
+            }
+            if (dateTime1 != null && dateTime2 != null) {
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    return "-1";
+                }
+                if (tasks.getTasks_remindertime() != 0) {
+                    Interval interval = new Interval(dateTime1, dateTime2);
+//            long hour = interval.toDuration().getStandardMinutes() / 60;
+//            long minute = interval.toDuration().getStandardMinutes() - hour * 60;
+//            long second = 0;
+//            if (minute == 0 && hour == 0) {
+//                second = interval.toDuration().getStandardSeconds();
+//            }
+//            Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
+                    return Init.requestWork(getContext(), tasks.getTasks_title(), tasks.getTasks_remindertype(),
+                            Init.getWorkRequestPeriodicIntervalMillis(getContext().getResources(), tasks.getTasks_repeateddays()),
+                            interval.toDurationMillis(), !tasks.getTasks_repeateddays().isEmpty(), false);
+                }
+            }
+        } else {
+            if (tasks.getWork_id().contains(",")) {
+                for (String requestId : tasks.getWork_id().split(",")) {
+                    WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                }
+            } else {
+                if (!tasks.getWork_id().equals("0")) {
+                    WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(tasks.getWork_id()));
+                }
+            }
+        }
+
+        return "0";
     }
 }
