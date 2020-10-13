@@ -123,6 +123,9 @@ dependencies {
     //switch case view for guide user in first install
     implementation "com.github.mreram:showcaseview:1.1"
 
+    //show gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+
 //    //chat for support page
 //    implementation 'com.cometchat:pro-android-chat-sdk:2.1.1'
 //    implementation 'com.github.stfalcon:chatkit:0.3.3'

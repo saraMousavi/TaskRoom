@@ -1,41 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <AnalogClock
-        android:id="@+id/analogClock"
+
+
+    <pl.droidsonroids.gif.GifImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_height="0dp"
+        android:id="@+id/alarmIcon"
+        android:src="@drawable/alarm_view"
         app:layout_constraintBottom_toTopOf="@+id/alarm_active"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ir.android.taskroom.utils.shape.Circle
-        android:id="@+id/alarmIcon"
-        android:layout_width="@dimen/_250sdp"
-        android:layout_height="@dimen/_250sdp"
-        app:layout_constraintBottom_toTopOf="@+id/alarm_active"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <AnalogClock
+        android:id="@+id/analogClock"
+        android:background="@drawable/ic_fill_purple_circle_shape"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:layout_marginRight="@dimen/_24sdp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-<!--        <ImageView-->
-<!--            android:id="@+id/alarmIcon"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_marginLeft="32dp"-->
-<!--            android:layout_marginTop="28dp"-->
-<!--            android:layout_marginRight="32dp"-->
-<!--            android:src="@drawable/alarm_fire"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/alarm_active"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toRightOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/alarm_active"

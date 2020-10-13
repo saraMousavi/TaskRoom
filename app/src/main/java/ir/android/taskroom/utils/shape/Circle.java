@@ -4,10 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.provider.AlarmClock;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.ui.activity.AlarmActivity;
 
 public class Circle extends View {
 
@@ -21,7 +24,7 @@ public class Circle extends View {
     public Circle(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        final int strokeWidth = 40;
+        final int strokeWidth = 30;
 
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -29,9 +32,10 @@ public class Circle extends View {
         paint.setStrokeWidth(strokeWidth);
         //Circle color
         paint.setColor(context.getResources().getColor(R.color.colorPrimary));
-
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         //size 200x200 example
-        rect = new RectF(strokeWidth, strokeWidth, 500 + strokeWidth, 500 + strokeWidth);
+//        rect = new RectF(strokeWidth, strokeWidth, (displayMetrics.widthPixels - displayMetrics.densityDpi), (displayMetrics.widthPixels - displayMetrics.densityDpi));
+        rect = new RectF(200, 200, displayMetrics.widthPixels/2, displayMetrics.widthPixels/2);
 
         //Initial Angle (optional, it can be zero)
         angle = 0;

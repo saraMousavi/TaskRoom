@@ -3,6 +3,7 @@ package ir.android.taskroom.ui.activity;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -22,7 +23,7 @@ import ir.android.taskroom.utils.shape.Circle;
 
 public class AlarmActivity extends AppCompatActivity {
     //    private ImageView alarmIcon;
-    private AnalogClock alarmClockIcon;
+    public static AnalogClock alarmClockIcon;
     private SwitchCompat alarmActive;
     private TextView alarmTitle;
 
@@ -62,15 +63,10 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.alarm_activity);
 //        alarmIcon = findViewById(R.id.alarmIcon);
         alarmClockIcon = findViewById(R.id.analogClock);
+        System.out.println("alarmClockIcon.getWidth() = " + alarmClockIcon.getWidth());
         alarmActive = findViewById(R.id.alarm_active);
         alarmTitle = findViewById(R.id.alarmTitle);
         alarmTitle.setText(getIntent().getExtras().getString("alarmTitle"));
-        Circle circle = findViewById(R.id.alarmIcon);
-
-        CircleAnimation circleAnimation = new CircleAnimation(circle, 360);
-        circleAnimation.setDuration(1500);
-        circleAnimation.setRepeatCount(Animation.INFINITE);
-        circle.startAnimation(circleAnimation);
     }
 
     @Override
