@@ -265,4 +265,5 @@
     <string name="validstartdatepast">تاریخ شروع گذشته است.</string>
     <string name="firstdefineProject">برای تعریف کار ابتدا یک پروژه تعریف نمایید.</string>
     <string name="firstDeleteProjectsInCategory">ابتدا پروژه های منسوب به این دسته حذف گردد.</string>
+    <string name="validtimepast">زمان انتخاب شده گذشته است.</string>
 </resources>

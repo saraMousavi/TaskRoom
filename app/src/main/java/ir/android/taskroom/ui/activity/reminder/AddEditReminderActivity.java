@@ -95,6 +95,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
     private Integer reminderTypeVal;
+    private DateTime calenderClickedDate;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -268,6 +269,11 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     };
 
     private void insertTempReminder() {
+        if(getIntent().getExtras() == null){
+            calenderClickedDate = null;
+        } else {
+            calenderClickedDate = new DateTime(getIntent().getExtras().getString("calenderClickedDate"));
+        }
         Reminders reminders = new Reminders(0, "", "",
                 0, "", "", 0, 0, 1, "0", false);
 
@@ -409,6 +415,12 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
         String workID = "0";
+        if(createWorkRequest().equals("-1")){
+            Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validtimepast), Snackbar.LENGTH_LONG)
+                    .show();
+            return;
+        }
         if (isActive) {
             workID = createWorkRequest();
         }
@@ -430,7 +442,20 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
             reminders.setReminders_crdate(clickedReminder.getReminders_crdate());
         } else {
-            reminders.setReminders_crdate(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
+            if(getIntent().getExtras() == null){
+                DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
+                DateTime crDate = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+                if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
+                        + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
+                        "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
+                    crDate = Init.getTodayDateTimeWithTime(datepickerVal, 1, false);
+                }
+                reminders.setReminders_crdate(Init.convertDateTimeToInteger(crDate));
+            } else {
+                calenderClickedDate = new DateTime(getIntent().getExtras().getString("calenderClickedDate"));
+                reminders.setReminders_crdate(Init.convertDateTimeToInteger(calenderClickedDate));
+            }
+
         }
         reminders.setReminders_id(tempReminderID);
         reminderViewModel.update(reminders);
@@ -465,7 +490,18 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private String createWorkRequest() {
         DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-        DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+        DateTime dateTime2;
+        //@todo count time in clicked date in calender
+        if(calenderClickedDate == null){
+            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+        } else {
+            dateTime2 = calenderClickedDate;
+            if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
+                    + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
+                    "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))){
+                return "-1";//zaman entekhab shode gozashte ast
+            }
+        }
         if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
                 + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
                 "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {

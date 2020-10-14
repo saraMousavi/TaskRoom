@@ -76,8 +76,8 @@ public class CalenderFragment extends Fragment {
     private CollapsingToolbarLayout toolBarLayout;
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
-    public static final int ADD_REMINDER_REQUEST = 1;
-    public static final int EDIT_REMINDER_REQUEST = 2;
+    public static final int ADD_REMINDER_REQUEST = 3;
+    public static final int EDIT_REMINDER_REQUEST = 4;
     private TasksViewModelFactory factory;
     private TaskViewModel taskViewModel;
     private ReminderViewModel reminderViewModel;
@@ -163,20 +163,19 @@ public class CalenderFragment extends Fragment {
                 for (Reminders reminder : reminders) {
                     DateTime startDate = Init.convertIntegerToDateTime(reminder.getReminders_crdate());
                     if (reminder.getReminders_repeatedday().isEmpty()) {
-                        if (reminder.getReminders_crdate() != null && reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                        System.out.println("clickedDateTime = " + clickedDateTime);
+                        if (reminder.getReminders_crdate() != null) {
                             markVerticalSomeDays(startDate);
                         }
                     } else {
-                        if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                            DateTime enddate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
-                                    Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
-                                    Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
-                                    , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
-                                    Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
-                            int duration = Days.daysBetween(startDate, enddate).getDays();
-                            for (int i = 0; i < duration; i++) {
-                                markVerticalSomeDays(startDate.plusDays(i));
-                            }
+                        DateTime enddate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
+                                Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
+                                Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
+                                , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
+                                Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
+                        int duration = Days.daysBetween(startDate, enddate).getDays();
+                        for (int i = 0; i < duration; i++) {
+                            markVerticalSomeDays(startDate.plusDays(i));
                         }
                     }
 
@@ -240,7 +239,7 @@ public class CalenderFragment extends Fragment {
                     List<Reminders> filterReminders = new ArrayList<>();
                     for (Reminders reminder : reminders) {
                         if (reminder.getReminders_repeatedday().isEmpty()) {
-                            if (reminder.getReminders_crdate() != null &&  reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                            if (reminder.getReminders_crdate() != null && reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
                                 filterReminders.add(reminder);
                             }
                         } else if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
@@ -320,6 +319,7 @@ public class CalenderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddEditReminderActivity.class);
+                intent.putExtra("calenderClickedDate", clickedDateTime.toString());
                 startActivityForResult(intent, ADD_REMINDER_REQUEST);
             }
         });
