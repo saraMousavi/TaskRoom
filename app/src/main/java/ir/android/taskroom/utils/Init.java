@@ -242,7 +242,6 @@ public class Init {
      * @return
      */
     public static DateTime convertIntegerToDateTime(Long integerTime) {
-        System.out.println("integerTime = " + integerTime);
         if (integerTime == null || integerTime < 1000000) {
             return null;
         }
@@ -251,7 +250,6 @@ public class Init {
             long month = (integerTime % 10000000000L) / 100000000L;
             long day = (integerTime % 100000000L) / 1000000L;
             long hour = (integerTime % 1000000L) / 10000L;
-            System.out.println("hour = " + hour);
             long minute = (integerTime % 10000L) / 100L;
             long second = (integerTime % 100);
             return new DateTime((int) year, (int) month, (int) day, (int) hour, (int) minute, (int) second);
@@ -468,7 +466,7 @@ public class Init {
                 repeatInterval = (Integer) map.getKey();
                 if (map.getValue() instanceof TimeUnit) {
                     repeatIntervalTimeUnit = (TimeUnit) map.getValue();
-                } else if (map.getValue() instanceof String) {
+                } else if (map.getValue() instanceof ArrayList) {
                     repeatIntervalList = (ArrayList<Integer>) map.getValue();
                 } else if (map.getValue() instanceof Long) {
                     repeatIntervalLong = (Long) map.getValue();
@@ -488,7 +486,8 @@ public class Init {
                         .getInstance(context)
                         .enqueue(periodicWorkRequest);
                 return periodicWorkRequest.getId().toString();
-            } else if (repeatIntervalLong == 0) {
+            } else if (repeatIntervalLong != 0) {
+                //monthly and yearly
                 PeriodicWorkRequest periodicWorkRequest =
                         new PeriodicWorkRequest.Builder(AlarmWorker.class,
                                 repeatIntervalLong, TimeUnit.MILLISECONDS)
@@ -501,6 +500,7 @@ public class Init {
                         .enqueue(periodicWorkRequest);
                 return periodicWorkRequest.getId().toString();
             } else {
+                //custom day
                 DateTime toDay = DateTime.now();
                 ArrayList<PeriodicWorkRequest> periodicWorkRequestList = new ArrayList<>();
                 StringBuilder periodRequestId = new StringBuilder();
@@ -561,7 +561,7 @@ public class Init {
                                     7, TimeUnit.DAYS)
                                     .setConstraints(constraints)
                                     .setInputData(data)
-                                    .setInitialDelay(diffDay * 24 * 60 * 60 * 1000L, TimeUnit.MILLISECONDS)
+                                    .setInitialDelay(diffDay * 24 * 60 * 60 * 1000L + duration, TimeUnit.MILLISECONDS)
                                     .build();
                     periodRequestId.append(periodicWorkRequest.getId()).append(",");
                     periodicWorkRequestList.add(periodicWorkRequest);
@@ -638,13 +638,13 @@ public class Init {
             if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
                 intervalRepeat.put(Integer.parseInt(repeatTypeSplit[1]), TimeUnit.DAYS);
             }
-            if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+            if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
                 intervalRepeat.put(7 * Integer.parseInt(repeatTypeSplit[1]), TimeUnit.DAYS);
             }
-            if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+            if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
                 intervalRepeat.put(30 * Integer.parseInt(repeatTypeSplit[1]), TimeUnit.DAYS);
             }
-            if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+            if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
                 intervalRepeat.put(365 * Integer.parseInt(repeatTypeSplit[1]), TimeUnit.DAYS);
             }
         }
