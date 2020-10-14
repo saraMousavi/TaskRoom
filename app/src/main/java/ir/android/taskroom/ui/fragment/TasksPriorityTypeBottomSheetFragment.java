@@ -1,6 +1,7 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.lang.reflect.Field;
+
 import ir.android.taskroom.R;
 
 public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragment {
@@ -21,12 +24,17 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
     private Button priorityTypeBtn;
     private String[] priorityTypVal;
     private PriorityTypeClickListener priorityTypeClickListener;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.tasks_priority_type, container, false);
         this.inflateView = inflate;
-        init();
+        try {
+            init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         onclickListener();
         return inflate;
     }
@@ -42,8 +50,11 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
         });
     }
 
-    private void init() {
+    private void init() throws NoSuchFieldException, IllegalAccessException {
         priorityType = inflateView.findViewById(R.id.priorityType);
+//        Field priorityPaintField = priorityType.getClass().getDeclaredField("priorityType");
+//        priorityPaintField.setAccessible(true);
+//        ((Paint) priorityPaintField.get(priorityType)).setColor(getResources().getColor(R.color.white));
         //@TODO get value from PriorityType enum
         priorityTypVal = new String[]{getString(R.string.nonePriority),
                 getString(R.string.low),
@@ -55,7 +66,7 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
         priorityTypeBtn = inflateView.findViewById(R.id.priorityTypeBtn);
     }
 
-    public interface PriorityTypeClickListener{
+    public interface PriorityTypeClickListener {
         void onClickPriorityType(String priorityType, boolean isGone);
     }
 

@@ -24,35 +24,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
+            android:buttonTint="?attr/textColor"
             android:text="@string/daily"/>
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
+            android:buttonTint="?attr/textColor"
             android:text="@string/weekly" />
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
+            android:buttonTint="?attr/textColor"
             android:text="@string/monthly" />
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
+            android:buttonTint="?attr/textColor"
             android:text="@string/yearly" />
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
+            android:buttonTint="?attr/textColor"
             android:text="@string/selectDays" />
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/textColor"
+            android:buttonTint="?attr/textColor"
             android:text="@string/advance" />
 
     </RadioGroup>

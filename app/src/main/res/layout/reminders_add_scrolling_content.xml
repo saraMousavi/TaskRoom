@@ -30,7 +30,7 @@
                 android:id="@+id/startIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_date"
+                app:srcCompat="@drawable/ic_date"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -89,7 +89,7 @@
                 android:id="@+id/reminderTypeIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_reminder_type"
+                app:srcCompat="@drawable/ic_reminder_type"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -149,7 +149,7 @@
                 android:id="@+id/repeatIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_black_repeat"
+                app:srcCompat="@drawable/ic_black_repeat"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -202,7 +202,7 @@
                 android:id="@+id/activeIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_black_reminder_active"
+                app:srcCompat="@drawable/ic_black_reminder_active"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -250,7 +250,7 @@
                 android:id="@+id/priorityIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_priority"
+                app:srcCompat="@drawable/ic_priority"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -305,7 +305,7 @@
                 android:id="@+id/attachIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_black_attach"
+                app:srcCompat="@drawable/ic_black_attach"
                 app:layout_constraintBottom_toTopOf="@id/attachedRecyclerView"
                 app:layout_constraintEnd_toEndOf="@id/guideline18"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -340,14 +340,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_marginRight="@dimen/_8sdp"
-                    android:src="@drawable/ic_camera" />
+                    app:srcCompat="@drawable/ic_camera" />
 
                 <ImageView
                     android:id="@+id/storageIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_8sdp"
-                    android:src="@drawable/ic_storage" />
+                    app:srcCompat="@drawable/ic_storage" />
 
             </LinearLayout>
 
@@ -385,7 +385,7 @@
                 android:id="@+id/commentIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_black_comment"
+                app:srcCompat="@drawable/ic_black_comment"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -405,6 +405,7 @@
                     android:id="@+id/reminderComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="?attr/textColor"
                     android:hint="@string/addComment" />
 
             </com.google.android.material.textfield.TextInputLayout>

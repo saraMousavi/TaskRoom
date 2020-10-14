@@ -12,12 +12,15 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:hintTextColor="?textColor"
+        android:textColorHint="?textColor"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/categoryTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?attr/textColor"
             android:hint="@string/categoryTitle" />
 
     </com.google.android.material.textfield.TextInputLayout>
