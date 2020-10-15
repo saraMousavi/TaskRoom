@@ -157,7 +157,8 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 reminder.setReminders_active(isChecked ? 1 : 0);
                 reminder.setReminders_id(reminder.getReminders_id());
-                reminder.setWork_id(cancelOrCreateRequest(getReminderAt(position), isChecked));
+                String workId = cancelOrCreateRequest(getReminderAt(position), isChecked);
+                reminder.setWork_id(workId);
                 reminderViewModel.update(reminder);
             }
         });
@@ -165,8 +166,8 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private String cancelOrCreateRequest(Reminders reminders, boolean isChecked) {
-        if(isChecked) {
-            String datepickerVal = reminders.getReminders_time();
+        String datepickerVal = reminders.getReminders_time();
+        if(!datepickerVal.isEmpty() && isChecked) {
             DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
             DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
             if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
@@ -186,7 +187,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             return Init.requestWork(mFragmentActivity.getApplicationContext(), reminders.getReminders_title(), reminders.getReminders_type(),
                     Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), reminders.getReminders_repeatedday()),
                     interval.toDurationMillis(), !reminders.getReminders_repeatedday().isEmpty(), true);
-        } else {
+        } else if(!datepickerVal.isEmpty()){
             if (reminders.getWork_id().contains(",")) {
                 for (String requestId : reminders.getWork_id().split(",")) {
                     WorkManager.getInstance(mFragmentActivity.getApplicationContext()).cancelWorkById(UUID.fromString(requestId));

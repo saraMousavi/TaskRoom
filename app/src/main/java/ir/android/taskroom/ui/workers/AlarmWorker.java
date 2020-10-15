@@ -40,7 +40,6 @@ public class AlarmWorker extends Worker {
     public Result doWork() {
         createVibrate();
         Integer reminderType = getInputData().getInt("reminderType", 0);
-        System.out.println("reminderType = " + reminderType);
         switch (reminderType) {
             case 0:
                 createNotificationChannel();
@@ -86,7 +85,7 @@ public class AlarmWorker extends Worker {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("alarmTitle", getInputData().getString("alarmTitle"));
         getApplicationContext().startActivity(i);
-        ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
         ringtone.play();
     }
 

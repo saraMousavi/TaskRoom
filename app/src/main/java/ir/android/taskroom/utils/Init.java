@@ -502,7 +502,6 @@ public class Init {
             } else {
                 //custom day
                 DateTime toDay = DateTime.now();
-                ArrayList<PeriodicWorkRequest> periodicWorkRequestList = new ArrayList<>();
                 StringBuilder periodRequestId = new StringBuilder();
                 for (Integer repeatInteger : repeatIntervalList) {
                     int diffDay = 0;
@@ -556,19 +555,19 @@ public class Init {
                             }
                         }
                     }
+                    long newDuration = diffDay * 24 * 60 * 60 * 1000L + duration;
                     PeriodicWorkRequest periodicWorkRequest =
                             new PeriodicWorkRequest.Builder(AlarmWorker.class,
                                     7, TimeUnit.DAYS)
                                     .setConstraints(constraints)
                                     .setInputData(data)
-                                    .setInitialDelay(diffDay * 24 * 60 * 60 * 1000L + duration, TimeUnit.MILLISECONDS)
+                                    .setInitialDelay(newDuration, TimeUnit.MILLISECONDS)
                                     .build();
                     periodRequestId.append(periodicWorkRequest.getId()).append(",");
-                    periodicWorkRequestList.add(periodicWorkRequest);
+                    WorkManager
+                            .getInstance(context)
+                            .enqueue(periodicWorkRequest);
                 }
-                WorkManager
-                        .getInstance(context)
-                        .enqueue(periodicWorkRequestList);
                 return periodRequestId.toString();
             }
 

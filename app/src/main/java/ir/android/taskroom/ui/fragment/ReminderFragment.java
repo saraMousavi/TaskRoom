@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
 
@@ -205,7 +206,7 @@ public class ReminderFragment extends Fragment {
 
     private void init() {
         reminderRecyclerView = this.inflaterView.findViewById(R.id.reminderRecyclerView);
-        reminderRecyclerView.setLayoutManager(new RollingLayoutManager(getContext()));
+        reminderRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
         reminderFragmentBinding.setReminderViewModel(reminderViewModel);
         addReminderBtn = this.inflaterView.findViewById(R.id.addReminderBtn);

@@ -95,7 +95,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
     private Integer reminderTypeVal;
-    private DateTime calenderClickedDate;
+    private DateTime calenderClickedDate = null;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -116,7 +116,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         attachmentsViewModel.getAllRemindersAttachments().observe(this, new Observer<List<Attachments>>() {
             @Override
             public void onChanged(List<Attachments> attachments) {
-                System.out.println("attachments.size() = " + attachments.size());
                 attachmentsAdapter.submitList(attachments);
                 attachedRecyclerView.setAdapter(attachmentsAdapter);
             }
@@ -269,9 +268,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     };
 
     private void insertTempReminder() {
-        if (getIntent().getExtras() == null) {
-            calenderClickedDate = null;
-        } else {
+        if(getIntent().getExtras() != null && getIntent().getExtras().getString("calenderClickedDate") != null) {
             calenderClickedDate = new DateTime(getIntent().getExtras().getString("calenderClickedDate"));
         }
         Reminders reminders = new Reminders(0, "", "",
@@ -415,14 +412,15 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
         String workID = "0";
-        if (createWorkRequest().equals("-1")) {
-            Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validtimepast), Snackbar.LENGTH_LONG)
-                    .show();
-            return;
-        }
         if (isActive) {
-            workID = createWorkRequest();
+            String id = createWorkRequest();
+            if (id.equals("-1")) {
+                Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validtimepast), Snackbar.LENGTH_LONG)
+                        .show();
+                return;
+            }
+            workID = id;
         }
         Reminders reminders = new Reminders(reminderTypeVal
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
