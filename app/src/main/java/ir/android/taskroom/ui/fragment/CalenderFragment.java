@@ -38,12 +38,23 @@ import com.mohamadian.persianhorizontalexpcalendar.model.CustomGradientDrawable;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Interval;
 
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -58,6 +69,7 @@ import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.ui.adapters.ReminderAdapter;
 import ir.android.taskroom.ui.adapters.TasksAdapter;
 import ir.android.taskroom.utils.Init;
+import ir.android.taskroom.utils.calender.PersianCalendar;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
 import ir.android.taskroom.viewmodels.SubTasksViewModel;
@@ -158,27 +170,162 @@ public class CalenderFragment extends Fragment {
     private void markDaysThatHaveReminder() {
         reminderViewModel.getAllReminders().observe(getViewLifecycleOwner(), new Observer<List<Reminders>>() {
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<Reminders> reminders) {
                 for (Reminders reminder : reminders) {
                     DateTime startDate = Init.convertIntegerToDateTime(reminder.getReminders_crdate());
                     if (reminder.getReminders_repeatedday().isEmpty()) {
-                        System.out.println("clickedDateTime = " + clickedDateTime);
                         if (reminder.getReminders_crdate() != null) {
                             markVerticalSomeDays(startDate);
                         }
                     } else {
+                        //next month
                         DateTime enddate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
                                 Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
                                 Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
                                 , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
                                 Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
                         int duration = Days.daysBetween(startDate, enddate).getDays();
-                        for (int i = 0; i < duration; i++) {
-                            markVerticalSomeDays(startDate.plusDays(i));
+                        String repeatType = reminder.getReminders_repeatedday();
+                        int intervalPeriod = 1;
+                        int intervalNum = 0;
+                        boolean isNotCustomDayReminder = true;
+                        if (repeatType.equals(getResources().getString(R.string.daily))) {
+                            intervalNum = 1;
+                        } else if (repeatType.equals(getResources().getString(R.string.weekly))) {
+                            intervalNum = 7;
+                        } else if (repeatType.equals(getResources().getString(R.string.monthly))) {
+                            intervalNum = 30;
+                        } else if (repeatType.equals(getResources().getString(R.string.yearly))) {
+                            intervalNum = 365;
+                        } else if (repeatType.contains(",")) {
+                            for (String repeatTypeVal : repeatType.split(",")) {
+                                if (repeatTypeVal.equals(getResources().getString(R.string.saterday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.SATURDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                } else if (repeatTypeVal.equals(getResources().getString(R.string.sunday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                } else if (repeatTypeVal.equals(getResources().getString(R.string.monday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.MONDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                } else if (repeatTypeVal.equals(getResources().getString(R.string.tuesday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.TUESDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                } else if (repeatTypeVal.equals(getResources().getString(R.string.wednesday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                } else if (repeatTypeVal.equals(getResources().getString(R.string.thursday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.THURSDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                } else if (repeatTypeVal.equals(getResources().getString(R.string.friday))) {
+                                    for (int i = 0; i < duration; ) {
+                                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.ENGLISH);
+                                        Date date = new Date();
+                                        ZonedDateTime dateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                                        dateTime.format(formatter);
+                                        ZonedDateTime dateAfterIday = dateTime.plusDays(i);
+                                        if (dateAfterIday.getDayOfWeek() == DayOfWeek.FRIDAY) {
+                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startDate, i));
+                                            i = i + 7;
+                                        } else {
+                                            i++;
+                                        }
+                                    }
+                                }
+                            }
+                            isNotCustomDayReminder = false;
+                        } else if (!repeatType.isEmpty()) {
+                            String[] repeatTypeSplit = repeatType.split(" ");
+                            String[] typePeriodVal = new String[]{getResources().getString(R.string.day), getResources().getString(R.string.week),
+                                    getResources().getString(R.string.month), getResources().getString(R.string.year)};
+                            if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+                                intervalNum = Integer.parseInt(repeatTypeSplit[1]);
+                            }
+                            if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
+                                intervalNum = 7 * Integer.parseInt(repeatTypeSplit[1]);
+                            }
+                            if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
+                                intervalNum = 30 * Integer.parseInt(repeatTypeSplit[1]);
+                            }
+                            if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
+                                intervalNum = 365 * Integer.parseInt(repeatTypeSplit[1]);
+                            }
+                        }
+                        if (isNotCustomDayReminder) {
+                            for (int i = 0; i < duration; ) {
+                                markVerticalSomeDays(startDate.plusDays(i));
+                                i = i + intervalNum * intervalPeriod;
+                            }
                         }
                     }
-
                 }
             }
         });
@@ -230,7 +377,6 @@ public class CalenderFragment extends Fragment {
     }
 
     private void initReminderRecyclerView() {
-        System.out.println("clickedDateTime = " + clickedDateTime);
         if (clickedDateTime != null) {
             reminderViewModel.getAllReminders().observe(CalenderFragment.this, new Observer<List<Reminders>>() {
 
@@ -242,8 +388,57 @@ public class CalenderFragment extends Fragment {
                             if (reminder.getReminders_crdate() != null && reminder.getReminders_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
                                 filterReminders.add(reminder);
                             }
-                        } else if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                            filterReminders.add(reminder);
+                        } else {// if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime))
+                            String repeatType = reminder.getReminders_repeatedday();
+                            if (repeatType.equals(getResources().getString(R.string.daily))) {
+                                if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)){
+                                    filterReminders.add(reminder);
+                                }
+                            } else if (repeatType.equals(getResources().getString(R.string.weekly))) {
+                                if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                    Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                    Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                    if (interval.toDuration().getStandardDays() % 7 == 0) {
+                                        filterReminders.add(reminder);
+                                    }
+                                }
+                            } else if (repeatType.equals(getResources().getString(R.string.monthly))) {
+                                if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                    Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                    Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                    if (interval.toDuration().getStandardDays() % 30 == 0) {
+                                        filterReminders.add(reminder);
+                                    }
+                                }
+                            } else if (repeatType.equals(getResources().getString(R.string.yearly))) {
+                                if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                    Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                    Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                    if (interval.toDuration().getStandardDays() % 365 == 0) {
+                                        filterReminders.add(reminder);
+                                    }
+                                }
+                            } else if (repeatType.contains(",")) {
+                                for (String repeatTypeVal : repeatType.split(",")) {
+                                    if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                        if (repeatTypeVal.equals(getResources().getString(R.string.saterday)) && clickedDateTime.getDayOfWeek() == 1) {
+                                            filterReminders.add(reminder);
+                                        } else if (repeatTypeVal.equals(getResources().getString(R.string.sunday)) && clickedDateTime.getDayOfWeek() == 2) {
+                                            filterReminders.add(reminder);
+                                        } else if (repeatTypeVal.equals(getResources().getString(R.string.monday)) && clickedDateTime.getDayOfWeek() == 3) {
+                                            filterReminders.add(reminder);
+                                        } else if (repeatTypeVal.equals(getResources().getString(R.string.tuesday)) && clickedDateTime.getDayOfWeek() == 4) {
+                                            filterReminders.add(reminder);
+                                        } else if (repeatTypeVal.equals(getResources().getString(R.string.wednesday)) && clickedDateTime.getDayOfWeek() == 5) {
+                                            filterReminders.add(reminder);
+                                        } else if (repeatTypeVal.equals(getResources().getString(R.string.thursday)) && clickedDateTime.getDayOfWeek() == 6) {
+                                            filterReminders.add(reminder);
+                                        } else if (repeatTypeVal.equals(getResources().getString(R.string.friday)) && clickedDateTime.getDayOfWeek() == 7) {
+                                            filterReminders.add(reminder);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     reminderAdapter.submitList(filterReminders);

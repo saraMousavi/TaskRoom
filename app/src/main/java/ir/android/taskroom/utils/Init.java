@@ -145,7 +145,7 @@ public class Init {
     public static DateTime getTodayDateTimeWithTime(String time, Integer nextDay, boolean isDate) {
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
-        if(isDate){
+        if (isDate) {
             time = time.split(" ")[1];
         }
         int hour = Integer.parseInt(time.split(":")[0]);
@@ -708,10 +708,44 @@ public class Init {
     }
 
     public static Long convertDateTimeToInteger(DateTime dateTime) {
-        return Long.parseLong(dateTime.getYear() + "" + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear(): dateTime.getMonthOfYear())
-                + "" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth(): dateTime.getDayOfMonth())
-                + "" + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay(): dateTime.getHourOfDay())
+        return Long.parseLong(dateTime.getYear() + "" + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+                + "" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth())
+                + "" + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
                 + "" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour()) +
                 "" + (dateTime.getSecondOfMinute() < 10 ? "0" + dateTime.getSecondOfMinute() : dateTime.getSecondOfMinute()));
+    }
+
+    /**
+     * only work for afterDayDuration <= 30
+     * @param currentDateTime
+     * @param afterDayDuration
+     * @return
+     */
+    public static DateTime dateTimeAfter7dayFromCurrent(DateTime currentDateTime, int afterDayDuration) {
+        if(afterDayDuration == 0){
+            return currentDateTime;
+        }
+        int nextYear = currentDateTime.getYear();
+        int nextMonth = currentDateTime.getMonthOfYear();
+        int nextDay = currentDateTime.getDayOfMonth();
+        if (currentDateTime.getMonthOfYear() == 12 && currentDateTime.getDayOfMonth() > (29 - afterDayDuration)) {
+            nextYear += 1;
+            nextMonth = 1;
+            nextDay = afterDayDuration - (29 - nextDay);
+            if(nextDay > 30){
+                nextDay = nextDay - 30;
+                nextMonth = 2;
+            }
+        }
+        if (nextMonth > 6 && currentDateTime.getDayOfMonth() > (30 - afterDayDuration)) {
+            nextMonth += 1;
+            nextDay = afterDayDuration - (30 - nextDay);
+        } else if (nextMonth < 7 && currentDateTime.getDayOfMonth() > (31 - afterDayDuration)) {
+            nextMonth += 1;
+            nextDay = afterDayDuration - (31 - nextDay);
+        } else {
+            nextDay += afterDayDuration;
+        }
+        return new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour());
     }
 }
