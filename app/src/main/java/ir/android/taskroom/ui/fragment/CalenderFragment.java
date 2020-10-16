@@ -12,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -74,7 +77,6 @@ import ir.android.taskroom.viewmodels.ProjectViewModel;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
 import ir.android.taskroom.viewmodels.SubTasksViewModel;
 import ir.android.taskroom.viewmodels.TaskViewModel;
-import kotlinx.coroutines.scheduling.Task;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -106,6 +108,7 @@ public class CalenderFragment extends Fragment {
 
     //boolean flag to know if main FAB is in open or closed state.
     private boolean fabExpanded = false;
+    private FrameLayout disableBackground;
 
 
     @Override
@@ -907,6 +910,7 @@ public class CalenderFragment extends Fragment {
         taskText = this.inflater.findViewById(R.id.taskText);
         reminderText = this.inflater.findViewById(R.id.reminderText);
         clickedDateTime = Init.getCurrentDateWhitoutTime();
+        disableBackground = inflater.findViewById(R.id.disableBackground);
 
         //Only main FAB is visible in the beginning
         closeSubMenusFab();
@@ -940,6 +944,10 @@ public class CalenderFragment extends Fragment {
         reminderText.setVisibility(View.GONE);
         addTaskBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_add));
         fabExpanded = false;
+        disableBackground.setVisibility(View.INVISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+        animation.setDuration(1000);
+        disableBackground.startAnimation(animation);
     }
 
     //Opens FAB submenus
@@ -950,6 +958,10 @@ public class CalenderFragment extends Fragment {
         taskText.setVisibility(View.VISIBLE);
         reminderText.setVisibility(View.VISIBLE);
         addTaskBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_close));
+        disableBackground.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        animation.setDuration(1000);
+        disableBackground.startAnimation(animation);
     }
 
     @Override
