@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -45,6 +46,11 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     private TextInputLayout editText;
     private Category selectedCategory = null;
     private SharedPreferences sharedPreferences;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable

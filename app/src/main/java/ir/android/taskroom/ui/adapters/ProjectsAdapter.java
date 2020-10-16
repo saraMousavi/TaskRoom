@@ -192,6 +192,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     AddProjectBottomSheetFragment addProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
+
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("isEditProjects", false);
                     addProjectBottomSheetFragment.setArguments(bundle);
