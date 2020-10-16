@@ -5,9 +5,11 @@
             name="TaskViewModel"
             type="ir.android.taskroom.viewmodels.TaskViewModel" />
     </data>
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:weightSum="1"
         android:background="@drawable/white_bg_corner_shape">
         <include android:id="@+id/taskList"
             android:layout_width="match_parent"
@@ -20,6 +22,6 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             layout="@layout/tasks_fragment_empty_list"/>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 
 </layout>
