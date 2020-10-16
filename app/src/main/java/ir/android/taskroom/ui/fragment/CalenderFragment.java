@@ -357,13 +357,9 @@ public class CalenderFragment extends Fragment {
                             }
                         }
                         if (task.getTasks_remindertime() == 2 && !task.getTasks_repeateddays().isEmpty()) {
-                            for(Tasks tsk : addTaskToFilterListWithRepeat(task, filteredTasks)){
-                                filteredTasks.add(tsk);
-                            }
+                            addTaskToFilterListWithRepeat(task, filteredTasks);
                         } else if (task.getTasks_remindertime() == 3) {
-                            for(Tasks tsk : addTaskToFilterListWithRepeat(task, filteredTasks)){
-                                filteredTasks.add(tsk);
-                            }
+                            addTaskToFilterListWithRepeat(task, filteredTasks);
                         }
 
                     }
