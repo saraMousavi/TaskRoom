@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
             android:background="?colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -27,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
                 android:padding="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -54,6 +56,7 @@
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
+                    android:visibility="invisible"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin" />
 
@@ -70,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_insert"
+            app:srcCompat="@drawable/ic_insert"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end" />
 
@@ -79,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_insert"
+            app:srcCompat="@drawable/ic_insert"
             android:scaleX="0"
             android:scaleY="0"
             app:layout_anchor="@id/nestedScroll"

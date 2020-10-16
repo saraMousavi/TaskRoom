@@ -22,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -69,6 +70,7 @@ import ir.android.taskroom.data.db.factory.ProjectsViewModelFactory;
 import ir.android.taskroom.data.db.factory.SubTasksViewModelFactory;
 import ir.android.taskroom.data.db.factory.TasksViewModelFactory;
 import ir.android.taskroom.databinding.TasksAddActivityBinding;
+import ir.android.taskroom.ui.activity.SplashActivity;
 import ir.android.taskroom.ui.adapters.AttachmentsAdapter;
 import ir.android.taskroom.ui.adapters.SubTasksAdapter;
 import ir.android.taskroom.ui.fragment.TasksPriorityTypeBottomSheetFragment;
@@ -279,7 +281,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-
+                Toolbar toolbar = findViewById(R.id.toolbar);
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
@@ -287,9 +289,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     //@TODO add slide down animation
                     ViewCompat.animate(fabInsertTask2).scaleX(1).scaleY(1).start();
                     toolBarLayout.setTitle(taskNameEdit.getText().toString());
+                    toolbar.setVisibility(View.VISIBLE);
                     isShow = true;
                 } else if (isShow) {
                     toolBarLayout.setTitle(" ");
+                    toolbar.setVisibility(View.INVISIBLE);
                     ViewCompat.animate(fabInsertTask2).scaleX(0).scaleY(0).start();
                     isShow = false;
                 }

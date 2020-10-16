@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -96,6 +98,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private AttachmentsViewModel attachmentsViewModel;
     private Integer reminderTypeVal;
     private DateTime calenderClickedDate = null;
+    private CollapsingToolbarLayout toolBarLayout;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -167,16 +170,21 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                Toolbar toolbar = findViewById(R.id.toolbar);
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
                     //@TODO add slide down animation
                     fabInsertReminders2.setVisibility(View.VISIBLE);
+                    toolBarLayout.setTitle(reminderNameEdit.getText().toString());
+                    toolbar.setVisibility(View.VISIBLE);
                     isShow = true;
                 } else if (isShow) {
                     //@TODO add slide up animation
                     fabInsertReminders2.setVisibility(View.GONE);
+                    toolBarLayout.setTitle(" ");
+                    toolbar.setVisibility(View.INVISIBLE);
                     isShow = false;
                 }
             }
@@ -337,6 +345,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminderTypeGroup = findViewById(R.id.reminderTypeGroup);
         reminders_active = findViewById(R.id.reminders_active);
         attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
+        toolBarLayout = findViewById(R.id.toolbar_layout);
         mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         datepickerVal = Init.getCurrentTime();
         RadioButton radioButton = reminderTypeGroup.findViewWithTag("notification");
