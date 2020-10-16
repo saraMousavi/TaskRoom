@@ -499,24 +499,22 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
         DateTime dateTime2;
         //@todo count time in clicked date in calender
+        System.out.println("calenderClickedDate = " + calenderClickedDate);
         if (calenderClickedDate == null) {
             dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
         } else {
             dateTime2 = calenderClickedDate;
+            System.out.println("dateTime2 = " + dateTime2);
             long selectedDate = Long.parseLong(calenderClickedDate.getYear() + "" +
                     (calenderClickedDate.getMonthOfYear() < 10 ? "0" + calenderClickedDate.getMonthOfYear() : calenderClickedDate.getMonthOfYear())
-                    + "" + (calenderClickedDate.getDayOfMonth() < 10 ? "0" + calenderClickedDate.getDayOfMonth() : calenderClickedDate.getDayOfMonth())
-                    + "" + (calenderClickedDate.getHourOfDay() < 10 ? "0" + calenderClickedDate.getHourOfDay() : calenderClickedDate.getHourOfDay())
-                    + "" + (calenderClickedDate.getMinuteOfHour() < 10 ? "0" + calenderClickedDate.getMinuteOfHour() : calenderClickedDate.getMinuteOfHour())
-                    + "" + (calenderClickedDate.getSecondOfMinute() < 10 ? "0" + calenderClickedDate.getSecondOfMinute() : calenderClickedDate.getSecondOfMinute()));
+                    + "" + (calenderClickedDate.getDayOfMonth() < 10 ? "0" + calenderClickedDate.getDayOfMonth() : calenderClickedDate.getDayOfMonth()));
             long stringStartedDate = Long.parseLong(dateTime1.getYear() + "" +
                     (dateTime1.getMonthOfYear() < 10 ? "0" + dateTime1.getMonthOfYear() : dateTime1.getMonthOfYear()) + "" +
-                    (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()) + "" +
-                    (dateTime1.getHourOfDay() < 10 ? "0" + dateTime1.getHourOfDay() : dateTime1.getHourOfDay())
-                    + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
-                    "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()));
+                    (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
             if (selectedDate < stringStartedDate) {
                 return "-1";//zaman entekhab shode gozashte ast
+            } else if(selectedDate == stringStartedDate){
+                dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
             }
         }
         if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()

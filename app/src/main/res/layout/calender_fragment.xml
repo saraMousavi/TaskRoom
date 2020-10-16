@@ -110,6 +110,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/white_corner_shape"
             android:padding="8dp"
+            android:textColor="@color/black"
             android:text="@string/task"
             android:visibility="gone" />
 
@@ -141,6 +142,7 @@
             android:background="@drawable/white_corner_shape"
             android:padding="8dp"
             android:text="@string/reminder"
+            android:textColor="@color/black"
             android:textAlignment="center"
             android:visibility="gone" />
 
