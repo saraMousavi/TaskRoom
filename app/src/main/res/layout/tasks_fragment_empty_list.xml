@@ -5,13 +5,11 @@
     android:id="@+id/tasksEmptyPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:orientation="vertical">
     <ImageView
         android:id="@+id/emptyTaskImage"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="0.8"
+        android:layout_height="@dimen/_270sdp"
         android:src="@drawable/empty_task_page"/>
 
     <Button
