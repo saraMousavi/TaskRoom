@@ -205,7 +205,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                                 Objects.requireNonNull(projectRecyclerView.findViewHolderForAdapterPosition(0)).itemView.performClick();
                             }
                         }
-                    }, 40);
+                    }, 400);
                 }
                 projectsAdapter.submitList(projects);
             }

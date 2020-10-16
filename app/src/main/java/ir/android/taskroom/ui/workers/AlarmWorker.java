@@ -14,6 +14,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -35,6 +36,7 @@ public class AlarmWorker extends Worker {
         super(context, workerParams);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @NonNull
     @Override
     public Result doWork() {
@@ -80,12 +82,14 @@ public class AlarmWorker extends Worker {
         mNotifyManager.notify(0, builder.build());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void startAlarmActivity() {
         Intent i = new Intent(getApplicationContext(), AlarmActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("alarmTitle", getInputData().getString("alarmTitle"));
         getApplicationContext().startActivity(i);
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+        ringtone.setLooping(true);
         ringtone.play();
     }
 
