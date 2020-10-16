@@ -2,6 +2,7 @@ package ir.android.taskroom.ui.fragment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -24,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar;
 import ir.android.taskroom.R;
 import ir.android.taskroom.ui.activity.MainActivity;
 import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
-import ir.android.taskroom.ui.activity.setting.SupportActivity;
 import ir.android.taskroom.ui.activity.category.CategoryActivity;
 import ir.android.taskroom.ui.activity.theme.ThemeActivity;
 import ir.android.taskroom.utils.enums.ShowCaseSharePref;
@@ -112,7 +112,9 @@ public class SettingFragment extends Fragment {
         support.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SupportActivity.class));
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:09103009458"));
+                startActivity(intent);
             }
         });
         showCaseView.setOnClickListener(new View.OnClickListener() {

@@ -40,7 +40,6 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity android:name=".ui.activity.setting.SupportActivity" />
         <activity
             android:name=".ui.activity.setting.AboutAppActivity"
             android:theme="@style/AppTheme.NoActionBar" />
