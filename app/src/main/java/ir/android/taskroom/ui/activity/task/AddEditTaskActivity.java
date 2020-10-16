@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.animation.Animation;
@@ -124,6 +125,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private LinearLayout uploadChoose;
     private Integer reminderTypeVal;
     private boolean isReminerTimeChange = false;
+    private DateTime calenderClickedDate = null;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -140,6 +142,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     private void insertTempTask() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getString("calenderClickedDate") != null) {
+            calenderClickedDate = new DateTime(getIntent().getExtras().getString("calenderClickedDate"));
+        }
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "", "0", false, "");
@@ -615,7 +620,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             ((RadioButton) reminderTypeGroup.getChildAt(clickedTask.getTasks_remindertype())).setChecked(true);
         }
         repeatTypeVal.setVisibility(View.VISIBLE);
-        repeatTypeVal.setText(clickedTask.getTasks_repeateddays());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                repeatTypeVal.setText(clickedTask.getTasks_repeateddays());
+            }
+        }, 1500);
+
         if (clickedTask.getTasks_iscompleted() == 1) {
             completeIcon.setImageResource(R.drawable.ic_radio_button_checked_green);
             completeIcon.setTag(R.drawable.ic_radio_button_checked_green);
@@ -693,6 +704,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 endTextVal.getText().toString(), 1, tasksComment.getText().toString(),
                 workID, attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
+        if (isEditActivity) {
+            tasks.setTasks_crdate(clickedTask.getTasks_crdate());
+        } else {
+            DateTime crDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+            tasks.setTasks_crdate(Init.convertDateTimeToInteger(crDate));
+        }
         tasks.setTasks_id(tempTaskID);
         taskViewModel.update(tasks);
         setResult(RESULT_OK);

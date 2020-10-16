@@ -74,6 +74,8 @@ public class Tasks implements Serializable {
     private Boolean has_attach;
     @ColumnInfo(name = "complete_date")
     private String complete_date;
+    @ColumnInfo(name = "tasks_crdate")
+    private Long tasks_crdate;
 
 
     public Tasks(String tasks_title, Integer tasks_priority, Integer tasks_iscompleted, Integer tasks_repeatedtype,
@@ -223,5 +225,13 @@ public class Tasks implements Serializable {
 
     public void setComplete_date(String complete_date) {
         this.complete_date = complete_date;
+    }
+
+    public Long getTasks_crdate() {
+        return tasks_crdate;
+    }
+
+    public void setTasks_crdate(Long tasks_crdate) {
+        this.tasks_crdate = tasks_crdate;
     }
 }
