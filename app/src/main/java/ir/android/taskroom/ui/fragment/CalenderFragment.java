@@ -438,6 +438,46 @@ public class CalenderFragment extends Fragment {
                                         }
                                     }
                                 }
+                            } else if (!repeatType.isEmpty()) {
+                                String[] repeatTypeSplit = repeatType.split(" ");
+                                String[] typePeriodVal = new String[]{getResources().getString(R.string.day), getResources().getString(R.string.week),
+                                        getResources().getString(R.string.month), getResources().getString(R.string.year)};
+                                if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+                                    if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                        Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                        Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                        if (interval.toDuration().getStandardDays() % Integer.parseInt(repeatTypeSplit[1]) == 0) {
+                                            filterReminders.add(reminder);
+                                        }
+                                    }
+                                }
+                                if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
+                                    if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                        Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                        Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                        if (interval.toDuration().getStandardDays() % (7*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                                            filterReminders.add(reminder);
+                                        }
+                                    }
+                                }
+                                if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
+                                    if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                        Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                        Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                        if (interval.toDuration().getStandardDays() % (30*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                                            filterReminders.add(reminder);
+                                        }
+                                    }
+                                }
+                                if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
+                                    if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                        Init.convertIntegerToDateTime(reminder.getReminders_crdate());
+                                        Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
+                                        if (interval.toDuration().getStandardDays() % (365*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                                            filterReminders.add(reminder);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
