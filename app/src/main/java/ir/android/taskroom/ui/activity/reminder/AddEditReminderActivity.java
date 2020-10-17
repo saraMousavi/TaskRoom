@@ -276,7 +276,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     };
 
     private void insertTempReminder() {
-        if(getIntent().getExtras() != null && getIntent().getExtras().getString("calenderClickedDate") != null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getString("calenderClickedDate") != null) {
             calenderClickedDate = new DateTime(getIntent().getExtras().getString("calenderClickedDate"));
         }
         Reminders reminders = new Reminders(0, "", "",
@@ -504,7 +504,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
         } else {
             dateTime2 = calenderClickedDate;
-            System.out.println("dateTime2 = " + dateTime2);
             long selectedDate = Long.parseLong(calenderClickedDate.getYear() + "" +
                     (calenderClickedDate.getMonthOfYear() < 10 ? "0" + calenderClickedDate.getMonthOfYear() : calenderClickedDate.getMonthOfYear())
                     + "" + (calenderClickedDate.getDayOfMonth() < 10 ? "0" + calenderClickedDate.getDayOfMonth() : calenderClickedDate.getDayOfMonth()));
@@ -513,15 +512,39 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                     (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
             if (selectedDate < stringStartedDate) {
                 return "-1";//zaman entekhab shode gozashte ast
-            } else if(selectedDate == stringStartedDate){
+            } else if (selectedDate == stringStartedDate) {
                 dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+                int intDateTime2 = Integer.parseInt(dateTime2.getHourOfDay() + "" +
+                        (dateTime2.getMinuteOfHour() < 10 ? "0" + dateTime2.getMinuteOfHour() : dateTime2.getMinuteOfHour()) +
+                        (dateTime2.getSecondOfMinute() < 10 ? "0" + dateTime2.getSecondOfMinute() : dateTime2.getSecondOfMinute()));
+                int intCurrentTime = Integer.parseInt(Integer.parseInt(Init.getCurrentTime().split(":")[0]) + ""
+                        + (Integer.parseInt(Init.getCurrentTime().split(":")[1]) < 10 ? "0" +
+                        Init.getCurrentTime().split(":")[1] : Init.getCurrentTime().split(":")[1]) +
+                        (Integer.parseInt(Init.getCurrentTime().split(":")[2]) < 10 ? "0" +
+                                Init.getCurrentTime().split(":")[2] : Init.getCurrentTime().split(":")[2]));
+                if (intDateTime2 < intCurrentTime) {
+                    return "-1";
+                }
             }
         }
         if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
                 + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
                 "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
-            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1, false);
+            if (calenderClickedDate != null) {
+                long selectedDate = Long.parseLong(calenderClickedDate.getYear() + "" +
+                        (calenderClickedDate.getMonthOfYear() < 10 ? "0" + calenderClickedDate.getMonthOfYear() : calenderClickedDate.getMonthOfYear())
+                        + "" + (calenderClickedDate.getDayOfMonth() < 10 ? "0" + calenderClickedDate.getDayOfMonth() : calenderClickedDate.getDayOfMonth()));
+                long stringStartedDate = Long.parseLong(dateTime1.getYear() + "" +
+                        (dateTime1.getMonthOfYear() < 10 ? "0" + dateTime1.getMonthOfYear() : dateTime1.getMonthOfYear()) + "" +
+                        (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
+                if (selectedDate < stringStartedDate) {
+                    return "-1";
+                }
+            } else {
+                return "-1";
+            }
         }
+        System.out.println("dateTime2 = " + dateTime2);
         Interval interval = new Interval(dateTime1, dateTime2);
         long hour = interval.toDuration().getStandardMinutes() / 60;
         long minute = interval.toDuration().getStandardMinutes() - hour * 60;
