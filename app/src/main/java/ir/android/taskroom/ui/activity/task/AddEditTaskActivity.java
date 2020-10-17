@@ -683,7 +683,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                     }
                 } else {
-                    if (!clickedTask.getWork_id().equals("0")) {
+                    if (!clickedTask.getWork_id().equals("0") && !clickedTask.getWork_id().equals("-2")) {
                         WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
                     }
                 }
@@ -701,11 +701,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 Snackbar
                         .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdatepast), Snackbar.LENGTH_LONG)
                         .show();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
@@ -720,6 +715,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             tasks.setTasks_crdate(Init.convertDateTimeToInteger(crDate));
         }
         tasks.setTasks_id(tempTaskID);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         taskViewModel.update(tasks);
         setResult(RESULT_OK);
         finish();

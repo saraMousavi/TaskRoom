@@ -238,7 +238,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                     WorkManager.getInstance(mFragmentActivity.getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                 }
             } else {
-                if (!tasks.getWork_id().equals("0")) {
+                if (!tasks.getWork_id().equals("0") && !tasks.getWork_id().equals("-2")) {
                     WorkManager.getInstance(mFragmentActivity.getApplicationContext()).cancelWorkById(UUID.fromString(tasks.getWork_id()));
                 }
             }

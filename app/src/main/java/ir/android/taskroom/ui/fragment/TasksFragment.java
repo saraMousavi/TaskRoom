@@ -149,7 +149,7 @@ public class TasksFragment extends Fragment {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                             }
                         } else {
-                            if (!selectedTask.getWork_id().equals("0")) {
+                            if (!selectedTask.getWork_id().equals("0") && !selectedTask.getWork_id().equals("-2")) {
                                 WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                             }
                         }

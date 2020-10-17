@@ -380,7 +380,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                                 WorkManager.getInstance(getActivity()).cancelWorkById(UUID.fromString(requestId));
                             }
                         } else {
-                            if (!task.getWork_id().equals("0")) {
+                            if (!task.getWork_id().equals("0") && !task.getWork_id().equals("-2")) {
                                 WorkManager.getInstance(getActivity()).cancelWorkById(UUID.fromString(task.getWork_id()));
                             }
                         }
@@ -472,7 +472,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                 }
             } else {
-                if (!tasks.getWork_id().equals("0")) {
+                if (!tasks.getWork_id().equals("0") && !tasks.getWork_id().equals("-2")) {
                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(tasks.getWork_id()));
                 }
             }
