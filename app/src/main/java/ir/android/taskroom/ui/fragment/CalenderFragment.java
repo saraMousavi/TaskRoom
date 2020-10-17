@@ -775,7 +775,7 @@ public class CalenderFragment extends Fragment {
                                         dateTime.format(formatter);
                                         ZonedDateTime dateAfterIday = dateTime.plusDays(i);
                                         if (dateAfterIday.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
+                                            markSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
                                             i = i + 7;
                                         } else {
                                             i++;
@@ -789,7 +789,7 @@ public class CalenderFragment extends Fragment {
                                         dateTime.format(formatter);
                                         ZonedDateTime dateAfterIday = dateTime.plusDays(i);
                                         if (dateAfterIday.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
+                                            markSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
                                             i = i + 7;
                                         } else {
                                             i++;
@@ -803,7 +803,7 @@ public class CalenderFragment extends Fragment {
                                         dateTime.format(formatter);
                                         ZonedDateTime dateAfterIday = dateTime.plusDays(i);
                                         if (dateAfterIday.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
+                                            markSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
                                             i = i + 7;
                                         } else {
                                             i++;
@@ -817,7 +817,7 @@ public class CalenderFragment extends Fragment {
                                         dateTime.format(formatter);
                                         ZonedDateTime dateAfterIday = dateTime.plusDays(i);
                                         if (dateAfterIday.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
+                                            markSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
                                             i = i + 7;
                                         } else {
                                             i++;
@@ -831,7 +831,7 @@ public class CalenderFragment extends Fragment {
                                         dateTime.format(formatter);
                                         ZonedDateTime dateAfterIday = dateTime.plusDays(i);
                                         if (dateAfterIday.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
+                                            markSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
                                             i = i + 7;
                                         } else {
                                             i++;
@@ -845,7 +845,7 @@ public class CalenderFragment extends Fragment {
                                         dateTime.format(formatter);
                                         ZonedDateTime dateAfterIday = dateTime.plusDays(i);
                                         if (dateAfterIday.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                            markVerticalSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
+                                            markSomeDays(Init.dateTimeAfter7dayFromCurrent(startdate, i));
                                             i = i + 7;
                                         } else {
                                             i++;
