@@ -325,7 +325,7 @@ public class CalenderFragment extends Fragment {
                         }
                         if (isNotCustomDayReminder) {
                             for (int i = 0; i < duration; ) {
-                                if(!Init.checkValidDate(startDate.plusDays(i))){
+                                if (!Init.checkValidDate(startDate.plusDays(i))) {
                                     i++;
                                 }
                                 markVerticalSomeDays(startDate.plusDays(i));
@@ -347,10 +347,18 @@ public class CalenderFragment extends Fragment {
                     for (Tasks task : tasks) {
                         if (Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate())) != null) {
                             Long startdate = Init.convertDateTimeToInteger(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate())));
-                            if (task.getTasks_repeateddays().isEmpty()) {
+                            if (startdate != null && task.getTasks_repeateddays().isEmpty()) {
                                 if (task.getTasks_remindertime() == 0) {
-                                    if (startdate != null && startdate / 1000000 == Init.integerFormatDate(clickedDateTime)) {
-                                        filteredTasks.add(task);
+                                    //if reminder time 'dont remind' bud faghat dar tarikh shoru va payan nemayesh dade mishavad
+                                    if (task.getTasks_enddate().isEmpty()) {
+                                        if (startdate / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                                            filteredTasks.add(task);
+                                        }
+                                    } else {
+                                        Long endDate = Init.convertDateTimeToInteger(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate())));
+                                        if (startdate / 1000000 >= Init.integerFormatDate(clickedDateTime) || endDate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                                            filteredTasks.add(task);
+                                        }
                                     }
                                 }
                                 if (task.getTasks_remindertime() == 1) {
@@ -432,8 +440,8 @@ public class CalenderFragment extends Fragment {
                     getResources().getString(R.string.month), getResources().getString(R.string.year)};
             if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
                 if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                    Interval interval = new Interval(Init.convertIntegerToDateTime(startdate/1000000), Init.convertIntegerToDateTime(Init.integerFormatDate(clickedDateTime)));
-                    long diffDays = interval.toDurationMillis()/(24*60*60*1000L);
+                    Interval interval = new Interval(Init.convertIntegerToDateTime(startdate / 1000000), Init.convertIntegerToDateTime(Init.integerFormatDate(clickedDateTime)));
+                    long diffDays = interval.toDurationMillis() / (24 * 60 * 60 * 1000L);
                     if (diffDays % Integer.parseInt(repeatTypeSplit[1]) == 0) {
                         filteredTasks.add(tasks);
                     }
@@ -653,10 +661,10 @@ public class CalenderFragment extends Fragment {
             @Override
             public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
                 //@TODO
-//                FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
-//                ft.addToBackStack(null);
-//                ft.commit();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
+                ft.addToBackStack(null);
+                ft.commit();
             }
 
             @Override
@@ -714,14 +722,13 @@ public class CalenderFragment extends Fragment {
                     DateTime startdate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
 
                     if (task.getTasks_remindertime() == 0) {
+                        //if reminder time 'dont remind' bud faghat dar tarikh shoru va payan nemayesh dade mishavad
                         if (task.getTasks_enddate().isEmpty()) {
                             markSomeDays(startdate);
                         } else {
                             DateTime enddate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_enddate()));
                             int duration = Days.daysBetween(startdate, enddate).getDays();
-                            for (int i = 0; i < duration; i++) {
-                                markSomeDays(startdate.plusDays(i));
-                            }
+                            markSomeDays(startdate.plusDays(duration));
                         }
                     }
                     //remind in start date

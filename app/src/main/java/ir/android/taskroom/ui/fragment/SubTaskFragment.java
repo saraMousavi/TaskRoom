@@ -51,7 +51,7 @@ public class SubTaskFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 subtaskItemRecyclerView.setVisibility(subtaskItemRecyclerView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-
+                expandItem.setImageResource(subtaskItemRecyclerView.getVisibility() == View.VISIBLE ? R.drawable.ic_arraw_up : R.drawable.ic_arraw_down);
             }
         });
     }

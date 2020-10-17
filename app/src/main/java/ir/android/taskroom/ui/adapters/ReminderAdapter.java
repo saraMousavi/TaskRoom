@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -155,9 +157,15 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
         holder.remindersActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String workId = cancelOrCreateRequest(getReminderAt(position), isChecked);
+                if(workId.equals("-1")){
+                    Snackbar
+                            .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), mFragmentActivity.getString(R.string.validtimepast), Snackbar.LENGTH_LONG)
+                            .show();
+                    return;
+                }
                 reminder.setReminders_active(isChecked ? 1 : 0);
                 reminder.setReminders_id(reminder.getReminders_id());
-                String workId = cancelOrCreateRequest(getReminderAt(position), isChecked);
                 reminder.setWork_id(workId);
                 reminderViewModel.update(reminder);
             }
@@ -173,8 +181,21 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
                     + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
                     "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
-                dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 1, false);
+                DateTime crDate = Init.convertIntegerToDateTime(reminders.getReminders_crdate());
+                long intDateTime1 = Long.parseLong(dateTime1.getYear()+ ""
+                        + (dateTime1.getMonthOfYear() < 10 ? "0" + dateTime1.getMonthOfYear() : dateTime1.getMonthOfYear())
+                        + "" + (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
+                long intCrDate = Long.parseLong(crDate.getYear()+ ""
+                        + (crDate.getMonthOfYear() < 10 ? "0" + crDate.getMonthOfYear() : crDate.getMonthOfYear())
+                        + "" + (crDate.getDayOfMonth() < 10 ? "0" + crDate.getDayOfMonth() : crDate.getDayOfMonth()));
+                if(intDateTime1 >= intCrDate) {
+                    return "-1";
+                } else {
+                    dateTime2 = new DateTime(crDate.getYear(), crDate.getMonthOfYear(),crDate.getDayOfMonth(), Integer.parseInt(datepickerVal.split(":")[0]), Integer.parseInt(datepickerVal.split(":")[1]), Integer.parseInt(datepickerVal.split(":")[2]));
+                }
             }
+            System.out.println("dateTime2 = " + dateTime2);
+            System.out.println("dateTime1 = " + dateTime1);
             Interval interval = new Interval(dateTime1, dateTime2);
             long hour = interval.toDuration().getStandardMinutes() / 60;
             long minute = interval.toDuration().getStandardMinutes() - hour * 60;

@@ -111,6 +111,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                         public void onClick(View v) {
                             subTasksItemViewHolder.editSubtaskConstarintLayout.setVisibility(View.GONE);
                             subTasksItemViewHolder.subtaskRow.setVisibility(View.VISIBLE);
+                            subTasksViewModel.delete(getSubTaskAt(position));
                         }
                     });
                 }

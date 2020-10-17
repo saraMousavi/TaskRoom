@@ -711,11 +711,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         .show();
             }
         }
+
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 endTextVal.getText().toString(), 1, tasksComment.getText().toString(),
                 workID, attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
+        System.out.println("tasks.getTasks_remindertime() = " + tasks.getTasks_remindertime());
         if (isEditActivity) {
             tasks.setTasks_crdate(clickedTask.getTasks_crdate());
         } else {
@@ -764,12 +766,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
                             newStartInterval = passedInterval + 365 * 24 * 60 * 60 * 1000L;
                         }
+                    } else {
+                        if (!repeatType.isEmpty()) {
+                            //if start date past and reminder time was custom day
+                            dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
+                        }
                     }
                 }
-                //if start date past and reminder time was custom day
-                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                    dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
-                }
+
             } else if (reminderTime.getSelectedItemPosition() == 2) {
                 dateTime1 = Init.getCurrentDateTimeWithSecond();
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(endDatepickerVal));
@@ -821,9 +825,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 return "-1";
             }
             if (reminderTime.getSelectedItemPosition() != 0) {
-                long interval = new Interval(dateTime1, dateTime2).toDurationMillis();
+                long interval = 0;
                 if (newStartInterval != null) {
                     interval = newStartInterval;
+                } else {
+                    interval = new Interval(dateTime1, dateTime2).toDurationMillis();
                 }
 //            long hour = interval.toDuration().getStandardMinutes() / 60;
 //            long minute = interval.toDuration().getStandardMinutes() - hour * 60;

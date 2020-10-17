@@ -107,6 +107,8 @@ public class TasksFragment extends Fragment {
         taskAdapter.setOnItemClickListener(new TasksAdapter.TaskClickListener() {
             @Override
             public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
+                System.out.println("subtaskConstarint = " + subtaskConstarint);
+                System.out.println("subTaskFragment = " + subTaskFragment);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
                 ft.addToBackStack(null);

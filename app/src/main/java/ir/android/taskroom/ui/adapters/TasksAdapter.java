@@ -117,7 +117,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                 Tasks task = new Tasks(tasks.getTasks_title(), tasks.getTasks_priority(), 0, tasks.getTasks_repeatedtype(), tasks.getProjects_id(), tasks.getTasks_startdate(), tasks.getTasks_remindertype()
                         , tasks.getTasks_remindertime(), tasks.getTasks_repeateddays(), tasks.getTasks_enddate(),
                         tasks.getLabel_id(), tasks.getTasks_comment(), tasks.getWork_id(), tasks.getHas_attach(), tasks.getComplete_date());
-                String workId = createWorkRequest(tasks, tasks.getTasks_iscompleted() == 0 ? false:true);
+                String workId = createWorkRequest(tasks, tasks.getTasks_iscompleted() == 0 ? false : true);
                 System.out.println("workId = " + workId);
                 if (tasks.getTasks_iscompleted() == 0) {
                     task.setTasks_iscompleted(1);
@@ -161,6 +161,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape));
         }
         int newContainerID = View.generateViewId();
+        System.out.println("newContainerID = " + newContainerID);
         holder.subtaskConstarint.setId(newContainerID);
         fragmentJump(tasks, newContainerID);
 
@@ -179,9 +180,12 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String createWorkRequest(Tasks tasks, boolean isChecked) {
-        if(isChecked) {
+        if (isChecked) {
             DateTime dateTime1 = null;
             DateTime dateTime2 = null;
+            Long newStartInterval = null;
+            System.out.println("tasks.getTasks_repeateddays() = " + tasks.getTasks_repeateddays());
+            System.out.println("tasks.getTasks_repeateddays().isEmpty() = " + tasks.getTasks_repeateddays().isEmpty());
             if (tasks.getTasks_remindertime() == 1) {
                 dateTime1 = Init.getCurrentDateTimeWithSecond();
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
@@ -191,35 +195,87 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                         return "-2";//start date past
                     }
                 }
-            } else if (!tasks.getTasks_repeateddays().isEmpty()) {
+            } else if (!tasks.getTasks_repeateddays().isEmpty()) {//if repeat type has value(dayli,...have ,...,custom)
+                //remind in custom
                 if (tasks.getTasks_remindertime() == 3) {
                     dateTime1 = Init.getCurrentDateTimeWithSecond();
                     dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
+                    //if start date past and reminder time was advance
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                        long passedInterval = new Interval(dateTime2, dateTime1).toDurationMillis();
+                        String repeatType = tasks.getTasks_repeateddays();
+                        if (!repeatType.contains(",") && !repeatType.isEmpty()) {
+                            String[] repeatTypeSplit = repeatType.split(" ");
+                            String[] typePeriodVal = new String[]{mFragmentActivity.getResources().getString(R.string.day), mFragmentActivity.getResources().getString(R.string.week),
+                                    mFragmentActivity.getResources().getString(R.string.month), mFragmentActivity.getResources().getString(R.string.year)};
+                            if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 24 * 60 * 60 * 1000L;
+                            }
+                            if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 7 * 24 * 60 * 60 * 1000L;
+                            }
+                            if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 30 * 24 * 60 * 60 * 1000L;
+                            }
+                            if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 365 * 24 * 60 * 60 * 1000L;
+                            }
+                        } else {
+                            if (!repeatType.isEmpty()) {
+                                //if start date past and reminder time was custom day
+                                dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                            }
+                        }
                     }
                 } else if (tasks.getTasks_remindertime() == 2) {
+                    //repeat in advance
                     dateTime1 = Init.getCurrentDateTimeWithSecond();
-                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_enddate()));
+                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
+                    //if start date past and reminder time was advance
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        return "-1";
+                        long passedInterval = new Interval(dateTime2, dateTime1).toDurationMillis();
+                        String repeatType = tasks.getTasks_repeateddays();
+                        if (!repeatType.contains(",") && !repeatType.isEmpty()) {
+                            String[] repeatTypeSplit = repeatType.split(" ");
+                            String[] typePeriodVal = new String[]{mFragmentActivity.getResources().getString(R.string.day), mFragmentActivity.getResources().getString(R.string.week),
+                                    mFragmentActivity.getResources().getString(R.string.month), mFragmentActivity.getResources().getString(R.string.year)};
+                            if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 24 * 60 * 60 * 1000L;
+                            }
+                            if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 7 * 24 * 60 * 60 * 1000L;
+                            }
+                            if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 30 * 24 * 60 * 60 * 1000L;
+                            }
+                            if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
+                                newStartInterval = passedInterval + 365 * 24 * 60 * 60 * 1000L;
+                            }
+                        } else {
+                            if (!repeatType.isEmpty()) {
+                                //if start date past and reminder time was custom day
+                                dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                            }
+                        }
                     }
                 }
             } else {
+                //reminde in end date
                 if (tasks.getTasks_remindertime() == 2) {
                     dateTime1 = Init.getCurrentDateTimeWithSecond();
-                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
-                    if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
-                    }
+                    dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_enddate()));
+                    System.out.println("dateTime1 = " + dateTime1);
+                    System.out.println("dateTime2 = " + dateTime2);
                 }
             }
             if (dateTime1 != null && dateTime2 != null) {
-                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                    return "-1";
-                }
                 if (tasks.getTasks_remindertime() != 0) {
-                    Interval interval = new Interval(dateTime1, dateTime2);
+                    long interval = 0;
+                    if (newStartInterval != null) {
+                        interval = newStartInterval;
+                    } else {
+                        interval = new Interval(dateTime1, dateTime2).toDurationMillis();
+                    }
 //            long hour = interval.toDuration().getStandardMinutes() / 60;
 //            long minute = interval.toDuration().getStandardMinutes() - hour * 60;
 //            long second = 0;
@@ -229,7 +285,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
 //            Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
                     return Init.requestWork(mFragmentActivity.getApplicationContext(), tasks.getTasks_title(), tasks.getTasks_remindertype(),
                             Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), tasks.getTasks_repeateddays()),
-                            interval.toDurationMillis(), !tasks.getTasks_repeateddays().isEmpty(), false);
+                            interval, !tasks.getTasks_repeateddays().isEmpty(), false);
                 }
             }
         } else {
@@ -251,6 +307,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     private void fragmentJump(Tasks tasks, int newContainerID) {
         SubTaskFragment subTaskFragment = new SubTaskFragment();
         Bundle bundle = new Bundle();
+        System.out.println("tasks.getTasks_id() = " + tasks.getTasks_id());
         bundle.putLong("taskID", tasks.getTasks_id());
         subTaskFragment.setArguments(bundle);
         if (taskClickListener != null) {
