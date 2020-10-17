@@ -194,10 +194,16 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             }
         });
         ArrayList<String> remindTimeArray = new ArrayList<>();
-        remindTimeArray.add(getString(R.string.dontRemind));
-        remindTimeArray.add(getString(R.string.remindInStartDate));
-        //@TODO change this translation
-        remindTimeArray.add(getString(R.string.remindInAdvance));
+        if (endDatepickerVal == null || endDatepickerVal.isEmpty()) {
+            remindTimeArray.add(getString(R.string.dontRemind));
+            remindTimeArray.add(getString(R.string.remindInStartDate));
+            remindTimeArray.add(getString(R.string.remindInAdvance));
+        } else {
+            remindTimeArray.add(getString(R.string.dontRemind));
+            remindTimeArray.add(getString(R.string.remindInStartDate));
+            remindTimeArray.add(getString(R.string.remindInEndDate));
+            remindTimeArray.add(getString(R.string.remindInAdvance));
+        }
         ArrayAdapter<String> remindTimeAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, remindTimeArray);
         reminderTime.setAdapter(remindTimeAdapter);
@@ -606,6 +612,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     private void editableTaskFields() {
+        startDatepickerVal = clickedTask.getTasks_startdate();
+        endDatepickerVal = clickedTask.getTasks_enddate();
         taskNameEdit.setText(clickedTask.getTasks_title());
         startTextVal.setText(clickedTask.getTasks_startdate());
         if (!clickedTask.getTasks_enddate().isEmpty()) {
@@ -715,11 +723,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             tasks.setTasks_crdate(Init.convertDateTimeToInteger(crDate));
         }
         tasks.setTasks_id(tempTaskID);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         taskViewModel.update(tasks);
         setResult(RESULT_OK);
         finish();
