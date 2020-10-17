@@ -714,6 +714,20 @@ public class Init {
                 "" + (dateTime.getSecondOfMinute() < 10 ? "0" + dateTime.getSecondOfMinute() : dateTime.getSecondOfMinute()));
     }
 
+    public static boolean checkValidDate(DateTime currentDateTime){
+        System.out.println("currentDateTime = " + currentDateTime);
+        int year = currentDateTime.getYear();
+        int month = currentDateTime.getMonthOfYear();
+        int day = currentDateTime.getDayOfMonth();
+        if(month == 12 && day > 29){
+            return false;
+        }
+        if(month > 6 && day > 30){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * only work for afterDayDuration <= 30
      * @param currentDateTime

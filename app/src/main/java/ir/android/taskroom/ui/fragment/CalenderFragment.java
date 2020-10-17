@@ -325,6 +325,9 @@ public class CalenderFragment extends Fragment {
                         }
                         if (isNotCustomDayReminder) {
                             for (int i = 0; i < duration; ) {
+                                if(!Init.checkValidDate(startDate.plusDays(i))){
+                                    i++;
+                                }
                                 markVerticalSomeDays(startDate.plusDays(i));
                                 i = i + intervalNum * intervalPeriod;
                             }
