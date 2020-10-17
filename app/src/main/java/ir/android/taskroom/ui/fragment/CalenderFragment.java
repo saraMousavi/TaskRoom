@@ -342,29 +342,31 @@ public class CalenderFragment extends Fragment {
                 public void onChanged(List<Tasks> tasks) {
                     List<Tasks> filteredTasks = new ArrayList<>();
                     for (Tasks task : tasks) {
-                        if (task.getTasks_repeateddays().isEmpty()) {
-                            if (task.getTasks_remindertime() == 0) {
-                                if (task.getTasks_crdate() != null && task.getTasks_crdate() / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                        if (Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate())) != null) {
+                            Long startdate = Init.convertDateTimeToInteger(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate())));
+                            if (task.getTasks_repeateddays().isEmpty()) {
+                                if (task.getTasks_remindertime() == 0) {
+                                    if (startdate != null && startdate / 1000000 == Init.integerFormatDate(clickedDateTime)) {
+                                        filteredTasks.add(task);
+                                    }
+                                }
+                                if (task.getTasks_remindertime() == 1) {
+                                    if ((Init.integerFormatFromStringDate(task.getTasks_startdate()) / 1000000) == Init.integerFormatDate(clickedDateTime)) {
+                                        filteredTasks.add(task);
+                                    }
+                                }
+                            }
+                            if (task.getTasks_remindertime() == 2 && task.getTasks_repeateddays().isEmpty()) {
+                                if (Init.integerFormatDate(clickedDateTime) == Init.integerFormatFromStringDate(task.getTasks_enddate()) / 1000000) {
                                     filteredTasks.add(task);
                                 }
                             }
-                            if (task.getTasks_remindertime() == 1) {
-                                if ((Init.integerFormatFromStringDate(task.getTasks_startdate()) / 1000000) == Init.integerFormatDate(clickedDateTime)) {
-                                    filteredTasks.add(task);
-                                }
+                            if (task.getTasks_remindertime() == 2 && !task.getTasks_repeateddays().isEmpty()) {
+                                addTaskToFilterListWithRepeat(task, filteredTasks);
+                            } else if (task.getTasks_remindertime() == 3) {
+                                addTaskToFilterListWithRepeat(task, filteredTasks);
                             }
                         }
-                        if (task.getTasks_remindertime() == 2 && task.getTasks_repeateddays().isEmpty()) {
-                            if (Init.integerFormatDate(clickedDateTime) == Init.integerFormatFromStringDate(task.getTasks_enddate()) / 1000000) {
-                                filteredTasks.add(task);
-                            }
-                        }
-                        if (task.getTasks_remindertime() == 2 && !task.getTasks_repeateddays().isEmpty()) {
-                            addTaskToFilterListWithRepeat(task, filteredTasks);
-                        } else if (task.getTasks_remindertime() == 3) {
-                            addTaskToFilterListWithRepeat(task, filteredTasks);
-                        }
-
                     }
                     tasksAdapter.submitList(filteredTasks);
                     recyclerView.setAdapter(tasksAdapter);
@@ -375,37 +377,35 @@ public class CalenderFragment extends Fragment {
 
     private List<Tasks> addTaskToFilterListWithRepeat(Tasks tasks, List<Tasks> filteredTasks) {
         String repeatType = tasks.getTasks_repeateddays();
+        Long startdate = Init.convertDateTimeToInteger(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate())));
         if (repeatType.equals(getResources().getString(R.string.daily))) {
-            if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)){
+            if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
                 filteredTasks.add(tasks);
             }
         } else if (repeatType.equals(getResources().getString(R.string.weekly))) {
-            if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
+            if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                Interval interval = new Interval(Init.convertIntegerToDateTime(startdate), clickedDateTime);
                 if (interval.toDuration().getStandardDays() % 7 == 0) {
                     filteredTasks.add(tasks);
                 }
             }
         } else if (repeatType.equals(getResources().getString(R.string.monthly))) {
-            if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
+            if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                Interval interval = new Interval(Init.convertIntegerToDateTime(startdate), clickedDateTime);
                 if (interval.toDuration().getStandardDays() % 30 == 0) {
                     filteredTasks.add(tasks);
                 }
             }
         } else if (repeatType.equals(getResources().getString(R.string.yearly))) {
-            if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
+            if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                Interval interval = new Interval(Init.convertIntegerToDateTime(startdate), clickedDateTime);
                 if (interval.toDuration().getStandardDays() % 365 == 0) {
                     filteredTasks.add(tasks);
                 }
             }
         } else if (repeatType.contains(",")) {
             for (String repeatTypeVal : repeatType.split(",")) {
-                if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
                     if (repeatTypeVal.equals(getResources().getString(R.string.saterday)) && clickedDateTime.getDayOfWeek() == 1) {
                         filteredTasks.add(tasks);
                     } else if (repeatTypeVal.equals(getResources().getString(R.string.sunday)) && clickedDateTime.getDayOfWeek() == 2) {
@@ -428,37 +428,34 @@ public class CalenderFragment extends Fragment {
             String[] typePeriodVal = new String[]{getResources().getString(R.string.day), getResources().getString(R.string.week),
                     getResources().getString(R.string.month), getResources().getString(R.string.year)};
             if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
-                if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                    Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                    Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
-                    if (interval.toDuration().getStandardDays() % Integer.parseInt(repeatTypeSplit[1]) == 0) {
+                if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                    Interval interval = new Interval(Init.convertIntegerToDateTime(startdate/1000000), Init.convertIntegerToDateTime(Init.integerFormatDate(clickedDateTime)));
+                    long diffDays = interval.toDurationMillis()/(24*60*60*1000L);
+                    if (diffDays % Integer.parseInt(repeatTypeSplit[1]) == 0) {
                         filteredTasks.add(tasks);
                     }
                 }
             }
             if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
-                if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                    Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                    Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
-                    if (interval.toDuration().getStandardDays() % (7*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                    Interval interval = new Interval(Init.convertIntegerToDateTime(startdate), clickedDateTime);
+                    if (interval.toDuration().getStandardDays() % (7 * Integer.parseInt(repeatTypeSplit[1])) == 0) {
                         filteredTasks.add(tasks);
                     }
                 }
             }
             if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
-                if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                    Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                    Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
-                    if (interval.toDuration().getStandardDays() % (30*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                    Interval interval = new Interval(Init.convertIntegerToDateTime(startdate), clickedDateTime);
+                    if (interval.toDuration().getStandardDays() % (30 * Integer.parseInt(repeatTypeSplit[1])) == 0) {
                         filteredTasks.add(tasks);
                     }
                 }
             }
             if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
-                if (tasks.getTasks_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
-                    Init.convertIntegerToDateTime(tasks.getTasks_crdate());
-                    Interval interval = new Interval(Init.convertIntegerToDateTime(tasks.getTasks_crdate()), clickedDateTime);
-                    if (interval.toDuration().getStandardDays() % (365*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                if (startdate / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
+                    Interval interval = new Interval(Init.convertIntegerToDateTime(startdate), clickedDateTime);
+                    if (interval.toDuration().getStandardDays() % (365 * Integer.parseInt(repeatTypeSplit[1])) == 0) {
                         filteredTasks.add(tasks);
                     }
                 }
@@ -482,7 +479,7 @@ public class CalenderFragment extends Fragment {
                         } else {// if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime))
                             String repeatType = reminder.getReminders_repeatedday();
                             if (repeatType.equals(getResources().getString(R.string.daily))) {
-                                if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)){
+                                if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
                                     filterReminders.add(reminder);
                                 }
                             } else if (repeatType.equals(getResources().getString(R.string.weekly))) {
@@ -546,7 +543,7 @@ public class CalenderFragment extends Fragment {
                                     if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
                                         Init.convertIntegerToDateTime(reminder.getReminders_crdate());
                                         Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
-                                        if (interval.toDuration().getStandardDays() % (7*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                                        if (interval.toDuration().getStandardDays() % (7 * Integer.parseInt(repeatTypeSplit[1])) == 0) {
                                             filterReminders.add(reminder);
                                         }
                                     }
@@ -555,7 +552,7 @@ public class CalenderFragment extends Fragment {
                                     if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
                                         Init.convertIntegerToDateTime(reminder.getReminders_crdate());
                                         Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
-                                        if (interval.toDuration().getStandardDays() % (30*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                                        if (interval.toDuration().getStandardDays() % (30 * Integer.parseInt(repeatTypeSplit[1])) == 0) {
                                             filterReminders.add(reminder);
                                         }
                                     }
@@ -564,7 +561,7 @@ public class CalenderFragment extends Fragment {
                                     if (reminder.getReminders_crdate() / 1000000 <= Init.integerFormatDate(clickedDateTime)) {
                                         Init.convertIntegerToDateTime(reminder.getReminders_crdate());
                                         Interval interval = new Interval(Init.convertIntegerToDateTime(reminder.getReminders_crdate()), clickedDateTime);
-                                        if (interval.toDuration().getStandardDays() % (365*Integer.parseInt(repeatTypeSplit[1])) == 0) {
+                                        if (interval.toDuration().getStandardDays() % (365 * Integer.parseInt(repeatTypeSplit[1])) == 0) {
                                             filterReminders.add(reminder);
                                         }
                                     }
@@ -712,7 +709,7 @@ public class CalenderFragment extends Fragment {
             public void onChanged(List<Tasks> tasks) {
                 for (Tasks task : tasks) {
                     DateTime startdate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(task.getTasks_startdate()));
-                    //remind in start date
+
                     if (task.getTasks_remindertime() == 0) {
                         if (task.getTasks_enddate().isEmpty()) {
                             markSomeDays(startdate);
@@ -724,6 +721,7 @@ public class CalenderFragment extends Fragment {
                             }
                         }
                     }
+                    //remind in start date
                     if (task.getTasks_remindertime() == 1) {
                         markSomeDays(startdate);
                     }

@@ -22,6 +22,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
@@ -700,7 +701,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 Snackbar
                         .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdatepast), Snackbar.LENGTH_LONG)
                         .show();
-                return;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
@@ -725,19 +730,40 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     public String createWorkRequest() {
         DateTime dateTime1 = null;
         DateTime dateTime2 = null;
+        Long newStartInterval = null;
         if (reminderTime.getSelectedItemPosition() == 1) {
             dateTime1 = Init.getCurrentDateTimeWithSecond();
             dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
             if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
-                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                    return "-2";//start date past
-                }
+                return "-2";//start date past
             }
         } else if (reminderTime.getAdapter().getCount() > 3) {
             if (reminderTime.getSelectedItemPosition() == 3) {
                 dateTime1 = Init.getCurrentDateTimeWithSecond();
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+                //if start date past and reminder time was advance
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    long passedInterval = new Interval(dateTime2, dateTime1).toDurationMillis();
+                    String repeatType = repeatTypeVal.getText().toString();
+                    if (!repeatType.contains(",") && !repeatType.isEmpty()) {
+                        String[] repeatTypeSplit = repeatType.split(" ");
+                        String[] typePeriodVal = new String[]{getResources().getString(R.string.day), getResources().getString(R.string.week),
+                                getResources().getString(R.string.month), getResources().getString(R.string.year)};
+                        if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 24 * 60 * 60 * 1000L;
+                        }
+                        if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 7 * 24 * 60 * 60 * 1000L;
+                        }
+                        if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 30 * 24 * 60 * 60 * 1000L;
+                        }
+                        if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 365 * 24 * 60 * 60 * 1000L;
+                        }
+                    }
+                }
+                //if start date past and reminder time was custom day
                 if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
                     dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
                 }
@@ -745,13 +771,43 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 dateTime1 = Init.getCurrentDateTimeWithSecond();
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(endDatepickerVal));
                 if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                    return "-1";
+                    dateTime1 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+                    if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                        //tarihk shoru az payan kuchektar ast
+                        return "-1";
+                    } else {
+                        //tarikh shoru va payan har do gazashte and
+                        return "-2";
+                    }
                 }
             }
         } else {
             if (reminderTime.getSelectedItemPosition() == 2) {
                 dateTime1 = Init.getCurrentDateTimeWithSecond();
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDatepickerVal));
+                //if start date past and reminder time was advance
+                if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
+                    long passedInterval = new Interval(dateTime2, dateTime1).toDurationMillis();
+                    String repeatType = repeatTypeVal.getText().toString();
+                    if (!repeatType.contains(",") && !repeatType.isEmpty()) {
+                        String[] repeatTypeSplit = repeatType.split(" ");
+                        String[] typePeriodVal = new String[]{getResources().getString(R.string.day), getResources().getString(R.string.week),
+                                getResources().getString(R.string.month), getResources().getString(R.string.year)};
+                        if (typePeriodVal[0].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 24 * 60 * 60 * 1000L;
+                        }
+                        if (typePeriodVal[1].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 7 * 24 * 60 * 60 * 1000L;
+                        }
+                        if (typePeriodVal[2].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 30 * 24 * 60 * 60 * 1000L;
+                        }
+                        if (typePeriodVal[3].equals(repeatTypeSplit[2])) {
+                            newStartInterval = passedInterval + 365 * 24 * 60 * 60 * 1000L;
+                        }
+                    }
+                }
+                //if start date past and reminder time was custom day
                 if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
                     dateTime2 = Init.getTodayDateTimeWithTime(startDatepickerVal, 1, true);
                 }
@@ -762,7 +818,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 return "-1";
             }
             if (reminderTime.getSelectedItemPosition() != 0) {
-                Interval interval = new Interval(dateTime1, dateTime2);
+                long interval = new Interval(dateTime1, dateTime2).toDurationMillis();
+                if (newStartInterval != null) {
+                    interval = newStartInterval;
+                }
 //            long hour = interval.toDuration().getStandardMinutes() / 60;
 //            long minute = interval.toDuration().getStandardMinutes() - hour * 60;
 //            long second = 0;
@@ -772,7 +831,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 //            Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
                 return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(), reminderTypeVal,
                         Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
-                        interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), false);
+                        interval, !repeatTypeVal.getText().toString().isEmpty(), false);
             }
         }
 
