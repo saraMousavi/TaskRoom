@@ -72,7 +72,6 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.alarm_activity);
 //        alarmIcon = findViewById(R.id.alarmIcon);
         alarmClockIcon = findViewById(R.id.analogClock);
-        System.out.println("alarmClockIcon.getWidth() = " + alarmClockIcon.getWidth());
         alarmActive = findViewById(R.id.alarm_active);
         alarmTitle = findViewById(R.id.alarmTitle);
         alarmTitle.setText(getIntent().getExtras().getString("alarmTitle"));

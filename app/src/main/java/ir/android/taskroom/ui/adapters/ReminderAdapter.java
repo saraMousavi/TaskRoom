@@ -35,6 +35,7 @@ import java.util.UUID;
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.utils.Init;
+import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
 
 public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.ViewHolder> {
@@ -176,38 +177,14 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     private String cancelOrCreateRequest(Reminders reminders, boolean isChecked) {
         String datepickerVal = reminders.getReminders_time();
         if(!datepickerVal.isEmpty() && isChecked) {
-            DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-            DateTime dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
-            if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
-                    + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
-                    "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
-                DateTime crDate = Init.convertIntegerToDateTime(reminders.getReminders_crdate());
-                long intDateTime1 = Long.parseLong(dateTime1.getYear()+ ""
-                        + (dateTime1.getMonthOfYear() < 10 ? "0" + dateTime1.getMonthOfYear() : dateTime1.getMonthOfYear())
-                        + "" + (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
-                long intCrDate = Long.parseLong(crDate.getYear()+ ""
-                        + (crDate.getMonthOfYear() < 10 ? "0" + crDate.getMonthOfYear() : crDate.getMonthOfYear())
-                        + "" + (crDate.getDayOfMonth() < 10 ? "0" + crDate.getDayOfMonth() : crDate.getDayOfMonth()));
-                if(intDateTime1 >= intCrDate) {
-                    return "-1";
-                } else {
-                    dateTime2 = new DateTime(crDate.getYear(), crDate.getMonthOfYear(),crDate.getDayOfMonth(), Integer.parseInt(datepickerVal.split(":")[0]), Integer.parseInt(datepickerVal.split(":")[1]), Integer.parseInt(datepickerVal.split(":")[2]));
-                }
+            TasksReminderActions tasksReminderActions  = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, Init.convertIntegerToDateTime(reminders.getReminders_crdate()), mFragmentActivity.getResources());
+            if(tasksReminderActions.getRemainDuration() == -1){
+                return "-1";
             }
-            System.out.println("dateTime2 = " + dateTime2);
-            System.out.println("dateTime1 = " + dateTime1);
-            Interval interval = new Interval(dateTime1, dateTime2);
-            long hour = interval.toDuration().getStandardMinutes() / 60;
-            long minute = interval.toDuration().getStandardMinutes() - hour * 60;
-            long second = 0;
-            if (minute == 0 && hour == 0) {
-                second = interval.toDuration().getStandardSeconds();
-            }
-
-            Toast.makeText(mFragmentActivity.getApplicationContext(), mFragmentActivity.getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
+            Toast.makeText(mFragmentActivity.getApplicationContext(), mFragmentActivity.getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
             return Init.requestWork(mFragmentActivity.getApplicationContext(), reminders.getReminders_title(), reminders.getReminders_type(),
                     Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), reminders.getReminders_repeatedday()),
-                    interval.toDurationMillis(), !reminders.getReminders_repeatedday().isEmpty(), true);
+                    tasksReminderActions.getRemainDuration(), !reminders.getReminders_repeatedday().isEmpty(), true);
         } else if(!datepickerVal.isEmpty()){
             if (reminders.getWork_id().contains(",")) {
                 for (String requestId : reminders.getWork_id().split(",")) {

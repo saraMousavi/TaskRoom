@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -43,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -420,7 +418,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 dateTime1 = Init.getCurrentDateTimeWithSecond();
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
                 if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                    dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                    dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
                         return "-2";//start date past
                     }
@@ -430,7 +428,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     dateTime1 = Init.getCurrentDateTimeWithSecond();
                     dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                        dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
                     }
                 } else if (tasks.getTasks_remindertime() == 2) {
                     dateTime1 = Init.getCurrentDateTimeWithSecond();
@@ -444,7 +442,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     dateTime1 = Init.getCurrentDateTimeWithSecond();
                     dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        dateTime2 = Init.getTodayDateTimeWithTime(tasks.getTasks_startdate(), 1, true);
+                        dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
                     }
                 }
             }

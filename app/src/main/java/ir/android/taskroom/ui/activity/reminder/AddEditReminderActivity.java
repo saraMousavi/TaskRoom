@@ -44,8 +44,6 @@ import org.joda.time.Interval;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -62,6 +60,7 @@ import ir.android.taskroom.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatTypeBottomSheetFragment;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.calender.TimePickerDialog;
+import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.AttachmentsViewModel;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
 
@@ -451,11 +450,11 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         } else {
             if (getIntent().getExtras() == null) {
                 DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-                DateTime crDate = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
+                DateTime crDate = Init.getTodayDateTimeWithSelectedTime(datepickerVal, 0, false);
                 if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
                         + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
                         "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
-                    crDate = Init.getTodayDateTimeWithTime(datepickerVal, 1, false);
+                    crDate = Init.getTodayDateTimeWithSelectedTime(datepickerVal, 1, false);
                 }
                 reminders.setReminders_crdate(Init.convertDateTimeToInteger(crDate));
             } else {
@@ -494,69 +493,16 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private String createWorkRequest() {
-        DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-        DateTime dateTime2;
-        //@todo count time in clicked date in calender
-        System.out.println("calenderClickedDate = " + calenderClickedDate);
-        if (calenderClickedDate == null) {
-            dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
-        } else {
-            dateTime2 = calenderClickedDate;
-            long selectedDate = Long.parseLong(calenderClickedDate.getYear() + "" +
-                    (calenderClickedDate.getMonthOfYear() < 10 ? "0" + calenderClickedDate.getMonthOfYear() : calenderClickedDate.getMonthOfYear())
-                    + "" + (calenderClickedDate.getDayOfMonth() < 10 ? "0" + calenderClickedDate.getDayOfMonth() : calenderClickedDate.getDayOfMonth()));
-            long stringStartedDate = Long.parseLong(dateTime1.getYear() + "" +
-                    (dateTime1.getMonthOfYear() < 10 ? "0" + dateTime1.getMonthOfYear() : dateTime1.getMonthOfYear()) + "" +
-                    (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
-            if (selectedDate < stringStartedDate) {
-                return "-1";//zaman entekhab shode gozashte ast
-            } else if (selectedDate == stringStartedDate) {
-                dateTime2 = Init.getTodayDateTimeWithTime(datepickerVal, 0, false);
-                int intDateTime2 = Integer.parseInt(dateTime2.getHourOfDay() + "" +
-                        (dateTime2.getMinuteOfHour() < 10 ? "0" + dateTime2.getMinuteOfHour() : dateTime2.getMinuteOfHour()) +
-                        (dateTime2.getSecondOfMinute() < 10 ? "0" + dateTime2.getSecondOfMinute() : dateTime2.getSecondOfMinute()));
-                int intCurrentTime = Integer.parseInt(Integer.parseInt(Init.getCurrentTime().split(":")[0]) + ""
-                        + (Integer.parseInt(Init.getCurrentTime().split(":")[1]) < 10 ? "0" +
-                        Init.getCurrentTime().split(":")[1] : Init.getCurrentTime().split(":")[1]) +
-                        (Integer.parseInt(Init.getCurrentTime().split(":")[2]) < 10 ? "0" +
-                                Init.getCurrentTime().split(":")[2] : Init.getCurrentTime().split(":")[2]));
-                if (intDateTime2 < intCurrentTime) {
-                    return "-1";
-                }
-            }
+        Reminders reminders = new Reminders(0,"", reminderTime.getText().toString(),0,"",repeatTypeVal.getText().toString(),0,0,0,"", false);
+        TasksReminderActions tasksReminderActions  = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, calenderClickedDate, getResources());
+        if(tasksReminderActions.getRemainDuration() == -1){
+            return "-1";
         }
-        if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
-                + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
-                "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
-            if (calenderClickedDate != null) {
-                long selectedDate = Long.parseLong(calenderClickedDate.getYear() + "" +
-                        (calenderClickedDate.getMonthOfYear() < 10 ? "0" + calenderClickedDate.getMonthOfYear() : calenderClickedDate.getMonthOfYear())
-                        + "" + (calenderClickedDate.getDayOfMonth() < 10 ? "0" + calenderClickedDate.getDayOfMonth() : calenderClickedDate.getDayOfMonth()));
-                long stringStartedDate = Long.parseLong(dateTime1.getYear() + "" +
-                        (dateTime1.getMonthOfYear() < 10 ? "0" + dateTime1.getMonthOfYear() : dateTime1.getMonthOfYear()) + "" +
-                        (dateTime1.getDayOfMonth() < 10 ? "0" + dateTime1.getDayOfMonth() : dateTime1.getDayOfMonth()));
-                if (selectedDate < stringStartedDate) {
-                    return "-1";
-                }
-            } else {
-                return "-1";
-            }
-        }
-        System.out.println("dateTime2 = " + dateTime2);
-        Interval interval = new Interval(dateTime1, dateTime2);
-        long hour = interval.toDuration().getStandardMinutes() / 60;
-        long minute = interval.toDuration().getStandardMinutes() - hour * 60;
-        long second = 0;
-        if (minute == 0 && hour == 0) {
-            second = interval.toDuration().getStandardSeconds();
-        }
-
-        Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
         return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(), reminderTypeVal,
                 Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
-                interval.toDurationMillis(), !repeatTypeVal.getText().toString().isEmpty(), true);
+                tasksReminderActions.getRemainDuration(), !repeatTypeVal.getText().toString().isEmpty(), true);
     }
 
 

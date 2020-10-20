@@ -43,7 +43,7 @@ public class TasksRepeatTypeBottomSheetFragment extends BottomSheetDialogFragmen
                 RadioButton radioButton = (RadioButton) repeatedTypeVal.getChildAt(i);
                 if(radioButton.getText().toString().equals(bundle.getString("repeatDays"))){
                     radioButton.setChecked(true);
-                } else if(bundle.getString("repeatDays").contains(",")){
+                } else if(!bundle.getString("repeatDays").contains(getString(R.string.each))){
                     ((RadioButton) repeatedTypeVal.getChildAt(4)).setChecked(true);
                     customDays = bundle.getString("repeatDays");
                     customDayClickEvent();

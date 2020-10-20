@@ -107,8 +107,6 @@ public class TasksFragment extends Fragment {
         taskAdapter.setOnItemClickListener(new TasksAdapter.TaskClickListener() {
             @Override
             public void switchContent(int subtaskConstarint, SubTaskFragment subTaskFragment) {
-                System.out.println("subtaskConstarint = " + subtaskConstarint);
-                System.out.println("subTaskFragment = " + subTaskFragment);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(subtaskConstarint, subTaskFragment, subTaskFragment.toString());
                 ft.addToBackStack(null);
@@ -162,7 +160,15 @@ public class TasksFragment extends Fragment {
                 projects.setProjects_tasks_num(tasksNum - 1);
                 projects.setProject_id(selectedProject.getProject_id());
                 projectViewModel.update(projects);
-
+                if (selectedTask.getWork_id().contains(",")) {
+                    for (String requestId : selectedTask.getWork_id().split(",")) {
+                        WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                    }
+                } else {
+                    if (!selectedTask.getWork_id().equals("0") && !selectedTask.getWork_id().equals("-2")) {
+                        WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
+                    }
+                }
                 Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
                         .show();

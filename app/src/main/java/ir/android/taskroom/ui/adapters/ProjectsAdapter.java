@@ -165,7 +165,6 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 } else {
                     TypedArray array = mFragmentActivity.getTheme().obtainStyledAttributes(getAppThemeStyle(mFragmentActivity), new int[]{R.attr.selectedBox});
                     int attrResourceId = array.getResourceId(0, 0);
-                    System.out.println("attrResourceId = " + attrResourceId);
                     drawable = ResourcesCompat.getDrawable(mFragmentActivity.getResources(), attrResourceId, null);
                 }
                 itemViewHolder.projectsBox.setBackground(drawable);
