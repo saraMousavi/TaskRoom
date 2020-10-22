@@ -27,7 +27,9 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
 
         @Override
         public boolean areContentsTheSame(@NonNull Category oldItem, @NonNull Category newItem) {
-            return oldItem.getCategory_title().equals(newItem.getCategory_title());
+            return oldItem.getCategory_title().equals(newItem.getCategory_title())&&
+                    oldItem.getCategory_black_image().equals(newItem.getCategory_black_image())&&
+                    oldItem.getCategory_white_image().equals(newItem.getCategory_white_image());
         }
     };
     private final Context mContext;
