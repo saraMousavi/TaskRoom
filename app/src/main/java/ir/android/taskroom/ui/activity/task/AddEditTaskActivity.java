@@ -250,9 +250,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Subtasks selectedSubTask = subTasksAdapter.getSubTaskAt(viewHolder.getAdapterPosition());
                 subTasksViewModel.delete(selectedSubTask);
-                Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteSubTask), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteSubTask), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
             }
         }).attachToRecyclerView(subtaskRecyclerView);
         AttachmentsViewModelFactory attachmentFactory = new AttachmentsViewModelFactory(getApplication(), tempTaskID);
@@ -410,9 +411,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     isCompleted = true;
                     completedDateVal = Init.getCurrentDate();
                     completedDate.setText(getString(R.string.inDate) + " " + completedDateVal + " " + getString(R.string.completed));
-                    Snackbar
-                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG)
-                            .show();
+                    Snackbar snackbar = Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG);
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    snackbar.show();
                 } else {
                     completeIcon.setImageResource(R.drawable.ic_black_circle);
                     completeIcon.setTag(R.drawable.ic_black_circle);
@@ -454,9 +456,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         if (reminderTime.getAdapter().getCount() < 4) {
                             repeatTypeConstraint.setVisibility(View.VISIBLE);
                             Init.fadeVisibelityView(repeatTypeConstraint);
-                            Snackbar
-                                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG)
-                                    .show();
+                            Snackbar snackbar = Snackbar
+                                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG);
+                            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                            snackbar.show();
                         }
                         break;
                     case 3:
@@ -464,9 +467,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         repeatTypeConstraint.setVisibility(View.VISIBLE);
                         Init.fadeVisibelityView(reminderTypeConstraint);
                         Init.fadeVisibelityView(repeatTypeConstraint);
-                        Snackbar
-                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG)
-                                .show();
+                        Snackbar snackbar = Snackbar
+                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG);
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        snackbar.show();
                         break;
                 }
             }
@@ -683,9 +687,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
         if (taskNameEdit.getText().toString().isEmpty()) {
-            Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterTaskName), Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar snackbar = Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterTaskName), Snackbar.LENGTH_LONG);
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            snackbar.show();
             return;
         }
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
@@ -706,9 +711,10 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         if (!isCompleted) {
             workID = createWorkRequest();
             if (workID.equals("-1")) {
-                Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdateandenddate), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdateandenddate), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
                 return;
             }
         }

@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
@@ -173,9 +174,10 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
                 @Override
                 public void onClick(View v) {
                     if (categoryTitle.getText().toString().isEmpty()) {
-                        Snackbar
-                                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterCategoryName), Snackbar.LENGTH_LONG)
-                                .show();
+                        Snackbar snackbar = Snackbar
+                                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterCategoryName), Snackbar.LENGTH_LONG);
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        snackbar.show();
                         return;
                     }
                     Category category = new Category(categoryTitle.getText().toString(), categoryImage,

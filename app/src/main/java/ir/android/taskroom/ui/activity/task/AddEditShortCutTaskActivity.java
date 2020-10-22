@@ -1,25 +1,22 @@
 package ir.android.taskroom.ui.activity.task;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.factory.ProjectsViewModelFactory;
 import ir.android.taskroom.ui.activity.MainActivity;
-import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
 
 public class AddEditShortCutTaskActivity extends AppCompatActivity {
@@ -34,9 +31,10 @@ public class AddEditShortCutTaskActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Projects> projects) {
                 if(projects.size() == 0){
-                    Snackbar
-                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstdefineProject), Snackbar.LENGTH_LONG)
-                            .show();
+                    Snackbar snackbar = Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstdefineProject), Snackbar.LENGTH_LONG);
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    snackbar.show();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {

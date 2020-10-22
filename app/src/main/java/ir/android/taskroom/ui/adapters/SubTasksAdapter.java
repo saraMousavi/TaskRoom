@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -132,10 +133,11 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     if (subTasksAddItemViewHolder.addNewSubtasks.getText().toString().isEmpty()) {
-                        Snackbar
+                        Snackbar snackbar = Snackbar
                                 .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content),
-                                        mFragmentActivity.getString(R.string.enterSubTaskName), Snackbar.LENGTH_LONG)
-                                .show();
+                                        mFragmentActivity.getString(R.string.enterSubTaskName), Snackbar.LENGTH_LONG);
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        snackbar.show();
                         return;
                     }
                     Gson gson = new Gson();

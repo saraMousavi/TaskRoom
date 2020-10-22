@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -169,9 +170,10 @@ public class TasksFragment extends Fragment {
                         WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                     }
                 }
-                Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(),ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
             }
         }).attachToRecyclerView(taskRecyclerView);
     }
@@ -245,9 +247,10 @@ public class TasksFragment extends Fragment {
             projects.setProject_id(selectedProject.getProject_id());
             projectViewModel.update(projects);
             taskAdapter.notifyDataSetChanged();
-            Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar snackbar = Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG);
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            snackbar.show();
         } else if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED) {
             Tasks tasks = new Tasks("", 0, 0, 0,
                     selectedProject.getProject_id(), "", 0, 0,
@@ -257,9 +260,10 @@ public class TasksFragment extends Fragment {
         }
         if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
             taskAdapter.notifyDataSetChanged();
-            Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditTask), Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar snackbar = Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditTask), Snackbar.LENGTH_LONG);
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            snackbar.show();
         }
     }
 

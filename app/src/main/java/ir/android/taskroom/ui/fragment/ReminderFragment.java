@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -136,9 +137,10 @@ public class ReminderFragment extends Fragment {
                 }
                 reminderViewModel.delete(selectedReminder);
 
-                Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteReminder), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteReminder), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
             }
         }).attachToRecyclerView(reminderRecyclerView);
 
@@ -219,9 +221,10 @@ public class ReminderFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_OK) {
-            Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar snackbar = Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG);
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            snackbar.show();
             reminderAdapter.notifyDataSetChanged();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
             Reminders reminders = new Reminders(0,"","",
@@ -231,9 +234,10 @@ public class ReminderFragment extends Fragment {
             reminderViewModel.delete(reminders);
         }
         if (requestCode == EDIT_REMINDER_REQUEST && resultCode == RESULT_OK) {
-            Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditReminder), Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar snackbar = Snackbar
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditReminder), Snackbar.LENGTH_LONG);
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            snackbar.show();
             reminderAdapter.notifyDataSetChanged();
         }
     }

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -140,10 +141,11 @@ public class SettingFragment extends Fragment {
                 editor.remove(ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue());
                 editor.remove(ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue());
                 editor.apply();
-                Snackbar
+                Snackbar snackbar = Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content),
-                                getActivity().getString(R.string.successActiveUserGuide), Snackbar.LENGTH_SHORT)
-                        .show();
+                                getActivity().getString(R.string.successActiveUserGuide), Snackbar.LENGTH_SHORT);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
                 return;
             }
         });

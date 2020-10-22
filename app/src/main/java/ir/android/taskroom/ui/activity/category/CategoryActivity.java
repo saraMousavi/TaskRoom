@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -75,9 +76,10 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
             @Override
             public void editCategory(Category category) {
                 if (category.getCategory_id() < 4) {
-                    Snackbar
-                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantEditDefaultCategory), Snackbar.LENGTH_LONG)
-                            .show();
+                    Snackbar snackbar = Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantEditDefaultCategory), Snackbar.LENGTH_LONG);
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    snackbar.show();
                     return;
                 }
                 AddCategoryBottomSheetFragment editCategoryBottomSheetFragment = new AddCategoryBottomSheetFragment();
@@ -103,9 +105,10 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Category selectedCategory = categoryAdapter.getCategoryAt(viewHolder.getAdapterPosition());
                 if (selectedCategory.getCategory_id() < 4) {
-                    Snackbar
-                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantDeleteDefaultCategory), Snackbar.LENGTH_LONG)
-                            .show();
+                    Snackbar snackbar = Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantDeleteDefaultCategory), Snackbar.LENGTH_LONG);
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    snackbar.show();
                     categoryAdapter.notifyDataSetChanged();
                     return;
                 }
@@ -116,18 +119,20 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                     public void onChanged(List<Projects> projects) {
                         for(Projects project:projects){
                             if(project.getCategory_id().equals(selectedCategory.getCategory_id())){
-                                Snackbar
-                                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstDeleteProjectsInCategory), Snackbar.LENGTH_LONG)
-                                        .show();
+                                Snackbar snackbar = Snackbar
+                                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstDeleteProjectsInCategory), Snackbar.LENGTH_LONG);
+                                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                                snackbar.show();
                                 categoryAdapter.notifyDataSetChanged();
                                 return;
                             }
                         }
                         CategoryViewModel categoryViewModel = ViewModelProviders.of(CategoryActivity.this).get(CategoryViewModel.class);
                         categoryViewModel.delete(selectedCategory);
-                        Snackbar
-                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteCategory), Snackbar.LENGTH_LONG)
-                                .show();
+                        Snackbar snackbar = Snackbar
+                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteCategory), Snackbar.LENGTH_LONG);
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        snackbar.show();
                     }
                 });
             }
@@ -176,15 +181,17 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         switch (actionTypes){
             case ADD:
                 categoryViewModel.insert(category);
-                Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertCategory), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertCategory), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
                 break;
             case EDIT:
                 categoryViewModel.update(category);
-                Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditCategory), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar1 = Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditCategory), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar1.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar1.show();
                 break;
         }
         categoryAdapter.notifyDataSetChanged();

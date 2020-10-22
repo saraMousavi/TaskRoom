@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -282,16 +283,18 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 }
                 msg = getString(R.string.successInsertProject);
 
-                Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
                 break;
             case EDIT:
                 projectViewModel.update(projects);
                 msg = getString(R.string.successUpdateProject);
-                Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar1 = Snackbar
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar1.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar1.show();
                 break;
             case DELETE:
                 notUndo = true;
@@ -327,6 +330,8 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     private void undoDeleteProject() {
         Snackbar snackbar = Snackbar
                 .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteProject), Snackbar.LENGTH_LONG);
+        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+        snackbar.show();
         snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override

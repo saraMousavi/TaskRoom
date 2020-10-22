@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -403,9 +404,10 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void insertReminder() throws ExecutionException, InterruptedException {
         if (reminderNameEdit.getText().toString().isEmpty()) {
-            Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterReminderName), Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar snackbar = Snackbar
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterReminderName), Snackbar.LENGTH_LONG);
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            snackbar.show();
             return;
         }
         Integer priorityIntVal = 0;
@@ -423,9 +425,10 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         if (isActive) {
             String id = createWorkRequest();
             if (id.equals("-1")) {
-                Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validtimepast), Snackbar.LENGTH_LONG)
-                        .show();
+                Snackbar snackbar = Snackbar
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validtimepast), Snackbar.LENGTH_LONG);
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                snackbar.show();
                 return;
             }
             workID = id;

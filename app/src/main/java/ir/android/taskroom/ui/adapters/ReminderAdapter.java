@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -160,9 +161,10 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String workId = cancelOrCreateRequest(getReminderAt(position), isChecked);
                 if(workId.equals("-1")){
-                    Snackbar
-                            .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), mFragmentActivity.getString(R.string.validtimepast), Snackbar.LENGTH_LONG)
-                            .show();
+                    Snackbar snackbar = Snackbar
+                            .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), mFragmentActivity.getString(R.string.validtimepast), Snackbar.LENGTH_LONG);
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    snackbar.show();
                     return;
                 }
                 reminder.setReminders_active(isChecked ? 1 : 0);
