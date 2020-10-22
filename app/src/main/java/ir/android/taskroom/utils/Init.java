@@ -148,6 +148,7 @@ public class Init {
     public static DateTime getTodayDateTimeWithSelectedTime(String time, Integer nextDay, boolean isDate) {
         PersianCalendar persianCalendar = new PersianCalendar();
         int month = persianCalendar.getPersianMonth() + 1;
+        int year = persianCalendar.getPersianYear();
         if (isDate) {
             time = time.split(" ")[1];
         }
@@ -155,8 +156,17 @@ public class Init {
         int minute = Integer.parseInt(time.split(":")[1]);
         int second = Integer.parseInt(time.split(":")[2]);
         //@TODO check today is last day of moth or not
-        int day = nextDay == 0 ? persianCalendar.getPersianDay() : (persianCalendar.getPersianDay() == 30 ? 1 : persianCalendar.getPersianDay() + nextDay);
-        return convertIntegerToDateTime((long) integerFormatFromStringDate(persianCalendar.getPersianYear() + "/"
+        int day = nextDay == 0 ? persianCalendar.getPersianDay() : ((persianCalendar.getPersianDay() == 30 && month > 6 && month !=12)
+                ||(persianCalendar.getPersianDay() == 31 && month < 7)
+                ||(persianCalendar.getPersianDay() == 29 && month ==12) ? 1 : persianCalendar.getPersianDay() + nextDay);
+        if(nextDay != 0 && day == 1){
+            month = month + 1;
+        }
+        if(month == 13){
+            month = 1;
+            year = year + 1;
+        }
+        return convertIntegerToDateTime((long) integerFormatFromStringDate(year + "/"
                 + (month < 10 ? "0" + month : month) + "/"
                 + (day < 10 ? "0" + day : day)
                 + " "
@@ -484,6 +494,8 @@ public class Init {
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                .setRequiresBatteryNotLow(false)
+                .setRequiresCharging(false)
                 .build();
         Data data = new Data.Builder().putString("alarmTitle", alarmTitle)
                 .putBoolean("isReminder", isReminder)
@@ -794,7 +806,7 @@ public class Init {
         int endMonth = endDate.getMonthOfYear();
         int endDay = endDate.getDayOfMonth();
         int diffDayMode = 0;
-        if(Init.integerFormatDate(startDate) > Init.integerFormatDate(endDate)){
+        if (Init.integerFormatDate(startDate) > Init.integerFormatDate(endDate)) {
             DateTime tempDate = endDate;
             endDate = startDate;
             startDate = tempDate;
@@ -875,7 +887,9 @@ public class Init {
                 } else if (selectedCalender != null) {
                     endDuration = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(Init.stringFormatDate(selectedCalender) + " " + reminders.getReminders_time()));
                 }
-                if(reminders.getReminders_crdate() == null) {
+                if (reminders.getReminders_crdate() == null || reminders.getReminders_active() == 0) {
+                    System.out.println("Init.convertDateTimeToInteger(endDuration) = " + Init.convertDateTimeToInteger(endDuration));
+                    System.out.println("Init.convertDateTimeToInteger(startDuration) = " + Init.convertDateTimeToInteger(startDuration));
                     if (Init.convertDateTimeToInteger(endDuration) < Init.convertDateTimeToInteger(startDuration)) {
                         TasksReminderActions tasksReminderActions = new TasksReminderActions();
                         tasksReminderActions.setRemainDuration(-1);
@@ -979,7 +993,7 @@ public class Init {
                             tasksReminderActions.setRemainDuration(-2);
                             return tasksReminderActions;//start date past
                         }
-                        if(selectedCalender == null){
+                        if (selectedCalender == null) {
                             Interval interval1 = new Interval(startDuration, endDuration);
                             long day1 = interval1.toDuration().getStandardHours() / 24;
                             long hour1 = interval1.toDuration().getStandardMinutes() / 60;
@@ -990,7 +1004,7 @@ public class Init {
                             }
                             remainTime = (day1 == 0 ? "" : day1 + resources.getString(R.string.day) + ",") + "(" + hour1 + ":" + minute1 + ":" + second1 + ")";
                             remainDuration = interval1.toDurationMillis();
-                        } else  {
+                        } else {
                             if ((Init.integerFormatFromStringDate(tasks.getTasks_enddate()) / 1000000) == Init.integerFormatDate(selectedCalender)) {
                                 isInRecyclerView = true;
                             }
@@ -1084,7 +1098,7 @@ public class Init {
             repeatType = reminders.getReminders_repeatedday();
             isCreateReminder = reminders.getReminders_crdate() == null;
             objectStartDate = isCreateReminder ? Long.parseLong((selectedCalender == null ? Init.integerFormatDate(startDuration) : Init.integerFormatDate(selectedCalender)) + "" + reminders.getReminders_time().replaceAll(":", "")) :
-                    Long.parseLong(reminders.getReminders_crdate()/1000000 + "" + reminders.getReminders_time().replaceAll(":", ""));
+                    Long.parseLong(reminders.getReminders_crdate() / 1000000 + "" + reminders.getReminders_time().replaceAll(":", ""));
 
         }
         int intervalNum = 0;
@@ -1134,20 +1148,20 @@ public class Init {
             } else if (repeatType.equals(resources.getString(R.string.weekly))) {
                 intervalNum = 7;//@todo test
                 if (objectStartDate / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                    if(Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 7) % 7 == 0){
+                    if (Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 7) % 7 == 0) {
                         isInRecyclerView = true;
                     }
                 }
             } else if (repeatType.equals(resources.getString(R.string.monthly))) {
                 intervalNum = 30;
                 if (objectStartDate / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                    if(Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 30) % 30 == 0){
+                    if (Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 30) % 30 == 0) {
                         isInRecyclerView = true;
                     }
                 }
             } else if (repeatType.equals(resources.getString(R.string.yearly))) {
                 intervalNum = 365;
-                if(Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 365) % 365 == 0){
+                if (Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 365) % 365 == 0) {
                     isInRecyclerView = true;
                 }
             } else if (!repeatType.contains(resources.getString(R.string.each))) {//custom
@@ -1229,8 +1243,14 @@ public class Init {
         } else if (repeatType.split(",").length == 1 && remainDay < 0) {
             remainDay = getDiffSelectedCustomDay(repeatType.split(",")[0], resources, PersianDayOfWeeks.valueOf(englishDayOfWeeks.name()).getValue(), false);
         }
-
-        DateTime newStartDuration = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + newTime));
+//if time was in range of 000000 until 095959
+        StringBuilder zeroNum = new StringBuilder();
+        String newTimeString = String.valueOf(newTime);
+        while (newTimeString.length() < 6) {
+            zeroNum.append("0");
+            newTimeString = zeroNum + "" + newTime;
+        }
+        DateTime newStartDuration = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + newTimeString));
         DateTime endDuration = Init.dateTimeAfter7dayFromCurrent(newStartDuration, remainDay);
 
         Interval interval = new Interval(startDuration, endDuration);
@@ -1251,7 +1271,7 @@ public class Init {
         return t;
     }
 
-    private static TasksReminderActions calculateRemainTimeForAdvanceDay(Object reminderOrTasks, DateTime selectedCalender,  Resources resources) {
+    private static TasksReminderActions calculateRemainTimeForAdvanceDay(Object reminderOrTasks, DateTime selectedCalender, Resources resources) {
         String repeatType = "";
         if (reminderOrTasks instanceof Reminders) {
             Reminders reminders = (Reminders) reminderOrTasks;
@@ -1500,20 +1520,25 @@ public class Init {
         if (Init.integerFormatDateTime(startDuration) > Init.integerFormatDateTime(startDate)) {
             //dar surati ke tarikh shoru gozahste bashad
             int diffDayMode = Init.getSpecificDiffDayBetweenTwoDate(startDate, startDuration, intervalNum);
+            //if time was in range of 000000 until 095959
+            StringBuilder zeroNum = new StringBuilder();
+            String selectedTimeString = String.valueOf(selectedTime);
+            while (selectedTimeString.length() < 6) {
+                zeroNum.append("0");
+                selectedTimeString = zeroNum + "" + selectedTime;
+            }
             if (diffDayMode == 0) {
                 if (selectedTime < nowTime) {
-                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), intervalNum);
+                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), intervalNum);
                 } else {
-                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime));
+                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString));
                 }
             } else {
-                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), intervalNum - diffDayMode);
+                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), intervalNum - diffDayMode);
             }
         }
         interval = new Interval(startDuration, startDate);
         newStartInterval = interval.toDurationMillis();
-
-
         long day = interval.toDuration().getStandardHours() / 24;
         long hour = interval.toDuration().getStandardMinutes() / 60;
         long minute = interval.toDuration().getStandardMinutes() - hour * 60;
@@ -1550,14 +1575,21 @@ public class Init {
         if (Init.integerFormatDateTime(startDuration) > Init.integerFormatDateTime(startDate)) {
             //dar surati ke tarikh shoru gozahste bashad
             int diffDayMode = Init.getSpecificDiffDayBetweenTwoDate(startDate, startDuration, intervalNum * 7);
+            //if time was in range of 000000 until 095959
+            StringBuilder zeroNum = new StringBuilder();
+            String selectedTimeString = String.valueOf(selectedTime);
+            while (selectedTimeString.length() < 6) {
+                zeroNum.append("0");
+                selectedTimeString = zeroNum + "" + selectedTime;
+            }
             if (diffDayMode == 0) {
                 if (selectedTime < nowTime) {
-                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), intervalNum * 7);
+                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), intervalNum * 7);
                 } else {
-                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime));
+                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString));
                 }
             } else {
-                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), (intervalNum * 7) - diffDayMode);
+                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), (intervalNum * 7) - diffDayMode);
             }
         }
         interval = new Interval(startDuration, startDate);
@@ -1598,14 +1630,21 @@ public class Init {
         if (Init.integerFormatDateTime(startDuration) > Init.integerFormatDateTime(startDate)) {
             //dar surati ke tarikh shoru gozahste bashad
             int diffDayMode = Init.getSpecificDiffDayBetweenTwoDate(startDate, startDuration, intervalNum * 30);
+            //if time was in range of 000000 until 095959
+            StringBuilder zeroNum = new StringBuilder();
+            String selectedTimeString = String.valueOf(selectedTime);
+            while (selectedTimeString.length() < 6) {
+                zeroNum.append("0");
+                selectedTimeString = zeroNum + "" + selectedTime;
+            }
             if (diffDayMode == 0) {
                 if (selectedTime < nowTime) {
-                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), intervalNum * 30);
+                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), intervalNum * 30);
                 } else {
-                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime));
+                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString));
                 }
             } else {
-                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), (intervalNum * 30) - diffDayMode);
+                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), (intervalNum * 30) - diffDayMode);
             }
         }
         interval = new Interval(startDuration, startDate);
@@ -1646,14 +1685,21 @@ public class Init {
         if (Init.integerFormatDateTime(startDuration) > Init.integerFormatDateTime(startDate)) {
             //dar surati ke tarikh shoru gozahste bashad
             int diffDayMode = Init.getSpecificDiffDayBetweenTwoDate(startDate, startDuration, intervalNum * 365);
+            //if time was in range of 000000 until 095959
+            StringBuilder zeroNum = new StringBuilder();
+            String selectedTimeString = String.valueOf(selectedTime);
+            while (selectedTimeString.length() < 6) {
+                zeroNum.append("0");
+                selectedTimeString = zeroNum + "" + selectedTime;
+            }
             if (diffDayMode == 0) {
                 if (selectedTime < nowTime) {
-                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), intervalNum * 365);
+                    startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), intervalNum * 365);
                 } else {
-                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime));
+                    startDate = Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString));
                 }
             } else {
-                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTime)), (intervalNum * 365) - diffDayMode);
+                startDate = Init.dateTimeAfter7dayFromCurrent(Init.convertIntegerToDateTime(Long.parseLong(Init.integerFormatDateTime(startDuration) / 1000000 + "" + selectedTimeString)), (intervalNum * 365) - diffDayMode);
             }
         }
         interval = new Interval(startDuration, startDate);

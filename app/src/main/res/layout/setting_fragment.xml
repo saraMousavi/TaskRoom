@@ -59,7 +59,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_chart" />
+                    app:srcCompat="@drawable/ic_chart" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -73,12 +73,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="50dp" />
+                app:layout_constraintGuide_begin="@dimen/_10sdp" />
 
             <LinearLayout
                 android:id="@+id/projectCategory"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline14"
                 app:layout_constraintTop_toBottomOf="@+id/guideline13">
@@ -86,11 +86,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_category" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_category" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/projectCategory" />
 
             </LinearLayout>
@@ -106,11 +108,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="100dp" />
+                app:layout_constraintGuide_begin="@dimen/_50sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline15"
                 app:layout_constraintTop_toBottomOf="@+id/guideline14">
@@ -118,11 +120,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_dark" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_dark" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="@string/darkmood" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -138,12 +142,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="150dp" />
+                app:layout_constraintGuide_begin="@dimen/_100sdp" />
 
             <LinearLayout
                 android:id="@+id/themeFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline16"
                 app:layout_constraintTop_toBottomOf="@+id/guideline15">
@@ -151,11 +155,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_theme" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_theme" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/theme" />
             </LinearLayout>
 
@@ -170,12 +176,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="200dp" />
+                app:layout_constraintGuide_begin="@dimen/_150sdp" />
 
             <LinearLayout
                 android:id="@+id/support"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline17"
                 app:layout_constraintTop_toBottomOf="@+id/guideline16">
@@ -183,11 +189,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic__support" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic__support" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/support" />
             </LinearLayout>
 
@@ -196,12 +204,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="250dp" />
+                app:layout_constraintGuide_begin="@dimen/_200sdp" />
 
             <LinearLayout
                 android:id="@+id/shareApp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline18"
                 app:layout_constraintTop_toBottomOf="@+id/guideline17">
@@ -209,11 +217,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_share" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_share" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/share" />
             </LinearLayout>
 
@@ -222,12 +232,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="300dp" />
+                app:layout_constraintGuide_begin="@dimen/_250sdp" />
 
             <LinearLayout
                 android:id="@+id/aboutApp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline19"
                 app:layout_constraintTop_toBottomOf="@+id/guideline18">
@@ -235,11 +245,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_aboutus" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_aboutus" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/aboutapp" />
             </LinearLayout>
 
@@ -248,12 +260,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="350dp" />
+                app:layout_constraintGuide_begin="@dimen/_300sdp" />
 
             <LinearLayout
                 android:id="@+id/showCaseView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline20"
                 app:layout_constraintTop_toBottomOf="@+id/guideline19">
@@ -261,11 +273,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_black_guide" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_black_guide" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/activeUserGuide" />
 
             </LinearLayout>
@@ -275,11 +289,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="400dp" />
+                app:layout_constraintGuide_begin="@dimen/_350sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline21"
                 app:layout_constraintTop_toBottomOf="@+id/guideline20">
@@ -287,16 +301,19 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_version" />
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_version" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/versionapp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginRight="@dimen/_5sdp"
                     android:text="@string/versionappnum" />
             </LinearLayout>
@@ -306,7 +323,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="450dp" />
+                app:layout_constraintGuide_begin="@dimen/_400sdp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

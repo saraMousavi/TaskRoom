@@ -148,6 +148,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "", "0", false, "");
+        if(tasks.getProjects_id() == 0){
+            Toast.makeText(getApplicationContext(), getString(R.string.firstdefineProject), Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         try {
             if (isEditActivity) {
                 tempTaskID = clickedTask.getTasks_id();
@@ -405,6 +410,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     isCompleted = true;
                     completedDateVal = Init.getCurrentDate();
                     completedDate.setText(getString(R.string.inDate) + " " + completedDateVal + " " + getString(R.string.completed));
+                    Snackbar
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG)
+                            .show();
                 } else {
                     completeIcon.setImageResource(R.drawable.ic_black_circle);
                     completeIcon.setTag(R.drawable.ic_black_circle);

@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:padding="@dimen/_3sdp">
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:src="@drawable/empty_project_page"/>
 
         <Button
             android:id="@+id/firstAddProjectBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:transitionName="insertProjectTransition"
             android:backgroundTint="?colorAccent"
-            android:text="@string/createNewProject" />
+            android:text="@string/createNewProject"
+            android:transitionName="insertProjectTransition"
+            android:layout_gravity="bottom"/>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

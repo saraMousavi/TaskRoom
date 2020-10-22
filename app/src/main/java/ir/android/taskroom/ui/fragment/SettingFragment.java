@@ -22,6 +22,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
+import ir.android.taskroom.BuildConfig;
 import ir.android.taskroom.R;
 import ir.android.taskroom.ui.activity.MainActivity;
 import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
@@ -95,10 +96,19 @@ public class SettingFragment extends Fragment {
         shareApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                try {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                    String shareMessage = "\n" + getString(R.string.shareSubject) + "\n\n";
+                    shareMessage += "http://cafebazaar.ir/app/" + BuildConfig.APPLICATION_ID + "/?l=fa\n\n";
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    sendIntent.setType("text/plain");
+                    startActivity(Intent.createChooser(sendIntent, "choose one"));
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
         aboutApp.setOnClickListener(new View.OnClickListener() {

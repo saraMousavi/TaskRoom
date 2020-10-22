@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkManager;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -124,6 +126,9 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                     task.setTasks_iscompleted(1);
                     task.setComplete_date(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +
                             " " + mFragmentActivity.getString(R.string.completed));
+                    Snackbar
+                            .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), mFragmentActivity.getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG)
+                            .show();
                 } else {
                     task.setTasks_iscompleted(0);
                     //@TODO add column to task for save last enddate

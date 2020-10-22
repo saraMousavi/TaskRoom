@@ -1,7 +1,7 @@
 <resources>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">@dimen/_25sdp</dimen>
-    <dimen name="fab_margin1">64dp</dimen>
-    <dimen name="fab_margin2">110dp</dimen>
+    <dimen name="fab_margin1">@dimen/_50sdp</dimen>
+    <dimen name="fab_margin2">@dimen/_95sdp</dimen>
     <dimen name="text_margin">16dp</dimen>
 </resources>
