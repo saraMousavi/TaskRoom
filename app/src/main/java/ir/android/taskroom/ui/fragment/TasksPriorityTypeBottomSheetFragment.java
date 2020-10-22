@@ -1,20 +1,25 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import ir.android.taskroom.R;
 
@@ -50,11 +55,8 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
         });
     }
 
-    private void init() throws NoSuchFieldException, IllegalAccessException {
+    private void init() {
         priorityType = inflateView.findViewById(R.id.priorityType);
-//        Field priorityPaintField = priorityType.getClass().getDeclaredField("priorityType");
-//        priorityPaintField.setAccessible(true);
-//        ((Paint) priorityPaintField.get(priorityType)).setColor(getResources().getColor(R.color.white));
         //@TODO get value from PriorityType enum
         priorityTypVal = new String[]{getString(R.string.nonePriority),
                 getString(R.string.low),
@@ -64,6 +66,21 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
         priorityType.setMinValue(0);
         priorityType.setMaxValue(3);
         priorityTypeBtn = inflateView.findViewById(R.id.priorityTypeBtn);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.textColor, typedValue, true);
+        @ColorInt int textColor = typedValue.data;
+        try {
+            Field mSelectorWheelPaint = priorityType.getClass().getDeclaredField("mSelectorWheelPaint");
+            Field mSelectionDivider = priorityType.getClass().getDeclaredField("mSelectionDivider");
+            mSelectorWheelPaint.setAccessible(true);
+            mSelectionDivider.setAccessible(true);
+            ((Paint) Objects.requireNonNull(mSelectorWheelPaint.get(priorityType))).setColor(textColor);
+            mSelectionDivider.set(priorityType, new ColorDrawable(textColor));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public interface PriorityTypeClickListener {

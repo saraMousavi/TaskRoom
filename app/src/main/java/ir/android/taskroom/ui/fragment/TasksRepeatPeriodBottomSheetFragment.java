@@ -1,17 +1,26 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 import ir.android.taskroom.R;
 
@@ -61,6 +70,7 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
     private void init() {
         repeatDayBtn = inlfateView.findViewById(R.id.repeatPeriodBtn);
         numberPeriod = inlfateView.findViewById(R.id.numberPeriod);
+        
         numberPeriod.setMinValue(2);
         numberPeriod.setMaxValue(100);
         typePeriod = inlfateView.findViewById(R.id.typePeriod);
@@ -70,6 +80,23 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
         typePeriod.setDisplayedValues(typePeriodVal);
         typePeriod.setMinValue(0);
         typePeriod.setMaxValue(3);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.textColor, typedValue, true);
+        @ColorInt int textColor = typedValue.data;
+        try {
+            Field mSelectorWheelPaint = numberPeriod.getClass().getDeclaredField("mSelectorWheelPaint");
+            Field mSelectionDivider = numberPeriod.getClass().getDeclaredField("mSelectionDivider");
+            mSelectorWheelPaint.setAccessible(true);
+            mSelectionDivider.setAccessible(true);
+            ((Paint) Objects.requireNonNull(mSelectorWheelPaint.get(numberPeriod))).setColor(textColor);
+            ((Paint) Objects.requireNonNull(mSelectorWheelPaint.get(typePeriod))).setColor(textColor);
+            mSelectionDivider.set(numberPeriod, new ColorDrawable(textColor));
+            mSelectionDivider.set(typePeriod, new ColorDrawable(textColor));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
