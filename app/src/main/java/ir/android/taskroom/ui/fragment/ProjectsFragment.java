@@ -200,7 +200,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                         @Override
                         public void run() {
                             if (projectRecyclerView.findViewHolderForAdapterPosition(0) != null) {
-                                Objects.requireNonNull(projectRecyclerView.findViewHolderForAdapterPosition(0)).itemView.performClick();
+                                Objects.requireNonNull(projectRecyclerView.findViewHolderForAdapterPosition(projectsAdapter.getClickedPosition())).itemView.performClick();
                             }
                         }
                     }, 400);
@@ -341,7 +341,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 for (Tasks tasks : tempTaskList) {
                     tasks.setProjects_id(prjID);
                     try {
-                        tasks.setWork_id(createWorkRequest(tasks, tasks.getTasks_iscompleted() == 0 ? true:false));
+                        tasks.setWork_id(createWorkRequest(tasks, tasks.getTasks_iscompleted() == 0 ? true : false));
                         long newTaskID = tasksViewModel.insert(tasks);
                         for (Subtasks subtasks : tempSubtaskList) {
                             if (subtasks.getTasks_id().equals(tasks.getTasks_id())) {
@@ -411,7 +411,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String createWorkRequest(Tasks tasks, boolean isChecked) {
-        if(isChecked) {
+        if (isChecked) {
             DateTime dateTime1 = null;
             DateTime dateTime2 = null;
             if (tasks.getTasks_remindertime() == 1) {

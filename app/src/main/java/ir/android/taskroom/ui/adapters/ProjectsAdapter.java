@@ -187,6 +187,17 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             itemViewHolder.tasksNumVal.setText(String.valueOf(getProjectAt(position).getProjects_tasks_num()));
         } else if (holder instanceof AddViewHolder) {
             final AddViewHolder addViewHolder = (AddViewHolder) holder;
+            addViewHolder.addPrjectIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AddProjectBottomSheetFragment addProjectBottomSheetFragment = new AddProjectBottomSheetFragment();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isEditProjects", false);
+                    addProjectBottomSheetFragment.setArguments(bundle);
+                    addProjectBottomSheetFragment.show(mFragmentManager, "");
+                }
+            });
             addViewHolder.addProjects.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -205,6 +216,10 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         return position + 1 == getItemCount() ? VIEW_TYPE_ADD : VIEW_TYPE_ITEM;
+    }
+
+    public int getClickedPosition() {
+        return clickedPosition;
     }
 
     public Projects getProjectAt(int position) {
