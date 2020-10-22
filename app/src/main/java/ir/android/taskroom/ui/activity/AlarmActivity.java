@@ -48,8 +48,11 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void run() {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    AlarmWorker.ringtone.setLooping(false);
+                }
             }
-        }, 120000);
+        }, 180000);
     }
 
     private void onClickListener() {
