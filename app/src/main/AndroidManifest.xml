@@ -48,9 +48,11 @@
             android:name=".ui.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".ui.activity.task.AddEditTaskActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".ui.activity.reminder.AddEditReminderActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
