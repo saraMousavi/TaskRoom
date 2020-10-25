@@ -247,7 +247,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
                 lifeCycleCallBackManager = filePickUtils.getCallBackManager();
                 filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
-//                requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
             }
         });
         storageIcon.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +255,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 scaleAnimation(false);
                 FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
                 lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, true, false, true);
+                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, true, false);
             }
         });
     }

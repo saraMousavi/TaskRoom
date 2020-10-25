@@ -192,14 +192,6 @@ public class TasksFragment extends Fragment {
         firstAddTaskBtn = this.inflatedView.findViewById(R.id.firstAddTaskBtn);
         taskAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
-//        ImageView emptyTaskImage = inflatedView.findViewById(R.id.emptyTaskImage);
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0.5f);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                emptyTaskImage.setLayoutParams(params);
-//            }
-//        }, 3000);
     }
 
 
