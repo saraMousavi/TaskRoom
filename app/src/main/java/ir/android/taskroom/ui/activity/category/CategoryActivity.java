@@ -49,12 +49,13 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     private CategoryAdapter categoryAdapter;
     private SharedPreferences sharedPreferences;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setMasterTheme();
         super.onCreate(savedInstanceState);
-        setupWindowAnimations();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setupWindowAnimations();
+        }
         init();
         onTouchListener();
         onClickListener();
@@ -150,7 +151,6 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         categoryActivityBinding = DataBindingUtil.setContentView(CategoryActivity.this, R.layout.category_activity);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
@@ -173,7 +173,9 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         views.add(viewMap);
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(CategoryActivity.this);
-        Init.setViewBackgroundDependOnTheme(views, CategoryActivity.this,sharedPreferences.getBoolean("NIGHT_MODE", false));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Init.setViewBackgroundDependOnTheme(views, CategoryActivity.this,sharedPreferences.getBoolean("NIGHT_MODE", false));
+        }
     }
 
     @Override

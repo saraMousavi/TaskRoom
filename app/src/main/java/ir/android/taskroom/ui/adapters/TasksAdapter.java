@@ -56,7 +56,8 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                     oldItem.getTasks_startdate().equals(newItem.getTasks_startdate()) &&
                     oldItem.getTasks_enddate().equals(newItem.getTasks_enddate()) &&
                     oldItem.getTasks_priority().equals(newItem.getTasks_priority()) &&
-                    oldItem.getTasks_iscompleted().equals(newItem.getTasks_iscompleted());
+                    oldItem.getTasks_iscompleted().equals(newItem.getTasks_iscompleted()) &&
+                    oldItem.getWork_id().equals(newItem.getWork_id());
         }
     };
     private SharedPreferences sharedPreferences;
@@ -116,7 +117,6 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         holder.tasks_startdate.setText(tasks.getTasks_startdate());
 
         holder.tasksIsCompleted.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 Tasks task = new Tasks(tasks.getTasks_title(), tasks.getTasks_priority(), 0, tasks.getTasks_repeatedtype(), tasks.getProjects_id(), tasks.getTasks_startdate(), tasks.getTasks_remindertype()
@@ -185,7 +185,6 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public String createWorkRequest(Tasks tasks, boolean isChecked) {
         if (isChecked) {
             TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(tasks, null, mFragmentActivity.getResources());

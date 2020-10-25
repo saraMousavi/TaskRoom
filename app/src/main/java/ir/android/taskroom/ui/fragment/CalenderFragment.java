@@ -375,7 +375,6 @@ public class CalenderFragment extends Fragment {
      */
     private void markDaysThatHaveTask() {
         taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<Tasks> tasks) {
                 for (Tasks task : tasks) {

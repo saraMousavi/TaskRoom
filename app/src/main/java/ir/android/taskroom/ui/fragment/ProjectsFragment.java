@@ -214,7 +214,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         projectRecyclerView.setLayoutManager(layoutManager);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -333,7 +333,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
         snackbar.show();
         snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
             @Override
             public void onClick(View v) {
                 //@TODO add timer for undo
@@ -414,7 +414,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     public String createWorkRequest(Tasks tasks, boolean isChecked) {
         if (isChecked) {
             DateTime dateTime1 = null;

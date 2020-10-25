@@ -52,7 +52,6 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,7 +83,6 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
             });
 
             insertProjectBtn.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
                     Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, selectedProject.getProjects_tasks_num());
@@ -102,7 +100,6 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
             });
         } else {
             insertProjectBtn.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
                     Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, 0);
@@ -125,7 +122,6 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
@@ -159,6 +155,8 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         Map<View, Boolean> viewMap = new HashMap<>();
         viewMap.put(insertProjectBtn, true);
         views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        }
     }
 }

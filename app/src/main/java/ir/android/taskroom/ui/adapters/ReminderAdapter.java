@@ -58,7 +58,8 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
                     oldItem.getReminders_time().equals(newItem.getReminders_time()) &&
                     oldItem.getReminders_repeatedtype().equals(newItem.getReminders_repeatedtype()) &&
                     oldItem.getReminders_repeatedday().equals(newItem.getReminders_repeatedday()) &&
-                    oldItem.getReminders_active().equals(newItem.getReminders_active());
+                    oldItem.getReminders_active().equals(newItem.getReminders_active()) &&
+                    oldItem.getWork_id().equals(newItem.getWork_id());
         }
     };
     private Context context;
@@ -112,9 +113,9 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
         return viewHolder;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     @Override
-    public void onBindViewHolder(@NonNull final ReminderAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Reminders reminder = getItem(position);
         holder.remindersTitle.setText(reminder.getReminders_title());
         holder.remindersActive.setChecked(reminder.getReminders_active() == 1 ? true : false);
@@ -147,7 +148,9 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             mapView = new HashMap<>();
             mapView.put(holder.remindersRepeat, false);
             viewList.add(mapView);
-            Init.setViewBackgroundDependOnTheme(viewList, context, false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Init.setViewBackgroundDependOnTheme(viewList, context, false);
+            }
         }
         if (reminder.getReminders_priority() == 1) {
             holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape));
@@ -175,7 +178,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     private String cancelOrCreateRequest(Reminders reminders, boolean isChecked) {
         String datepickerVal = reminders.getReminders_time();
         if(!datepickerVal.isEmpty() && isChecked) {

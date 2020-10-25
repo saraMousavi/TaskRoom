@@ -127,7 +127,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private boolean isReminerTimeChange = false;
     private DateTime calenderClickedDate = null;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setMasterTheme();
@@ -148,7 +148,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         Tasks tasks = new Tasks("", 0, 0, 0,
                 selectedProject == null ? lastProjectID : selectedProject.getProject_id(), "", 0, 0,
                 "", "", 0, "", "0", false, "");
-        if(tasks.getProjects_id() == 0){
+        if (tasks.getProjects_id() == 0) {
             Toast.makeText(getApplicationContext(), getString(R.string.firstdefineProject), Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -271,14 +271,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
     private void onClickEvents() {
         fabInsertTask.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 insertTasks();
             }
         });
         fabInsertTask2.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 insertTasks();
@@ -401,7 +399,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         });
         completeIcon.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("UseCompatLoadingForDrawables")
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 if ((Integer) completeIcon.getTag() != R.drawable.ic_radio_button_checked_green) {
@@ -482,7 +479,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         });
 
         uploadFileContraint.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 if (uploadChoose.getVisibility() == View.VISIBLE) {
@@ -552,7 +548,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
     };
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     private void init() {
         tasksAddActivityBinding = DataBindingUtil.setContentView(AddEditTaskActivity.this, R.layout.tasks_add_activity);
         this.sharedPreferences = PreferenceManager
@@ -674,7 +670,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         isEditActivity = true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     private void insertTasks() {
         Integer priorityIntVal = 0;
         if (priorityVal.getText().toString().equals(getString(R.string.low))) {
@@ -695,15 +691,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
         reminderTypeVal = reminderType == null ? 0 : reminderType.getText().toString().equals(getString(R.string.notification)) ? 0 : 1;
         if (isEditActivity) {
-            if (isReminerTimeChange || isCompleted) {
-                if (clickedTask.getWork_id().contains(",")) {
-                    for (String requestId : clickedTask.getWork_id().split(",")) {
-                        WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
-                    }
-                } else {
-                    if (!clickedTask.getWork_id().equals("0") && !clickedTask.getWork_id().equals("-2")) {
-                        WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
-                    }
+            if (clickedTask.getWork_id().contains(",")) {
+                for (String requestId : clickedTask.getWork_id().split(",")) {
+                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
+                }
+            } else {
+                if (!clickedTask.getWork_id().equals("0") && !clickedTask.getWork_id().equals("-2")) {
+                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedTask.getWork_id()));
                 }
             }
         }
@@ -718,6 +712,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 return;
             }
         }
+
 
         Tasks tasks = new Tasks(taskNameEdit.getText().toString(), priorityIntVal, isCompleted ? 1 : 0, 0,
                 selectedProject.getProject_id(), startTextVal.getText().toString(),

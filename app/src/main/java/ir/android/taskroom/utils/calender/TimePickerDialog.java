@@ -205,7 +205,7 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
                 .getDefaultSharedPreferences(getActivity());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -245,7 +245,9 @@ public class TimePickerDialog extends DialogFragment implements RadialPickerLayo
         viewMap = new HashMap<>();
         viewMap.put(mCancelButton, true);
         viewList.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(viewList, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Init.setViewBackgroundDependOnTheme(viewList, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        }
         mHourView.setTypeface(TypefaceHelper.get(activity, fontName));
         mMinuteView.setTypeface(TypefaceHelper.get(activity, fontName));
         mAmPmTextView.setTypeface(TypefaceHelper.get(activity, fontName));

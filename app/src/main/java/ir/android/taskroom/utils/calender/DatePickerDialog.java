@@ -197,7 +197,7 @@ public class DatePickerDialog extends DialogFragment implements
         outState.putBoolean(KEY_THEME_DARK, mThemeDark);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -226,7 +226,9 @@ public class DatePickerDialog extends DialogFragment implements
         viewMap = new HashMap<>();
         viewMap.put(cancelButton, true);
         viewList.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(viewList, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Init.setViewBackgroundDependOnTheme(viewList, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        }
         if (mDayOfWeekTextView != null) {
             mDayOfWeekTextView.setTypeface(TypefaceHelper.get(activity, fontName));
         }

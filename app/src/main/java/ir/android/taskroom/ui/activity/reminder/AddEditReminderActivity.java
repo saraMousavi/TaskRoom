@@ -88,7 +88,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private boolean isEditActivity = false, isActive = true;
     private Reminders clickedReminder;
     private SwitchCompat reminders_active;
-    private JobScheduler mScheduler;
     private boolean isReminerTimeChange = false;
     private LinearLayout uploadChoose;
     private ImageView cameraIcon, storageIcon, priorityIcon;
@@ -100,7 +99,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private DateTime calenderClickedDate = null;
     private CollapsingToolbarLayout toolBarLayout;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setMasterTheme();
@@ -139,29 +137,15 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private void onClickListener() {
         fabInsertReminders.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                try {
-                    insertReminder();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                insertReminder();
             }
         });
         fabInsertReminders2.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                try {
-                    insertReminder();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                insertReminder();
             }
         });
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -229,7 +213,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         });
 
         uploadFileContraint.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 if (uploadChoose.getVisibility() == View.VISIBLE) {
@@ -314,7 +297,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         remindersAddActivityBinding = DataBindingUtil.setContentView(AddEditReminderActivity.this, R.layout.reminders_add_activity);
         this.sharedPreferences = PreferenceManager
@@ -345,7 +327,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminders_active = findViewById(R.id.reminders_active);
         attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
         toolBarLayout = findViewById(R.id.toolbar_layout);
-        mScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         datepickerVal = Init.getCurrentTime();
         RadioButton radioButton = reminderTypeGroup.findViewWithTag("notification");
         if (radioButton.isChecked()) {
@@ -400,8 +381,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         datepickerVal = clickedReminder.getReminders_time();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void insertReminder() throws ExecutionException, InterruptedException {
+    private void insertReminder() {
         if (reminderNameEdit.getText().toString().isEmpty()) {
             Snackbar snackbar = Snackbar
                     .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterReminderName), Snackbar.LENGTH_LONG);
@@ -438,14 +418,12 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 0, workID, attachmentsAdapter.getItemCount() > 0);
 
         if (isEditActivity) {
-            if (isReminerTimeChange || !isActive) {
-                if (clickedReminder.getWork_id().contains(",")) {
-                    for (String requestId : clickedReminder.getWork_id().split(",")) {
-                        WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
-                    }
-                } else if (!clickedReminder.getWork_id().equals("0")) {
-                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
+            if (clickedReminder.getWork_id().contains(",")) {
+                for (String requestId : clickedReminder.getWork_id().split(",")) {
+                    WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
                 }
+            } else if (!clickedReminder.getWork_id().equals("0")) {
+                WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
             }
             reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
             reminders.setReminders_crdate(clickedReminder.getReminders_crdate());
@@ -496,9 +474,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     }
 
     private String createWorkRequest() {
-        Reminders reminders = new Reminders(0,"", reminderTime.getText().toString(),0,"",repeatTypeVal.getText().toString(),0,0,0,"", false);
-        TasksReminderActions tasksReminderActions  = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, calenderClickedDate, getResources());
-        if(tasksReminderActions.getRemainDuration() == -1){
+        Reminders reminders = new Reminders(0, "", reminderTime.getText().toString(), 0, "", repeatTypeVal.getText().toString(), 0, 0, 0, "", false);
+        TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, calenderClickedDate, getResources());
+        if (tasksReminderActions.getRemainDuration() == -1) {
             return "-1";
         }
         Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();

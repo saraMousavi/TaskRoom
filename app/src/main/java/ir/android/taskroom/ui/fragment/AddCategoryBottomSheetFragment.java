@@ -43,7 +43,6 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     private String categoryImage = "ir.android.taskroom:drawable/ic_white_art";
     private SharedPreferences sharedPreferences;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -141,7 +140,6 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
@@ -153,7 +151,9 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         Map<View, Boolean> viewMap = new HashMap<>();
         viewMap.put(insertCategoryBtn, true);
         views.add(viewMap);
-        Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+        }
         Bundle bundle = getArguments();
         if (bundle.getBoolean("isEditCategory")) {
             Category selectedCategory = (Category) bundle.getSerializable("clickedCategory");

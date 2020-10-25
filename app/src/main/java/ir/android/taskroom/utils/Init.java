@@ -888,8 +888,6 @@ public class Init {
                     endDuration = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(Init.stringFormatDate(selectedCalender) + " " + reminders.getReminders_time()));
                 }
                 if (reminders.getReminders_crdate() == null || reminders.getReminders_active() == 0) {
-                    System.out.println("Init.convertDateTimeToInteger(endDuration) = " + Init.convertDateTimeToInteger(endDuration));
-                    System.out.println("Init.convertDateTimeToInteger(startDuration) = " + Init.convertDateTimeToInteger(startDuration));
                     if (Init.convertDateTimeToInteger(endDuration) < Init.convertDateTimeToInteger(startDuration)) {
                         TasksReminderActions tasksReminderActions = new TasksReminderActions();
                         tasksReminderActions.setRemainDuration(-1);

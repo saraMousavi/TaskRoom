@@ -24,12 +24,10 @@ import ir.android.taskroom.utils.animation.CircleAnimation;
 import ir.android.taskroom.utils.shape.Circle;
 
 public class AlarmActivity extends AppCompatActivity {
-    //    private ImageView alarmIcon;
     public static AnalogClock alarmClockIcon;
     private SwitchCompat alarmActive;
     private TextView alarmTitle;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +55,6 @@ public class AlarmActivity extends AppCompatActivity {
 
     private void onClickListener() {
         alarmActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
@@ -69,11 +66,8 @@ public class AlarmActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("ShortAlarm")
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         setContentView(R.layout.alarm_activity);
-//        alarmIcon = findViewById(R.id.alarmIcon);
         alarmClockIcon = findViewById(R.id.analogClock);
         alarmActive = findViewById(R.id.alarm_active);
         alarmTitle = findViewById(R.id.alarmTitle);
