@@ -46,13 +46,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
-import com.imagepicker.FilePickUtils;
-import com.imagepicker.LifeCycleCallBackManager;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -118,7 +113,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Tasks clickedTask;
     private long lastProjectID;
     private CollapsingToolbarLayout toolBarLayout;
-    private LifeCycleCallBackManager lifeCycleCallBackManager;
+//    private LifeCycleCallBackManager lifeCycleCallBackManager;
     private RecyclerView attachedRecyclerView;
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
@@ -493,18 +488,18 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 scaleAnimation(false);
-                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
-                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-                filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
+//                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
+//                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+//                filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
             }
         });
         storageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 scaleAnimation(false);
-                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
-                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, false, false, true);
+//                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
+//                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
+//                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, false, false, true);
             }
         });
     }
@@ -532,22 +527,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             uploadChoose.setVisibility(View.GONE);
         }
     }
-
-    private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
-        @Override
-        public void onFileChoose(String fileUri, int requestCode, int size) {
-            File imgFile = new File(fileUri);
-            if (imgFile.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                Attachments attachments = new Attachments("jpg", fileUri, tempTaskID, 0L, 0L);
-                attachmentsViewModel.insert(attachments);
-                attachmentsAdapter.notifyDataSetChanged();
-
-            }
-
-        }
-    };
-
 
     private void init() {
         tasksAddActivityBinding = DataBindingUtil.setContentView(AddEditTaskActivity.this, R.layout.tasks_add_activity);
@@ -845,21 +824,6 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (lifeCycleCallBackManager != null && permissions.length != 0) {
-            lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (lifeCycleCallBackManager != null) {
-            lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 
     public void setMasterTheme() {
         SharedPreferences sharedPreferences = PreferenceManager

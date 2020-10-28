@@ -63,7 +63,8 @@ public class AttachmentsAdapter extends ListAdapter<Attachments, AttachmentsAdap
     public void onBindViewHolder(@NonNull AttachmentsAdapter.ViewHolderItem holder, int position) {
         Attachments attachments = getItem(position);
         File imgFile = new File(attachments.getAttachments_path());
-        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        System.out.println("imgFile.exists() = " + imgFile.exists());
+        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getPath());
         holder.attachemntImage.setImageBitmap(bitmap);
         holder.attachmentDeleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override

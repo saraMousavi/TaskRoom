@@ -3,9 +3,12 @@ package ir.android.taskroom.ui.activity.reminder;
 import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -24,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -37,8 +41,8 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.imagepicker.FilePickUtils;
-import com.imagepicker.LifeCycleCallBackManager;
+//import com.imagepicker.FilePickUtils;
+//import com.imagepicker.LifeCycleCallBackManager;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -54,6 +58,7 @@ import ir.android.taskroom.data.db.entity.Attachments;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.data.db.factory.AttachmentsViewModelFactory;
 import ir.android.taskroom.databinding.RemindersAddActivityBinding;
+import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.ui.adapters.AttachmentsAdapter;
 import ir.android.taskroom.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatDayBottomSheetFragment;
@@ -91,13 +96,14 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private boolean isReminerTimeChange = false;
     private LinearLayout uploadChoose;
     private ImageView cameraIcon, storageIcon, priorityIcon;
-    private LifeCycleCallBackManager lifeCycleCallBackManager;
+    //    private LifeCycleCallBackManager lifeCycleCallBackManager;
     private RecyclerView attachedRecyclerView;
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
     private Integer reminderTypeVal;
     private DateTime calenderClickedDate = null;
     private CollapsingToolbarLayout toolBarLayout;
+    private int TAKE_PHOTO_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,40 +228,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 }
             }
         });
-
-        cameraIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scaleAnimation(false);
-                FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
-                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-                filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
-            }
-        });
-        storageIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scaleAnimation(false);
-                FilePickUtils filePickUtils = new FilePickUtils(AddEditReminderActivity.this, onFileChoose);
-                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, true, false);
-            }
-        });
     }
-
-    private FilePickUtils.OnFileChoose onFileChoose = new FilePickUtils.OnFileChoose() {
-        @Override
-        public void onFileChoose(String fileUri, int requestCode, int size) {
-            File imgFile = new File(fileUri);
-            if (imgFile.exists()) {
-                Attachments attachments = new Attachments("jpg", fileUri, 0L, tempReminderID, 0L);
-                attachmentsViewModel.insert(attachments);
-                attachmentsAdapter.notifyDataSetChanged();
-
-            }
-
-        }
-    };
 
     private void insertTempReminder() {
         if (getIntent().getExtras() != null && getIntent().getExtras().getString("calenderClickedDate") != null) {
@@ -281,21 +254,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (lifeCycleCallBackManager != null && permissions.length != 0) {
-            lifeCycleCallBackManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (lifeCycleCallBackManager != null) {
-            lifeCycleCallBackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 
     private void init() {
         remindersAddActivityBinding = DataBindingUtil.setContentView(AddEditReminderActivity.this, R.layout.reminders_add_activity);
@@ -339,20 +298,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             clickedReminder = (Reminders) intent.getExtras().getSerializable("clickedReminder");
             editableRemindersFields();
         }
-//        List<Map<View, Boolean>> views = new ArrayList<>();
-//        Map<View, Boolean> viewMap = new HashMap<>();
-//        viewMap.put(mAppBarLayout, true);
-//        views.add(viewMap);
-//        viewMap = new HashMap<>();
-//        viewMap.put(reminderNameEdit, true);
-//        views.add(viewMap);
-//        viewMap = new HashMap<>();
-//        viewMap.put(fabInsertReminders, false);
-//        views.add(viewMap);
-//        viewMap = new HashMap<>();
-//        viewMap.put(fabInsertReminders2, false);
-//        views.add(viewMap);
-//        Init.setViewBackgroundDependOnTheme(views, AddEditReminderActivity.this, sharedPreferences.getBoolean("NIGHT_MODE", false));
     }
 
     private void editableRemindersFields() {
