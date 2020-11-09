@@ -77,7 +77,6 @@ public class AttachmentsAdapter extends ListAdapter<Attachments, AttachmentsAdap
             holder.attachemntImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("holder.isplaying = " + holder.isplaying);
                     if (holder.mediaPlayer.isPlaying()) {
                         holder.attachemntImage.setImageResource(R.drawable.ic_play);
                         holder.mediaPlayer.pause();
