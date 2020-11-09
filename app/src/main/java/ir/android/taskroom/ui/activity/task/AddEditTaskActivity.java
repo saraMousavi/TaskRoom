@@ -1,14 +1,20 @@
 package ir.android.taskroom.ui.activity.task;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,13 +29,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -46,11 +53,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import org.joda.time.DateTime;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Attachments;
@@ -63,6 +82,8 @@ import ir.android.taskroom.data.db.factory.ProjectsViewModelFactory;
 import ir.android.taskroom.data.db.factory.SubTasksViewModelFactory;
 import ir.android.taskroom.data.db.factory.TasksViewModelFactory;
 import ir.android.taskroom.databinding.TasksAddActivityBinding;
+import ir.android.taskroom.ui.activity.DrawingActivity;
+import ir.android.taskroom.ui.activity.RecordingActivity;
 import ir.android.taskroom.ui.adapters.AttachmentsAdapter;
 import ir.android.taskroom.ui.adapters.SubTasksAdapter;
 import ir.android.taskroom.ui.fragment.TasksPriorityTypeBottomSheetFragment;
@@ -88,6 +109,14 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         , TasksRepeatPeriodBottomSheetFragment.RepeatPeriodClickListener
         , TasksPriorityTypeBottomSheetFragment.PriorityTypeClickListener {
     private static final int PERCENTAGE_TO_SHOW_IMAGE = 20;
+
+    private static final int WRITE_EXTERNAL_STORAGE_DRAW = 201;
+    private static final int RESUEST_RECORD_AUDIO = 100;
+    private static final int REQUEST_CAMERA_ACTION = 200;
+    private static final int DRAW_REQUEST = 300;
+    private static final int WRITE_EXTERNAL_STORAGE_CAMERA = 400;
+    private static final int FILE_PICKER_REQUEST_CODE = 500;
+    private static final int WRITE_EXTERNAL_STORAGE_STORAGE = 600;
     private TextInputEditText taskNameEdit, tasksComment;
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
@@ -103,7 +132,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private TaskViewModel taskViewModel;
     private AppCompatSpinner projectCategory, reminderTime;
     private SharedPreferences sharedPreferences;
-    private ImageView projectIcon, completeIcon, priorityIcon, cameraIcon, storageIcon;
+    private ImageView projectIcon, completeIcon, priorityIcon, cameraIcon, storageIcon, recordIcon, drawIcon;
     private Projects selectedProject;
     private boolean isCompleted;
     private String completedDateVal = "";
@@ -113,7 +142,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Tasks clickedTask;
     private long lastProjectID;
     private CollapsingToolbarLayout toolBarLayout;
-//    private LifeCycleCallBackManager lifeCycleCallBackManager;
+    //    private LifeCycleCallBackManager lifeCycleCallBackManager;
     private RecyclerView attachedRecyclerView;
     private AttachmentsAdapter attachmentsAdapter;
     private AttachmentsViewModel attachmentsViewModel;
@@ -121,6 +150,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private Integer reminderTypeVal;
     private boolean isReminerTimeChange = false;
     private DateTime calenderClickedDate = null;
+    private int attachmentSize = 0;
+    private Uri imageUri;
 
 
     @Override
@@ -257,6 +288,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         attachmentsViewModel.getAllTasksAttachments().observe(this, new Observer<List<Attachments>>() {
             @Override
             public void onChanged(List<Attachments> attachments) {
+                attachmentSize = attachments.size();
                 attachmentsAdapter.submitList(attachments);
                 attachedRecyclerView.setAdapter(attachmentsAdapter);
             }
@@ -481,6 +513,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 } else {
                     scaleAnimation(true);
                 }
+
             }
         });
 
@@ -488,18 +521,27 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 scaleAnimation(false);
-//                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
-//                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-//                filePickUtils.requestImageCamera(FilePickUtils.CAMERA_PERMISSION, true, true);
+                ActivityCompat.requestPermissions(AddEditTaskActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_CAMERA);
             }
         });
         storageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 scaleAnimation(false);
-//                FilePickUtils filePickUtils = new FilePickUtils(AddEditTaskActivity.this, onFileChoose);
-//                lifeCycleCallBackManager = filePickUtils.getCallBackManager();
-//                filePickUtils.requestImageGallery(FilePickUtils.STORAGE_PERMISSION_IMAGE, false, false, true);
+                ActivityCompat.requestPermissions(AddEditTaskActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_STORAGE);
+            }
+        });
+
+        recordIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(AddEditTaskActivity.this, RecordingActivity.class), RESUEST_RECORD_AUDIO);
+            }
+        });
+        drawIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityCompat.requestPermissions(AddEditTaskActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_DRAW);
             }
         });
     }
@@ -567,6 +609,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         priorityIcon = findViewById(R.id.priorityIcon);
         cameraIcon = findViewById(R.id.cameraIcon);
         storageIcon = findViewById(R.id.storageIcon);
+        recordIcon = findViewById(R.id.recordIcon);
+        drawIcon = findViewById(R.id.drawIcon);
         uploadChoose = findViewById(R.id.uploadChoose);
         completeIcon.setTag(R.drawable.ic_black_circle);
         startDatepickerVal = Init.getCurrentDate();
@@ -717,7 +761,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 reminderTypeVal, reminderTime.getSelectedItemPosition(), repeatTypeVal.getText().toString(),
                 endTextVal.getText().toString(), 1, tasksComment.getText().toString(),
                 "", attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
+        Tasks endTimeTask = new Tasks("", 0, 0, 0,
+                selectedProject.getProject_id(), startTextVal.getText().toString(),
+                reminderTypeVal, 2, "",
+                endTextVal.getText().toString(), 1, tasksComment.getText().toString(),
+                "", attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
         TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(tasks, calenderClickedDate, getResources());
+
         if (tasksReminderActions.getRemainDuration() == -1) {
             return "-1";
         }
@@ -730,9 +780,20 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             return "0";
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
-            return Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(), reminderTypeVal,
+            String workId = "";
+            if(!tasks.getTasks_enddate().isEmpty() && !tasks.getTasks_repeateddays().isEmpty() && tasks.getTasks_iscompleted() == 0) {
+                TasksReminderActions endTimeReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(endTimeTask, calenderClickedDate, getResources());
+                workId = Init.requestWork(getApplicationContext(), getResources().getString(R.string.taskTime)
+                                + " " + taskNameEdit.getText().toString() + " " + getResources().getString(R.string.endTimeMessage),
+                        getResources().getString(R.string.alarmExpandableText)
+                        ,0,//notif
+                        Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
+                        endTimeReminderActions.getRemainDuration(), false, false) + ",";
+            }
+            workId += Init.requestWork(getApplicationContext(), taskNameEdit.getText().toString(), tasksComment.getText().toString(), reminderTypeVal,
                     Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
                     tasksReminderActions.getRemainDuration(), !repeatTypeVal.getText().toString().isEmpty(), false);
+            return workId;
         }
     }
 
@@ -860,6 +921,123 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 .getDefaultSharedPreferences(this);
         return sharedpreferences.getInt("theme", 1);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE_STORAGE:
+                new MaterialFilePicker()
+                        .withActivity(AddEditTaskActivity.this)
+                        .withCloseMenu(true)
+                        .withHiddenFiles(true)
+                        .withFilter(Pattern.compile(".*\\.(jpg|jpeg|png)$"))
+                        // Don't apply filter to directories names
+                        .withFilterDirectories(false)
+                        .withRequestCode(FILE_PICKER_REQUEST_CODE)
+                        .start();
+                break;
+            case WRITE_EXTERNAL_STORAGE_DRAW:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivityForResult(new Intent(AddEditTaskActivity.this, DrawingActivity.class), DRAW_REQUEST);
+                }
+                break;
+            case WRITE_EXTERNAL_STORAGE_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ContentValues contentValues = new ContentValues();
+                    imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(cameraIntent, REQUEST_CAMERA_ACTION);
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case FILE_PICKER_REQUEST_CODE:
+                    String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+                    String storagePath = Environment.getExternalStorageDirectory().toString() + "/TaskRoom";
+                    File directoryApp = new File(storagePath);
+                    if (!directoryApp.exists()) {
+                        directoryApp.mkdirs();
+                    }
+                    File storageFile = new File(storagePath, "storage" + new Date().getTime() + ".png");
+                    OutputStream storageOs = null;
+                    try {
+                        storageOs = new FileOutputStream(storageFile);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                    options.inSampleSize = 8;
+                    FileInputStream fileInputStream;
+                    Bitmap storageBitmap = null;
+                    try {
+                        fileInputStream = new FileInputStream(filePath);
+                        storageBitmap = BitmapFactory.decodeFileDescriptor(fileInputStream.getFD());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    storageBitmap.compress(Bitmap.CompressFormat.PNG, 100, storageOs);
+                    try {
+                        storageOs.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Attachments fileAttachment = new Attachments("jpg", storageFile.getAbsolutePath(), tempTaskID, 0L, 0L);
+                    attachmentsViewModel.insert(fileAttachment);
+                    attachmentsAdapter.notifyDataSetChanged();
+                    break;
+                case RESUEST_RECORD_AUDIO:
+                    Attachments attachments = new Attachments("3gp", data.getStringExtra("outputFile"), tempTaskID, 0L, 0L);
+                    attachmentsViewModel.insert(attachments);
+                    attachmentsAdapter.notifyDataSetChanged();
+                    break;
+                case REQUEST_CAMERA_ACTION:
+                    String path = Environment.getExternalStorageDirectory().toString() + "/TaskRoom";
+                    File directory = new File(path);
+                    if (!directory.exists()) {
+                        directory.mkdirs();
+                    }
+                    File file = new File(path, "camera" + new Date().getTime() + ".png");
+                    OutputStream outputStream = null;
+                    try {
+                        outputStream = new FileOutputStream(file);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = (Bitmap) MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Attachments atach = new Attachments("jpg", file.getAbsolutePath(), tempTaskID, 0L, 0L);
+                    attachmentsViewModel.insert(atach);
+                    attachmentsAdapter.notifyDataSetChanged();
+
+                    break;
+                case DRAW_REQUEST:
+                    Attachments attachment = new Attachments("jpg", data.getExtras().getString("drawPath"), tempTaskID, 0L, 0L);
+                    attachmentsViewModel.insert(attachment);
+                    attachmentsAdapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    }
+
 
     public interface ClickAddSubTaskListener {
         void addSubTaskListener();

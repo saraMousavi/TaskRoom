@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
     private SharedPreferences sharedPreferences;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,6 +154,7 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
 
 
     private void init() {
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         categoryActivityBinding = DataBindingUtil.setContentView(CategoryActivity.this, R.layout.category_activity);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 

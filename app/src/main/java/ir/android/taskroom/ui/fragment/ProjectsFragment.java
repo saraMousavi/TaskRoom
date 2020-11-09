@@ -464,7 +464,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 //                second = interval.toDuration().getStandardSeconds();
 //            }
 //            Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
-                    return Init.requestWork(getContext(), tasks.getTasks_title(), tasks.getTasks_remindertype(),
+                    return Init.requestWork(getContext(), tasks.getTasks_title(), tasks.getTasks_comment(), tasks.getTasks_remindertype(),
                             Init.getWorkRequestPeriodicIntervalMillis(getContext().getResources(), tasks.getTasks_repeateddays()),
                             interval.toDurationMillis(), !tasks.getTasks_repeateddays().isEmpty(), false);
                 }

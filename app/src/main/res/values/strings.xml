@@ -133,6 +133,7 @@
     <string name="enterYourMessage">پیغام خود را وارد نمایید.</string>
     <string name="listOfChatList">لیست پیغام ها</string>
     <string name="enterTaskName">عنوان کار را وارد نمایید.</string>
+    <string name="enterProjectName">عنوان پروژه را وارد نمایید.</string>
     <string name="enterCategoryName">عنوان دسته را وارد نمایید.</string>
     <string name="enterReminderName">عنوان یادآور را وارد نمایید.</string>
     <string name="enterSubTaskName">عنوان کار فرعی را وارد نمایید.</string>
@@ -180,4 +181,8 @@
     <string name="validtimepast">زمان انتخاب شده گذشته است.</string>
     <string name="disableReminderBecauseOfCompleted">زمان یادآوری کار مورد نظر غیر فعال گردید.</string>
     <string name="shareSubject">برنامه‌ای برای مدیریت و زمانبندی کارها و پروژه‌های فردی</string>
+    <string name="permissionDenied">اجازه دسترسی اعمال نشد.</string>
+    <string name="taskTime">زمان کار</string>
+    <string name="endTimeMessage">به پایان رسیده است.برای </string>
+    <string name="alarmExpandableText"> غیرفعال کردن یادآوری، آن را تکمیل نمایید.</string>
 </resources>

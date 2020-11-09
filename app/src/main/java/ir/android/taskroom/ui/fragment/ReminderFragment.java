@@ -191,8 +191,10 @@ public class ReminderFragment extends Fragment {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Init.initShowCaseView(getContext(),reminderRecyclerView.getChildAt(0), getString(R.string.editDeleteReminderGuide),
-                                    ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue(), null);
+                            if(isAdded()) {
+                                Init.initShowCaseView(getContext(), reminderRecyclerView.getChildAt(0), getString(R.string.editDeleteReminderGuide),
+                                        ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue(), null);
+                            }
                         }
                     }, 1000);
                     remindersEmptyPage.setVisibility(View.GONE);

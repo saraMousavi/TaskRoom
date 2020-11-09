@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "485745435182",
+    "firebase_url": "https://taskroom-67b33.firebaseio.com",
+    "project_id": "taskroom-67b33",
+    "storage_bucket": "taskroom-67b33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485745435182:android:b44a62a1882efe666ff5bf",
+        "android_client_info": {
+          "package_name": "ir.android.taskroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485745435182-v508hap204h7oumb2dcpprv25hc8i5ng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhL2HLWKaP0aB9q-jT9VT0LED2vTtca1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485745435182-v508hap204h7oumb2dcpprv25hc8i5ng.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

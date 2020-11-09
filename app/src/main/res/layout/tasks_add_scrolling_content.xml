@@ -490,7 +490,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/priorityTypeContraint"
             tools:ignore="MissingConstraints">
 
@@ -541,6 +540,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_8sdp"
                     app:srcCompat="@drawable/ic_storage" />
+
+                <ImageView
+                    android:id="@+id/recordIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    app:srcCompat="@drawable/ic_record" />
+
+                <ImageView
+                    android:id="@+id/drawIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    app:srcCompat="@drawable/ic_draw" />
 
             </LinearLayout>
 

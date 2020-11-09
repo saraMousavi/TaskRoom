@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -71,6 +73,9 @@ public class AlarmWorker extends Worker {
                 (getApplicationContext(), PRIMARY_CHANNEL_ID)
                 .setContentTitle(getInputData().getString("alarmTitle"))
                 .setContentText(Init.getCurrentTime())
+                .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(getInputData().getString("alarmExpandableText")))
+//                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture())
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.splash_img))
                 .setContentIntent(contentPendingIntent)
@@ -86,12 +91,11 @@ public class AlarmWorker extends Worker {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("alarmTitle", getInputData().getString("alarmTitle"));
         getApplicationContext().startActivity(i);
-
-        ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ringtone.setLooping(true);
-        }
-        ringtone.play();
+//        ringtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse("file:///android_asset/tone.mp3"));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            ringtone.setLooping(true);
+//        }
+//        ringtone.play();
     }
 
     public void createNotificationChannel() {

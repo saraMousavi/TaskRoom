@@ -489,7 +489,7 @@ public class Init {
     /**
      * create work request and add it two wrk manager
      */
-    public static String requestWork(Context context, String alarmTitle, Integer reminderType, Map<Integer,
+    public static String requestWork(Context context, String alarmTitle, String alarmExpandableText, Integer reminderType, Map<Integer,
             Object> repeatIntervalMap, long duration, boolean isPeriodic, boolean isReminder) {
 
         Constraints constraints = new Constraints.Builder()
@@ -498,6 +498,7 @@ public class Init {
                 .setRequiresCharging(false)
                 .build();
         Data data = new Data.Builder().putString("alarmTitle", alarmTitle)
+                .putString("alarmExpandableText", alarmExpandableText)
                 .putBoolean("isReminder", isReminder)
                 .putInt("reminderType", reminderType).build();
         if (isPeriodic) {

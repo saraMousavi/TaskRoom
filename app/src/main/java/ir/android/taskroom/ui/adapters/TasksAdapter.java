@@ -200,7 +200,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                 return "0";
             } else {
                 Toast.makeText(mFragmentActivity.getApplicationContext(), mFragmentActivity.getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
-                return Init.requestWork(mFragmentActivity.getApplicationContext(), tasks.getTasks_title(), tasks.getTasks_remindertype(),
+                return Init.requestWork(mFragmentActivity.getApplicationContext(), tasks.getTasks_title(), tasks.getTasks_comment(), tasks.getTasks_remindertype(),
                         Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), tasks.getTasks_repeateddays()),
                         tasksReminderActions.getRemainDuration(), !tasks.getTasks_repeateddays().isEmpty(), false);
             }

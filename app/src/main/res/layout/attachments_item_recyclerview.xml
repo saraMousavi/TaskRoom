@@ -12,6 +12,11 @@
         android:id="@+id/attachemntImage"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_70sdp"/>
+    <SeekBar
+        android:id="@+id/playMediaSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/attachmentDeleteIcon"

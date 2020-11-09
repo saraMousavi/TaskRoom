@@ -1,6 +1,8 @@
 package ir.android.taskroom.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import ir.android.taskroom.R;
 import ir.android.taskroom.ui.workers.AlarmWorker;
 import ir.android.taskroom.utils.animation.CircleAnimation;
@@ -27,6 +31,8 @@ public class AlarmActivity extends AppCompatActivity {
     public static AnalogClock alarmClockIcon;
     private SwitchCompat alarmActive;
     private TextView alarmTitle;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    public static MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +53,7 @@ public class AlarmActivity extends AppCompatActivity {
             public void run() {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    AlarmWorker.ringtone.setLooping(false);
+                    mediaPlayer.setLooping(false);
                 }
             }
         }, 180000);
@@ -58,7 +64,7 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    AlarmWorker.ringtone.stop();
+                    mediaPlayer.stop();
                     alarmTitle.setVisibility(View.GONE);
                     finish();
                 }
@@ -68,6 +74,11 @@ public class AlarmActivity extends AppCompatActivity {
 
     private void init() {
         setContentView(R.layout.alarm_activity);
+
+        mediaPlayer = MediaPlayer.create(AlarmActivity.this, R.raw.carol_of_the_bells_alarm);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         alarmClockIcon = findViewById(R.id.analogClock);
         alarmActive = findViewById(R.id.alarm_active);
         alarmTitle = findViewById(R.id.alarmTitle);

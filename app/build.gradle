@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 
 android {
@@ -104,6 +105,7 @@ dependencies {
 
     //photo ucrop
 //    implementation 'com.github.himangipatel:ImagePickerUtil:v2.1'
+    implementation 'com.nbsp:materialfilepicker:1.9.1'
 
     //work manager
     def work_version = "2.4.0"
@@ -125,6 +127,13 @@ dependencies {
 
     //show gif
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 
 //    //chat for support page
 //    implementation 'com.cometchat:pro-android-chat-sdk:2.1.1'

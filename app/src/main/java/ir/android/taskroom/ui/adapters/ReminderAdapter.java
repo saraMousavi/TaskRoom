@@ -187,7 +187,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
                 return "-1";
             }
             Toast.makeText(mFragmentActivity.getApplicationContext(), mFragmentActivity.getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
-            return Init.requestWork(mFragmentActivity.getApplicationContext(), reminders.getReminders_title(), reminders.getReminders_type(),
+            return Init.requestWork(mFragmentActivity.getApplicationContext(), reminders.getReminders_title(), reminders.getReminders_comment(), reminders.getReminders_type(),
                     Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), reminders.getReminders_repeatedday()),
                     tasksReminderActions.getRemainDuration(), !reminders.getReminders_repeatedday().isEmpty(), true);
         } else if(!datepickerVal.isEmpty()){

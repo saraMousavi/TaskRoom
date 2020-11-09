@@ -16,11 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -85,6 +87,10 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
             insertProjectBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (projectsTitle.getText().toString().isEmpty()) {
+                        projectsTitle.setError(getString(R.string.enterProjectName));
+                        return;
+                    }
                     Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, selectedProject.getProjects_tasks_num());
                     projects.setProject_id(selectedProject.getProject_id());
                     submitClickListener.onClickSubmit(projects, ActionTypes.EDIT);
@@ -102,6 +108,10 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
             insertProjectBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (projectsTitle.getText().toString().isEmpty()) {
+                        projectsTitle.setError(getString(R.string.enterProjectName));
+                        return;
+                    }
                     Projects projects = new Projects(1, selectedCategory.getCategory_id(), projectsTitle.getText().toString(), 1, 0);
                     submitClickListener.onClickSubmit(projects, ActionTypes.ADD);
                     dismiss();
