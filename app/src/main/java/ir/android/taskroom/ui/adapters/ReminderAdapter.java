@@ -171,6 +171,9 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
                     return;
                 }
                 reminder.setReminders_active(isChecked ? 1 : 0);
+                if(!isChecked){
+                    reminder.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
+                }
                 reminder.setReminders_id(reminder.getReminders_id());
                 reminder.setWork_id(workId);
                 reminderViewModel.update(reminder);

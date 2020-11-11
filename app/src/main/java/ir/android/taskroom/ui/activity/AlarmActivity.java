@@ -16,16 +16,12 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.ui.workers.AlarmWorker;
-import ir.android.taskroom.utils.animation.CircleAnimation;
-import ir.android.taskroom.utils.shape.Circle;
 
 public class AlarmActivity extends AppCompatActivity {
     public static AnalogClock alarmClockIcon;
@@ -37,6 +33,7 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("savedInstanceState = " + savedInstanceState);
         init();
         turnOnScreen();
         onClickListener();
@@ -52,9 +49,7 @@ public class AlarmActivity extends AppCompatActivity {
             @Override
             public void run() {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    mediaPlayer.setLooping(false);
-                }
+                mediaPlayer.setLooping(false);
             }
         }, 180000);
     }
@@ -65,7 +60,10 @@ public class AlarmActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
                     mediaPlayer.stop();
+                    mediaPlayer.reset();
+                    mediaPlayer = null;
                     alarmTitle.setVisibility(View.GONE);
+                    System.out.println("buttonView = " + buttonView);
                     finish();
                 }
             }
@@ -74,10 +72,15 @@ public class AlarmActivity extends AppCompatActivity {
 
     private void init() {
         setContentView(R.layout.alarm_activity);
-
-        mediaPlayer = MediaPlayer.create(AlarmActivity.this, R.raw.carol_of_the_bells_alarm);
-        mediaPlayer.start();
-        mediaPlayer.setLooping(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayer = MediaPlayer.create(AlarmActivity.this, R.raw.carol_of_the_bells_alarm);
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+                System.out.println("mediaPlayer.isPlaying() = " + mediaPlayer.isPlaying());
+            }
+        }, 500);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         alarmClockIcon = findViewById(R.id.analogClock);
         alarmActive = findViewById(R.id.alarm_active);

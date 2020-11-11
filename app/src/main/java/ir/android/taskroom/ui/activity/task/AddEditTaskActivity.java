@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -467,13 +468,17 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         repeatTypeVal.setText("");
                         break;
                     case 1:
-                        reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                            reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        }
                         repeatTypeConstraint.setVisibility(View.GONE);
                         repeatTypeVal.setText("");
                         Init.fadeVisibelityView(reminderTypeConstraint);
                         break;
                     case 2:
-                        reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                            reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        }
                         repeatTypeConstraint.setVisibility(View.GONE);
                         repeatTypeVal.setText("");
                         Init.fadeVisibelityView(reminderTypeConstraint);
@@ -487,7 +492,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         }
                         break;
                     case 3:
-                        reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                            reminderTypeConstraint.setVisibility(View.VISIBLE);
+                        }
                         repeatTypeConstraint.setVisibility(View.VISIBLE);
                         Init.fadeVisibelityView(reminderTypeConstraint);
                         Init.fadeVisibelityView(repeatTypeConstraint);

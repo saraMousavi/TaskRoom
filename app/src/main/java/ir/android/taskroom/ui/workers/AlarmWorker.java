@@ -21,6 +21,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.util.Locale;
+
 import ir.android.taskroom.R;
 import ir.android.taskroom.ui.activity.AlarmActivity;
 import ir.android.taskroom.ui.activity.MainActivity;
@@ -74,7 +76,7 @@ public class AlarmWorker extends Worker {
                 .setContentTitle(getInputData().getString("alarmTitle"))
                 .setContentText(Init.getCurrentTime())
                 .setStyle(new NotificationCompat.BigTextStyle()
-                    .bigText(getInputData().getString("alarmExpandableText")))
+                        .bigText(getInputData().getString("alarmExpandableText")))
 //                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture())
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.splash_img))
@@ -86,16 +88,17 @@ public class AlarmWorker extends Worker {
         mNotifyManager.notify(0, builder.build());
     }
 
-    private void startAlarmActivity() {        
+    private void startAlarmActivity() {
         Intent i = new Intent(getApplicationContext(), AlarmActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.MANUFACTURER.toLowerCase(Locale.ROOT).equals("xiaomi")) {
+            i.setClassName("com.miui.securitycenter",
+                    "com.miui.permcenter.permissions.PermissionsEditorActivity");
+            i.putExtra("extra_pkgname", getApplicationContext().getPackageName());
+        }
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         i.putExtra("alarmTitle", getInputData().getString("alarmTitle"));
         getApplicationContext().startActivity(i);
-//        ringtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse("file:///android_asset/tone.mp3"));
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//            ringtone.setLooping(true);
-//        }
-//        ringtone.play();
+
     }
 
     public void createNotificationChannel() {

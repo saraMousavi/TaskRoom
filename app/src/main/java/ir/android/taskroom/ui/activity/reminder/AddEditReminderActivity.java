@@ -339,7 +339,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     }
 
 
-
     private void init() {
         remindersAddActivityBinding = DataBindingUtil.setContentView(AddEditReminderActivity.this, R.layout.reminders_add_activity);
         this.sharedPreferences = PreferenceManager
@@ -364,6 +363,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         priorityVal = findViewById(R.id.priorityVal);
         reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);
         reminderTypeConstraint = findViewById(R.id.reminderTypeConstraint);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            reminderTypeConstraint.setVisibility(View.GONE);
+        }
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         repeatTypeConstraint = findViewById(R.id.repeatTypeConstraint);
         priorityTypeContraint = findViewById(R.id.priorityTypeContraint);
@@ -447,6 +449,9 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
                 repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0,
                 0, workID, attachmentsAdapter.getItemCount() > 0);
+        if(!isActive){
+            reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
+        }
 
         if (isEditActivity) {
             if (clickedReminder.getWork_id().contains(",")) {
@@ -456,7 +461,6 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             } else if (!clickedReminder.getWork_id().equals("0")) {
                 WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
             }
-            reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
             reminders.setReminders_crdate(clickedReminder.getReminders_crdate());
         } else {
             if (getIntent().getExtras() == null) {
@@ -511,7 +515,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             return "-1";
         }
         Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
-        return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(),reminderComment.getText().toString(), reminderTypeVal,
+        return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(), reminderComment.getText().toString(), reminderTypeVal,
                 Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
                 tasksReminderActions.getRemainDuration(), !repeatTypeVal.getText().toString().isEmpty(), true);
     }

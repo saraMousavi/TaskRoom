@@ -1,6 +1,7 @@
 package ir.android.taskroom.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -156,13 +157,13 @@ public class Init {
         int minute = Integer.parseInt(time.split(":")[1]);
         int second = Integer.parseInt(time.split(":")[2]);
         //@TODO check today is last day of moth or not
-        int day = nextDay == 0 ? persianCalendar.getPersianDay() : ((persianCalendar.getPersianDay() == 30 && month > 6 && month !=12)
-                ||(persianCalendar.getPersianDay() == 31 && month < 7)
-                ||(persianCalendar.getPersianDay() == 29 && month ==12) ? 1 : persianCalendar.getPersianDay() + nextDay);
-        if(nextDay != 0 && day == 1){
+        int day = nextDay == 0 ? persianCalendar.getPersianDay() : ((persianCalendar.getPersianDay() == 30 && month > 6 && month != 12)
+                || (persianCalendar.getPersianDay() == 31 && month < 7)
+                || (persianCalendar.getPersianDay() == 29 && month == 12) ? 1 : persianCalendar.getPersianDay() + nextDay);
+        if (nextDay != 0 && day == 1) {
             month = month + 1;
         }
-        if(month == 13){
+        if (month == 13) {
             month = 1;
             year = year + 1;
         }
@@ -205,6 +206,13 @@ public class Init {
                 + "/" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth());
 //                + " " + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
 //                + ":" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour());
+    }
+
+    public static Integer integerFormatTime(DateTime dateTime) {
+        return Integer.parseInt(dateTime.getHourOfDay() + ""
+                + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour())
+                + (dateTime.getSecondOfMinute() < 10 ? "0" + dateTime.getSecondOfMinute() : dateTime.getSecondOfMinute())
+        );
     }
 
     /**
@@ -1083,31 +1091,46 @@ public class Init {
         ArrayList<DateTime> dateTimesThatShouldMarkInCalender = new ArrayList<>();
         DateTime startDuration = Init.getCurrentDateTimeWithSecond();
         long remainDuration = 0;
-        boolean isInRecyclerView = false, isTask = false, isCreateReminder = false;
+        boolean isInRecyclerView = false, isTask = false, isCreateReminder = false, isActive = true;
         String remainTime = "";
         String repeatType = "";
         long objectStartDate;
+        DateTime endDate = new DateTime(Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? Init.getCurrentDateTimeWithSecond().getYear() + 1 : Init.getCurrentDateTimeWithSecond().getYear(),
+                Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
+                Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
+                , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
+                Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
         if (tasksOrReminder instanceof Tasks) {
             Tasks tasks = (Tasks) tasksOrReminder;
             repeatType = tasks.getTasks_repeateddays();
             objectStartDate = Init.integerFormatFromStringDate(tasks.getTasks_startdate());
             isTask = true;
+            if (tasks.getTasks_iscompleted() == 1) {
+                isActive = false;
+                endDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getComplete_date()
+                        .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
+                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(objectStartDate))){
+                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                }
+            }
         } else {
             Reminders reminders = (Reminders) tasksOrReminder;
             repeatType = reminders.getReminders_repeatedday();
             isCreateReminder = reminders.getReminders_crdate() == null;
             objectStartDate = isCreateReminder ? Long.parseLong((selectedCalender == null ? Init.integerFormatDate(startDuration) : Init.integerFormatDate(selectedCalender)) + "" + reminders.getReminders_time().replaceAll(":", "")) :
                     Long.parseLong(reminders.getReminders_crdate() / 1000000 + "" + reminders.getReminders_time().replaceAll(":", ""));
-
+            if (reminders.getReminders_active() == 0 && reminders.getReminders_update() != null) {
+                isActive = false;
+                endDate = Init.convertIntegerToDateTime(reminders.getReminders_update());
+                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(objectStartDate))){
+                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                }
+            }
         }
         int intervalNum = 0;
         boolean isNotCustomDayReminder = true;
 
-        DateTime endDate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
-                Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
-                Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
-                , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
-                Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
+
         DateTime startDate = Init.convertIntegerToDateTime(objectStartDate);
         int duration = Days.daysBetween(startDate, endDate).getDays();
         if ((selectedCalender == null && isTask) || (isCreateReminder)) {//ijad
@@ -1142,26 +1165,51 @@ public class Init {
             if (repeatType.equals(resources.getString(R.string.daily))) {
                 intervalNum = 1;
                 if (objectStartDate / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                    isInRecyclerView = true;
+                    if (isActive) {
+                        isInRecyclerView = true;
+                    } else {
+                        if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                            isInRecyclerView = true;
+                        }
+                    }
+
                 }
             } else if (repeatType.equals(resources.getString(R.string.weekly))) {
                 intervalNum = 7;//@todo test
                 if (objectStartDate / 1000000 <= Init.integerFormatDate(selectedCalender)) {
                     if (Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 7) % 7 == 0) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
             } else if (repeatType.equals(resources.getString(R.string.monthly))) {
                 intervalNum = 30;
                 if (objectStartDate / 1000000 <= Init.integerFormatDate(selectedCalender)) {
                     if (Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 30) % 30 == 0) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
             } else if (repeatType.equals(resources.getString(R.string.yearly))) {
                 intervalNum = 365;
                 if (Init.getSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(objectStartDate), selectedCalender, 365) % 365 == 0) {
-                    isInRecyclerView = true;
+                    if (isActive) {
+                        isInRecyclerView = true;
+                    } else {
+                        if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                            isInRecyclerView = true;
+                        }
+                    }
                 }
             } else if (!repeatType.contains(resources.getString(R.string.each))) {//custom
                 TasksReminderActions t = calculateMarkAndRecyclerViewForCustomDay(tasksOrReminder, selectedCalender, resources);
@@ -1313,14 +1361,32 @@ public class Init {
     private static TasksReminderActions calculateMarkAndRecyclerViewForAdvanceDay(Object tasksOrReminder, DateTime selectedCalender, Resources resources) {
         String repeatType = "";
         String startDate = "";
+        boolean isActive = true;
+        DateTime endDate = null;
         if (tasksOrReminder instanceof Tasks) {
             Tasks tasks = (Tasks) tasksOrReminder;
             repeatType = tasks.getTasks_repeateddays();
             startDate = tasks.getTasks_startdate();
+            if (tasks.getTasks_iscompleted() == 1) {
+                isActive = false;
+                endDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getComplete_date()
+                        .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
+                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)))){
+                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                }
+
+            }
         } else {
             Reminders reminders = (Reminders) tasksOrReminder;
             repeatType = reminders.getReminders_repeatedday();
             startDate = Init.stringFormatDateTime(Init.convertIntegerToDateTime(reminders.getReminders_crdate()));
+            if (reminders.getReminders_active() == 0 && reminders.getReminders_update() != null) {
+                isActive = false;
+                endDate = Init.convertIntegerToDateTime(reminders.getReminders_update());
+                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)))){
+                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                }
+            }
         }
         ArrayList<DateTime> dateTimesThatShouldMarkInCalender = new ArrayList<>();
         int intervalNum = 0;
@@ -1343,7 +1409,13 @@ public class Init {
         }
         if (Init.integerFormatFromStringDate(startDate) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
             if (isSpecificDiffDayBetweenTwoDate(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)), selectedCalender, intervalNum)) {
-                isInRecyclerView = true;
+                if (isActive) {
+                    isInRecyclerView = true;
+                } else {
+                    if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                        isInRecyclerView = true;
+                    }
+                }
             }
         }
         TasksReminderActions t = new TasksReminderActions(dateTimesThatShouldMarkInCalender, isInRecyclerView, "", 0);
@@ -1354,21 +1426,38 @@ public class Init {
     private static TasksReminderActions calculateMarkAndRecyclerViewForCustomDay(Object tasksOrReminder, DateTime selectedCalender, Resources resources) {
         String repeatType = "";
         String startDateString = "";
-        if (tasksOrReminder instanceof Tasks) {
-            Tasks tasks = (Tasks) tasksOrReminder;
-            repeatType = tasks.getTasks_repeateddays();
-            startDateString = tasks.getTasks_startdate();
-        } else {
-            Reminders reminders = (Reminders) tasksOrReminder;
-            repeatType = reminders.getReminders_repeatedday();
-            startDateString = Init.stringFormatDateTime(Init.convertIntegerToDateTime(reminders.getReminders_crdate()));
-        }
-        ArrayList<DateTime> dateTimesThatShouldMarkInCalender = new ArrayList<>();
+        boolean isActive = true;
         DateTime endDate = new DateTime(Init.getCurrentDateTimeWithSecond().getYear(),
                 Init.getCurrentDateTimeWithSecond().getMonthOfYear() == 12 ? 1 : Init.getCurrentDateTimeWithSecond().getMonthOfYear() + 1,
                 Init.getCurrentDateTimeWithSecond().getDayOfMonth(), Init.getCurrentDateTimeWithSecond().getHourOfDay()
                 , Init.getCurrentDateTimeWithSecond().getMinuteOfHour(),
                 Init.getCurrentDateTimeWithSecond().getSecondOfMinute(), Init.getCurrentDateTimeWithSecond().getMillisOfSecond());
+        if (tasksOrReminder instanceof Tasks) {
+            Tasks tasks = (Tasks) tasksOrReminder;
+            repeatType = tasks.getTasks_repeateddays();
+            startDateString = tasks.getTasks_startdate();
+            if (tasks.getTasks_iscompleted() == 1) {
+                isActive = false;
+                endDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getComplete_date()
+                        .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
+                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString)))){
+                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                }
+            }
+        } else {
+            Reminders reminders = (Reminders) tasksOrReminder;
+            repeatType = reminders.getReminders_repeatedday();
+            startDateString = Init.stringFormatDateTime(Init.convertIntegerToDateTime(reminders.getReminders_crdate()));
+            if (reminders.getReminders_active() == 0) {
+                isActive = false;
+                endDate = Init.convertIntegerToDateTime(reminders.getReminders_update());
+                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString)))){
+                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                }
+            }
+        }
+        ArrayList<DateTime> dateTimesThatShouldMarkInCalender = new ArrayList<>();
+
         DateTime startDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString));
         int duration = Days.daysBetween(startDate, endDate).getDays();
         boolean isInRecyclerView = false;
@@ -1376,7 +1465,13 @@ public class Init {
             if (repeatTypeVal.equals(resources.getString(R.string.saterday))) {
                 if (selectedCalender.getDayOfWeek() == 1) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
@@ -1393,7 +1488,13 @@ public class Init {
             } else if (repeatTypeVal.equals(resources.getString(R.string.sunday))) {
                 if (selectedCalender.getDayOfWeek() == 2) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
@@ -1410,7 +1511,13 @@ public class Init {
             } else if (repeatTypeVal.equals(resources.getString(R.string.monday))) {
                 if (selectedCalender.getDayOfWeek() == 3) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
@@ -1427,7 +1534,13 @@ public class Init {
             } else if (repeatTypeVal.equals(resources.getString(R.string.tuesday))) {
                 if (selectedCalender.getDayOfWeek() == 4) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
@@ -1444,7 +1557,13 @@ public class Init {
             } else if (repeatTypeVal.equals(resources.getString(R.string.wednesday))) {
                 if (selectedCalender.getDayOfWeek() == 5) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
@@ -1461,7 +1580,13 @@ public class Init {
             } else if (repeatTypeVal.equals(resources.getString(R.string.thursday))) {
                 if (selectedCalender.getDayOfWeek() == 6) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
@@ -1478,7 +1603,13 @@ public class Init {
             } else if (repeatTypeVal.equals(resources.getString(R.string.friday))) {
                 if (selectedCalender.getDayOfWeek() == 7) {
                     if (Init.integerFormatFromStringDate(startDateString) / 1000000 <= Init.integerFormatDate(selectedCalender)) {
-                        isInRecyclerView = true;
+                        if (isActive) {
+                            isInRecyclerView = true;
+                        } else {
+                            if (Init.integerFormatDate(endDate) > Init.integerFormatDate(selectedCalender)) {
+                                isInRecyclerView = true;
+                            }
+                        }
                     }
                 }
                 for (int i = 0; i < duration; ) {
