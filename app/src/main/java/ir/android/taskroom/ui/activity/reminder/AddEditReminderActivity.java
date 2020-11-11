@@ -449,7 +449,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 , reminderComment.getText().toString(), reminderTime.getText().toString(), priorityIntVal, reminderNameEdit.getText().toString(),
                 repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0,
                 0, workID, attachmentsAdapter.getItemCount() > 0);
-        if(!isActive){
+        if (!isActive) {
             reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
         }
 
@@ -461,7 +461,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             } else if (!clickedReminder.getWork_id().equals("0")) {
                 WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(clickedReminder.getWork_id()));
             }
-            reminders.setReminders_crdate(clickedReminder.getReminders_crdate());
+            reminders.setReminders_crdate(Long.parseLong(clickedReminder.getReminders_crdate() / 1000000 + "" + reminderTime.getText().toString().replaceAll(":", "")));
         } else {
             if (getIntent().getExtras() == null) {
                 DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();

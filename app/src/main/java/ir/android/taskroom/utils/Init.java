@@ -1133,7 +1133,7 @@ public class Init {
 
         DateTime startDate = Init.convertIntegerToDateTime(objectStartDate);
         int duration = Days.daysBetween(startDate, endDate).getDays();
-        if ((selectedCalender == null && isTask) || (isCreateReminder)) {//ijad
+        if ((selectedCalender == null && isTask) || (isCreateReminder) || (selectedCalender != null && !isTask)) {//ijad
             if (repeatType.equals(resources.getString(R.string.daily))) {
                 TasksReminderActions t = calculateRemainTimeInDaily(tasksOrReminder, selectedCalender, resources, 1);
                 remainDuration = t.getRemainDuration();
@@ -1677,6 +1677,7 @@ public class Init {
             hour = hour % 24;
         }
         String remainTime = (day == 0 ? "" : day + resources.getString(R.string.day) + ",") + "(" + hour + ":" + minute + ":" + second + ")";
+        System.out.println("remainTime = " + remainTime);
         TasksReminderActions tasksReminderActions = new TasksReminderActions();
         tasksReminderActions.setRemainDuration(newStartInterval);
         tasksReminderActions.setRemainTime(remainTime);
