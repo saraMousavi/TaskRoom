@@ -1677,7 +1677,6 @@ public class Init {
             hour = hour % 24;
         }
         String remainTime = (day == 0 ? "" : day + resources.getString(R.string.day) + ",") + "(" + hour + ":" + minute + ":" + second + ")";
-        System.out.println("remainTime = " + remainTime);
         TasksReminderActions tasksReminderActions = new TasksReminderActions();
         tasksReminderActions.setRemainDuration(newStartInterval);
         tasksReminderActions.setRemainTime(remainTime);

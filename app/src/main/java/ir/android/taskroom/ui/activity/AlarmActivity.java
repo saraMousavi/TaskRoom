@@ -1,6 +1,7 @@
 package ir.android.taskroom.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -33,10 +34,13 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("savedInstanceState = " + savedInstanceState);
         init();
         turnOnScreen();
         onClickListener();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent());
+        }
+        startService(new Intent());
     }
 
     private void turnOnScreen() {
@@ -63,7 +67,6 @@ public class AlarmActivity extends AppCompatActivity {
                     mediaPlayer.reset();
                     mediaPlayer = null;
                     alarmTitle.setVisibility(View.GONE);
-                    System.out.println("buttonView = " + buttonView);
                     finish();
                 }
             }
@@ -78,7 +81,6 @@ public class AlarmActivity extends AppCompatActivity {
                 mediaPlayer = MediaPlayer.create(AlarmActivity.this, R.raw.carol_of_the_bells_alarm);
                 mediaPlayer.start();
                 mediaPlayer.setLooping(true);
-                System.out.println("mediaPlayer.isPlaying() = " + mediaPlayer.isPlaying());
             }
         }, 500);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
