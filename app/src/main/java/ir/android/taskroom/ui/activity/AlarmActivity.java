@@ -37,10 +37,6 @@ public class AlarmActivity extends AppCompatActivity {
         init();
         turnOnScreen();
         onClickListener();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent());
-        }
-        startService(new Intent());
     }
 
     private void turnOnScreen() {
