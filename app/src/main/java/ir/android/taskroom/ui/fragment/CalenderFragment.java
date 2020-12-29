@@ -72,7 +72,9 @@ import ir.android.taskroom.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.ui.adapters.ReminderAdapter;
 import ir.android.taskroom.ui.adapters.TasksAdapter;
+import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
+import ir.android.taskroom.utils.calender.CalendarTool;
 import ir.android.taskroom.utils.calender.PersianCalendar;
 import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
@@ -182,7 +184,7 @@ public class CalenderFragment extends Fragment {
                     TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminder, clickedDateTime, getResources());
                     ArrayList<DateTime> markedDateTime = tasksReminderActions.getDateTimesThatShouldMarkInCalender();
 
-                    if(markedDateTime != null) {
+                    if (markedDateTime != null) {
                         for (DateTime dateTime : markedDateTime) {
                             markVerticalSomeDays(dateTime);
                         }
@@ -194,15 +196,27 @@ public class CalenderFragment extends Fragment {
 
     private void initTaskRecyclerView() {
         if (clickedDateTime != null) {
+            DateTime tempClickDateTime = clickedDateTime;
             taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
                 @Override
                 public void onChanged(List<Tasks> tasks) {
                     List<Tasks> filteredTasks = new ArrayList<>();
                     for (Tasks task : tasks) {
+                        if (Integer.parseInt(task.getTasks_startdate().split("/")[0]) > 2000) {
+                            CalendarTool calendarTool = new CalendarTool();
+                            calendarTool.setIranianDate(clickedDateTime.getYear(), clickedDateTime.getMonthOfYear(), clickedDateTime.getDayOfMonth());
+                            clickedDateTime = new DateTime(Integer.parseInt(calendarTool.getGregorianDate().split("/")[0]),
+                                    Integer.parseInt(calendarTool.getGregorianDate().split("/")[1]),
+                                    Integer.parseInt(calendarTool.getGregorianDate().split("/")[2]), 0, 0);
+                        } else {
+                            clickedDateTime = tempClickDateTime;
+                        }
+
                         TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(task, clickedDateTime, getResources());
                         if (tasksReminderActions.isInRecyclerView()) {
                             filteredTasks.add(task);
                         }
+                        clickedDateTime = tempClickDateTime;
                     }
                     tasksAdapter.submitList(filteredTasks);
                     recyclerView.setAdapter(tasksAdapter);
@@ -213,12 +227,22 @@ public class CalenderFragment extends Fragment {
 
     private void initReminderRecyclerView() {
         if (clickedDateTime != null) {
+            DateTime tempClickDateTime = clickedDateTime;
             reminderViewModel.getAllReminders().observe(CalenderFragment.this, new Observer<List<Reminders>>() {
 
                 @Override
                 public void onChanged(List<Reminders> reminders) {
                     List<Reminders> filterReminders = new ArrayList<>();
                     for (Reminders reminder : reminders) {
+                        if (reminder.getReminders_crdate()/10000000000L > 2000) {
+                            CalendarTool calendarTool = new CalendarTool();
+                            calendarTool.setIranianDate(clickedDateTime.getYear(), clickedDateTime.getMonthOfYear(), clickedDateTime.getDayOfMonth());
+                            clickedDateTime = new DateTime(Integer.parseInt(calendarTool.getGregorianDate().split("/")[0]),
+                                    Integer.parseInt(calendarTool.getGregorianDate().split("/")[1]),
+                                    Integer.parseInt(calendarTool.getGregorianDate().split("/")[2]), 0, 0);
+                        } else {
+                            clickedDateTime = tempClickDateTime;
+                        }
                         TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminder, clickedDateTime, getResources());
                         if (tasksReminderActions.isInRecyclerView()) {
                             filterReminders.add(reminder);
@@ -226,6 +250,7 @@ public class CalenderFragment extends Fragment {
                     }
                     reminderAdapter.submitList(filterReminders);
                     recyclerView.setAdapter(reminderAdapter);
+                    clickedDateTime = tempClickDateTime;
                 }
             });
         }
@@ -289,7 +314,7 @@ public class CalenderFragment extends Fragment {
                         for (String requestId : selectedReminder.getWork_id().split(",")) {
                             WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
                         }
-                    } else if(!selectedReminder.getWork_id().equals("0")) {
+                    } else if (!selectedReminder.getWork_id().equals("0")) {
                         WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
                     }
                     Snackbar snackbar = Snackbar
@@ -350,7 +375,7 @@ public class CalenderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 taskList.setTag("clicked");
-                Init.setBackgroundRightHeaderButton(getContext(), taskList);
+                Init.setBackgroundRightHeaderButton(sharedPreferences, getContext(), taskList);
                 reminderList.setTag("unclicked");
                 reminderList.setTextColor(getContext().getResources().getColor(R.color.black));
                 reminderList.setBackground(getContext().getResources().getDrawable(R.drawable.unselected_left_corner_button_theme1));
@@ -381,7 +406,7 @@ public class CalenderFragment extends Fragment {
                     TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(task, clickedDateTime, getResources());
                     ArrayList<DateTime> markedDateTime = tasksReminderActions.getDateTimesThatShouldMarkInCalender();
 
-                    if(markedDateTime != null) {
+                    if (markedDateTime != null) {
                         for (DateTime dateTime : markedDateTime) {
                             markSomeDays(dateTime);
                         }
@@ -404,7 +429,7 @@ public class CalenderFragment extends Fragment {
         addTaskBtn = this.inflater.findViewById(R.id.addTaskBtn);
         reminderList = this.inflater.findViewById(R.id.reminderList);
         taskList = this.inflater.findViewById(R.id.taskList);
-        Init.setBackgroundRightHeaderButton(getContext(), taskList);
+        Init.setBackgroundRightHeaderButton(sharedPreferences, getContext(), taskList);
         factory = new TasksViewModelFactory(getActivity().getApplication(), null);
         taskViewModel = ViewModelProviders.of(CalenderFragment.this, factory).get(TaskViewModel.class);
         reminderViewModel = ViewModelProviders.of(CalenderFragment.this).get(ReminderViewModel.class);
@@ -415,7 +440,7 @@ public class CalenderFragment extends Fragment {
         fab2 = this.inflater.findViewById(R.id.fab2);
         taskText = this.inflater.findViewById(R.id.taskText);
         reminderText = this.inflater.findViewById(R.id.reminderText);
-        clickedDateTime = Init.getCurrentDateWhitoutTime();
+        clickedDateTime = EnglishInit.getCurrentDateWhitoutTime();
         disableBackground = inflater.findViewById(R.id.disableBackground);
 
         //Only main FAB is visible in the beginning
@@ -502,7 +527,7 @@ public class CalenderFragment extends Fragment {
             ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
             snackbar.show();
         } else if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED) {
-            if(selectedProject != null) {
+            if (selectedProject != null) {
                 Tasks tasks = new Tasks("", 0, 0, 0,
                         selectedProject.getProject_id(), "", 0, 0,
                         "", "", 0, "", "", false, "");

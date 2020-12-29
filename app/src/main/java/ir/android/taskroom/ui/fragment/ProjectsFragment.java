@@ -45,6 +45,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.data.db.entity.Tasks;
@@ -53,6 +54,7 @@ import ir.android.taskroom.data.db.factory.SubTasksViewModelFactory;
 import ir.android.taskroom.data.db.factory.TasksViewModelFactory;
 import ir.android.taskroom.databinding.ProjectsFragmentBinding;
 import ir.android.taskroom.ui.adapters.ProjectsAdapter;
+import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.enums.ActionTypes;
 import ir.android.taskroom.utils.enums.ShowCaseSharePref;
@@ -172,21 +174,24 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                     mAppBarLayout.setVisibility(View.GONE);
                     taskFragmentContainer.setVisibility(View.GONE);
                     taskFragList.clear();
-                    Init.initShowCaseView(getContext(), firstAddProjectBtn, getString(R.string.enterFirstProjectGuide),
+                    String enterFirstProjectGuide = getString(R.string.enterFirstProjectGuide);
+                    Init.initShowCaseView(getContext(), firstAddProjectBtn, enterFirstProjectGuide,
                             ShowCaseSharePref.FIRST_PROJECT_GUIDE.getValue(), null);
                 } else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            String enterSecondProjectGuide = getString(R.string.enterSecondProjectGuide);
                             Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(projectsAdapter.getItemCount() - 1),
-                                    getString(R.string.enterSecondProjectGuide), ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue(), new GuideListener() {
+                                    enterSecondProjectGuide, ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue(), new GuideListener() {
                                         @Override
                                         public void onDismiss(View view) {
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             editor.remove(ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue());
                                             editor.putInt(ShowCaseSharePref.MORE_PROJECT_GUIDE.getValue(), 1);
                                             editor.apply();
-                                            Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(0), getString(R.string.deleteEditProjectGuide),
+                                            String deleteEditProjectGuide = getString(R.string.deleteEditProjectGuide);
+                                            Init.initShowCaseView(getContext(), projectRecyclerView.getChildAt(0), deleteEditProjectGuide,
                                                     ShowCaseSharePref.EDIT_DELETE_PROJECT_GUIDE.getValue(), null);
                                         }
                                     });
@@ -210,7 +215,11 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             }
         });
         projectRecyclerView.setAdapter(projectsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        boolean isRtl = true;
+        if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+            isRtl = false;
+        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, isRtl);
         projectRecyclerView.setLayoutManager(layoutManager);
     }
 
@@ -328,11 +337,14 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
     }
 
     private void undoDeleteProject() {
+
+        String deleteProjectSnackbar = getString(R.string.successDeleteProject);
+        String undo = getString(R.string.undo);
         Snackbar snackbar = Snackbar
-                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteProject), Snackbar.LENGTH_LONG);
+                .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), deleteProjectSnackbar, Snackbar.LENGTH_LONG);
         ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
         snackbar.show();
-        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
+        snackbar.setAction(undo, new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -420,23 +432,46 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             DateTime dateTime1 = null;
             DateTime dateTime2 = null;
             if (tasks.getTasks_remindertime() == 1) {
-                dateTime1 = Init.getCurrentDateTimeWithSecond();
+                if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                } else {
+                    dateTime1 = EnglishInit.getCurrentDateTimeWithSecond();
+                }
+
                 dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
                 if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                    dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                    if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                        dateTime2 = EnglishInit.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                    } else {
+                        dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                    }
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
                         return "-2";//start date past
                     }
                 }
             } else if (!tasks.getTasks_repeateddays().isEmpty()) {
                 if (tasks.getTasks_remindertime() == 3) {
-                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                        dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    } else {
+                        dateTime1 = EnglishInit.getCurrentDateTimeWithSecond();
+                    }
+
                     dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                        if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                            dateTime2 = EnglishInit.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                        } else {
+                            dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                        }
                     }
                 } else if (tasks.getTasks_remindertime() == 2) {
-                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                        dateTime1 = EnglishInit.getCurrentDateTimeWithSecond();
+                    } else {
+                        dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    }
+
                     dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_enddate()));
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
                         return "-1";
@@ -444,10 +479,19 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 }
             } else {
                 if (tasks.getTasks_remindertime() == 2) {
-                    dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                        dateTime1 = EnglishInit.getCurrentDateTimeWithSecond();
+                    } else {
+                        dateTime1 = Init.getCurrentDateTimeWithSecond();
+                    }
                     dateTime2 = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getTasks_startdate()));
                     if (Init.convertDateTimeToInteger(dateTime2) < Init.convertDateTimeToInteger(dateTime1)) {
-                        dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                        if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                            dateTime2 = EnglishInit.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                        } else {
+                            dateTime2 = Init.getTodayDateTimeWithSelectedTime(tasks.getTasks_startdate(), 1, true);
+                        }
+
                     }
                 }
             }

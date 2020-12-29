@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
     tools:context=".ui.fragment.SettingFragment">
 
 
@@ -90,6 +89,7 @@
                     app:srcCompat="@drawable/ic_category" />
 
                 <TextView
+                    android:id="@+id/projectCategoryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -124,6 +124,7 @@
                     app:srcCompat="@drawable/ic_dark" />
 
                 <TextView
+                    android:id="@+id/darkModeText"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -131,10 +132,12 @@
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/nightModeActive"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textOff="@string/inactive"
-                    android:textOn="@string/active" />
+                    android:textOn="@string/active"
+                    android:thumb="@drawable/darkmode_custom_thumb"
+                    app:track="@drawable/dark_custom_track" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.Guideline
@@ -149,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@+id/guideline16"
+                app:layout_constraintBottom_toTopOf="@+id/guideline22"
                 app:layout_constraintTop_toBottomOf="@+id/guideline15">
 
                 <ImageView
@@ -159,10 +162,48 @@
                     app:srcCompat="@drawable/ic_theme" />
 
                 <TextView
+                    android:id="@+id/themeFragmentText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/theme" />
+            </LinearLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="@dimen/_150sdp" />
+            <LinearLayout
+                android:id="@+id/changeLanguageFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/guideline16"
+                app:layout_constraintTop_toBottomOf="@+id/guideline22">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_language" />
+
+                <TextView
+                    android:id="@+id/changeLanguageFragmentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/changeLanguage" />
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/languageActive"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textOff="@string/English"
+                    android:textOn="@string/Persian"
+                    android:thumb="@drawable/language_custom_thumb"
+                    app:track="@drawable/dark_custom_track"/>
             </LinearLayout>
 
             <View
@@ -176,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_150sdp" />
+                app:layout_constraintGuide_begin="@dimen/_200sdp" />
 
             <LinearLayout
                 android:id="@+id/support"
@@ -193,6 +234,7 @@
                     app:srcCompat="@drawable/ic__support" />
 
                 <TextView
+                    android:id="@+id/supportText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -204,7 +246,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_200sdp" />
+                app:layout_constraintGuide_begin="@dimen/_250sdp" />
 
             <LinearLayout
                 android:id="@+id/shareApp"
@@ -221,6 +263,7 @@
                     app:srcCompat="@drawable/ic_share" />
 
                 <TextView
+                    android:id="@+id/shareAppText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -232,7 +275,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_250sdp" />
+                app:layout_constraintGuide_begin="@dimen/_300sdp" />
 
             <LinearLayout
                 android:id="@+id/aboutApp"
@@ -249,6 +292,7 @@
                     app:srcCompat="@drawable/ic_aboutus" />
 
                 <TextView
+                    android:id="@+id/aboutAppText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -260,7 +304,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_300sdp" />
+                app:layout_constraintGuide_begin="@dimen/_350sdp" />
 
             <LinearLayout
                 android:id="@+id/showCaseView"
@@ -277,6 +321,7 @@
                     app:srcCompat="@drawable/ic_black_guide" />
 
                 <TextView
+                    android:id="@+id/showCaseViewText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -289,7 +334,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_350sdp" />
+                app:layout_constraintGuide_begin="@dimen/_400sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -305,6 +350,7 @@
                     app:srcCompat="@drawable/ic_version" />
 
                 <TextView
+                    android:id="@+id/appVersionText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -323,7 +369,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_400sdp" />
+                app:layout_constraintGuide_begin="@dimen/_450sdp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

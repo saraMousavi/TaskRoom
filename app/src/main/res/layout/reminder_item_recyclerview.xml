@@ -6,16 +6,15 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_4sdp"
     android:padding="0dp"
-    android:background="?recyclerViewBackground"
-    android:layoutDirection="rtl">
+    android:background="?recyclerViewBackground">
 
     <View
         android:id="@+id/priorityView"
         android:layout_width="@dimen/_15sdp"
         android:layout_height="0dp"
-        android:background="@drawable/grey_priority_corner_shape"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/reminders_active"
+        android:background="@drawable/grey_priority_corner_shape_english"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reminders_active"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -31,8 +30,8 @@
         android:textOn="@string/active"
         android:thumb="@drawable/custom_thumb"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/reminderContainer"
-        app:layout_constraintRight_toLeftOf="@id/priorityView"
+        app:layout_constraintEnd_toStartOf="@+id/reminderContainer"
+        app:layout_constraintStart_toEndOf="@id/priorityView"
         app:layout_constraintTop_toTopOf="parent"
         app:track="@drawable/custom_track"
         />
@@ -42,8 +41,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/reminders_active"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/reminders_active"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -54,7 +53,7 @@
             android:textColor="?textColor"
             android:textSize="@dimen/_30ssp"
             app:layout_constraintBottom_toTopOf="@+id/reminders_title"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -68,7 +67,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/remindertime" />
         <TextView
             android:id="@+id/reminders_repeat"
@@ -79,17 +78,16 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/remindertime"
-            app:layout_constraintRight_toLeftOf="@id/reminders_title"/>
+            app:layout_constraintStart_toEndOf="@id/reminders_title"/>
 
 
         <ImageView
             android:id="@+id/repeatedIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_orange_repeat"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:srcCompat="@drawable/ic_orange_repeat"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints"
             android:visibility="gone"
@@ -101,7 +99,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_orange_comment"
             android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/repeatedIcon"
             app:layout_constraintBottom_toTopOf="@+id/reminderAttachment"/>
 
@@ -109,11 +107,11 @@
             android:id="@+id/reminderAttachment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_orange_attach"
+            app:srcCompat="@drawable/ic_orange_attach"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/reminderComment"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

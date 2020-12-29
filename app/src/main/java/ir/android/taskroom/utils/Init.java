@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.data.db.entity.Tasks;
 import ir.android.taskroom.ui.workers.AlarmWorker;
@@ -237,7 +238,7 @@ public class Init {
      */
     public static Long integerFormatDate(DateTime dateTime) {
         return Long.valueOf(dateTime.getYear() + ""
-                + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+                + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth()));
 //                + "" + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
 //                + "" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour()) );
@@ -292,6 +293,7 @@ public class Init {
      * @return
      */
     public static DateTime convertIntegerToDateTime(Long integerTime) {
+        System.out.println("integerTime = " + integerTime);
         if (integerTime == null || integerTime < 1000000) {
             return null;
         }
@@ -328,8 +330,8 @@ public class Init {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void setViewBackgroundDependOnTheme(List<Map<View, Boolean>> views, Context context, Boolean isNightMode) {
-
+    public static void setViewBackgroundDependOnTheme(List<Map<View, Boolean>> views, Context context) {
+        boolean isNightMode = SettingUtil.getInstance(context).isDarkTheme();
         for (Map<View, Boolean> view : views) {
             for (Map.Entry<View, Boolean> entry : view.entrySet()) {
                 switch (getFlag(context)) {
@@ -446,51 +448,98 @@ public class Init {
         return sharedpreferences.getInt("theme", 1);
     }
 
-    public static void setBackgroundRightHeaderButton(Context context, TextView textView) {
+    public static void setBackgroundRightHeaderButton(SharedPreferences sharedPreferences, Context context, TextView textView) {
         textView.setTextColor(context.getResources().getColor(R.color.white));
-        switch (getFlag(context)) {
-            case 2:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme2));
-                break;
-            case 3:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme3));
-                break;
-            case 4:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme4));
-                break;
-            case 5:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme5));
-                break;
-            case 6:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme6));
-                break;
-            default:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme1));
-                break;
+        if (SettingUtil.getInstance(context).isEnglishLanguage()) {
+            switch (getFlag(context)) {
+                case 2:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme2_english));
+                    break;
+                case 3:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme3_english));
+                    break;
+                case 4:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme4_english));
+                    break;
+                case 5:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme5_english));
+                    break;
+                case 6:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme6_english));
+                    break;
+                default:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme1_english));
+                    break;
+            }
+        } else {
+            switch (getFlag(context)) {
+                case 2:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme2));
+                    break;
+                case 3:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme3));
+                    break;
+                case 4:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme4));
+                    break;
+                case 5:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme5));
+                    break;
+                case 6:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme6));
+                    break;
+                default:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_right_corner_button_theme1));
+                    break;
+            }
         }
+
     }
 
     public static void setBackgroundLeftHeaderButton(Context context, TextView textView) {
         textView.setTextColor(context.getResources().getColor(R.color.white));
-        switch (getFlag(context)) {
-            case 2:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme2));
-                break;
-            case 3:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme3));
-                break;
-            case 4:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme4));
-                break;
-            case 5:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme5));
-                break;
-            case 6:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme6));
-                break;
-            default:
-                textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme1));
-                break;
+        if (SettingUtil.getInstance(context).isEnglishLanguage()) {
+            switch (getFlag(context)) {
+                case 2:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme2_english));
+                    break;
+                case 3:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme3_english));
+                    break;
+                case 4:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme4_english));
+                    break;
+                case 5:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme5_english));
+                    break;
+                case 6:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme6_english));
+                    break;
+                default:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme1_english));
+                    break;
+            }
+        } else {
+            switch (getFlag(context)) {
+                case 2:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme2));
+                    break;
+                case 3:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme3));
+                    break;
+                case 4:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme4));
+                    break;
+                case 5:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme5));
+                    break;
+                case 6:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme6));
+                    break;
+                default:
+                    textView.setBackground(context.getResources().getDrawable(R.drawable.selected_left_corner_button_theme1));
+                    break;
+            }
         }
     }
 
@@ -1109,8 +1158,8 @@ public class Init {
                 isActive = false;
                 endDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getComplete_date()
                         .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
-                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(objectStartDate))){
-                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(objectStartDate))) {
+                    endDate = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         } else {
@@ -1122,8 +1171,8 @@ public class Init {
             if (reminders.getReminders_active() == 0 && reminders.getReminders_update() != null) {
                 isActive = false;
                 endDate = Init.convertIntegerToDateTime(reminders.getReminders_update());
-                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(objectStartDate))){
-                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(objectStartDate))) {
+                    endDate = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         }
@@ -1371,8 +1420,8 @@ public class Init {
                 isActive = false;
                 endDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getComplete_date()
                         .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
-                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)))){
-                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)))) {
+                    endDate = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
 
             }
@@ -1383,8 +1432,8 @@ public class Init {
             if (reminders.getReminders_active() == 0 && reminders.getReminders_update() != null) {
                 isActive = false;
                 endDate = Init.convertIntegerToDateTime(reminders.getReminders_update());
-                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)))){
-                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDate)))) {
+                    endDate = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         }
@@ -1440,8 +1489,8 @@ public class Init {
                 isActive = false;
                 endDate = Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(tasks.getComplete_date()
                         .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
-                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString)))){
-                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString)))) {
+                    endDate = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         } else {
@@ -1451,8 +1500,8 @@ public class Init {
             if (reminders.getReminders_active() == 0) {
                 isActive = false;
                 endDate = Init.convertIntegerToDateTime(reminders.getReminders_update());
-                if(Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString)))){
-                    endDate  = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (Init.integerFormatTime(endDate) >= Init.integerFormatTime(Init.convertIntegerToDateTime(Init.integerFormatFromStringDate(startDateString)))) {
+                    endDate = Init.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         }

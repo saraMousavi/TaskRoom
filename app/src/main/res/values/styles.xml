@@ -15,9 +15,11 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
+    </style>
+    <style name="numberTextInput" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="fontFamily">@font/calibri</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme1" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -35,7 +37,6 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
@@ -55,7 +56,6 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
@@ -75,7 +75,6 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
@@ -95,7 +94,6 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
@@ -116,7 +114,6 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
@@ -136,7 +133,6 @@
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_green</item>
         <item name="android:textSize">@dimen/_12sdp</item>
-        <item name="use_RTL_direction">true</item>
         <item name="recyclerViewBackground">@drawable/white_item_corner_shape</item>
         <item name="prjRecyclerViewBackground">@drawable/light_gray_corner_shape</item>
     </style>
@@ -174,9 +170,7 @@
 
     <style name="appSpinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/white_spinner_corner_shape</item>
-        <item name="android:layoutDirection">rtl</item>
     </style>
-
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

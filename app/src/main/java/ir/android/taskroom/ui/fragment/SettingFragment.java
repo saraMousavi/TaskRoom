@@ -2,6 +2,7 @@ package ir.android.taskroom.ui.fragment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -23,8 +25,13 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Locale;
+import java.util.Set;
+
 import ir.android.taskroom.BuildConfig;
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.ui.activity.LanguageActivity;
 import ir.android.taskroom.ui.activity.MainActivity;
 import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
 import ir.android.taskroom.ui.activity.category.CategoryActivity;
@@ -33,13 +40,13 @@ import ir.android.taskroom.utils.enums.ShowCaseSharePref;
 
 public class SettingFragment extends Fragment {
 
-    private static final String ARG_TITLE = "arg_title";
-    private static final String ARG_BG_COLOR = "arg_bg_color";
     private CollapsingToolbarLayout toolBarLayout;
     private View inflatedView;
-    private SwitchCompat nightModeActive;
-    private LinearLayout projectCategory, themeFragment, shareApp, aboutApp, support, showCaseView;
+    private SwitchCompat nightModeActive, languageActive;
+    private LinearLayout projectCategory, themeFragment, shareApp, aboutApp, support, showCaseView, changeLanguageFragment;
     private SharedPreferences sharedPreferences;
+    private TextView projectCategoryText, darkModeText, themeFragmentText, changeLanguageFragmentText,
+            supportText, shareAppText, aboutAppText, showCaseViewText, appVersionText;
 
     @Nullable
     @Override
@@ -106,7 +113,7 @@ public class SettingFragment extends Fragment {
                     sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     sendIntent.setType("text/plain");
                     startActivity(Intent.createChooser(sendIntent, "choose one"));
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -126,6 +133,12 @@ public class SettingFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:09944125972"));
                 startActivity(intent);
+            }
+        });
+        changeLanguageFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                startActivity(new Intent(getContext(), LanguageActivity.class));
             }
         });
         showCaseView.setOnClickListener(new View.OnClickListener() {
@@ -152,16 +165,22 @@ public class SettingFragment extends Fragment {
         nightModeActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                if(isChecked) {
-                    editor.remove("NIGHT_MODE");
-                    editor.putBoolean("NIGHT_MODE", true);
+                if (isChecked) {
+                    SettingUtil.getInstance(getContext()).setDarkTheme(true);
                 } else {
-                    editor.remove("NIGHT_MODE");
-                    editor.putBoolean("NIGHT_MODE", false);
+                    SettingUtil.getInstance(getContext()).setDarkTheme(false);
                 }
-                editor.apply();
                 startActivity(new Intent(getContext(), MainActivity.class));
+            }
+        });
+        languageActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startActivity("en");
+                } else {
+                    startActivity("fa");
+                }
             }
         });
     }
@@ -177,13 +196,44 @@ public class SettingFragment extends Fragment {
         support = this.inflatedView.findViewById(R.id.support);
         showCaseView = this.inflatedView.findViewById(R.id.showCaseView);
         nightModeActive = this.inflatedView.findViewById(R.id.nightModeActive);
-        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+        languageActive = this.inflatedView.findViewById(R.id.languageActive);
+        changeLanguageFragment = this.inflatedView.findViewById(R.id.changeLanguageFragment);
+
+        if (SettingUtil.getInstance(getContext()).isDarkTheme()) {
             nightModeActive.setChecked(true);
+        }
+        if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+            languageActive.setChecked(true);
         }
         final Toolbar toolbar = (Toolbar) this.inflatedView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         toolBarLayout = (CollapsingToolbarLayout) this.inflatedView.findViewById(R.id.toolbar_layout);
         toolBarLayout.setTitle(" ");
+    }
+
+
+    private void startActivity(String language) {
+        setLocale(language);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Intent intent;
+        if (sharedPreferences.getInt("isFirstInstall", 0) == 1) {
+            intent = new Intent(getContext(), MainActivity.class);
+        } else {
+            intent = new Intent(getContext(), AboutAppActivity.class);
+            intent.putExtra("isFirstInvoke", 1);
+            editor.putInt("isFirstInstall", 1);
+        }
+        SettingUtil.getInstance(getContext()).setEnglishLanguage(language.equals("en"));
+        editor.apply();
+        startActivity(intent);
+    }
+
+    private void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.setLocale(locale);
+        getContext().getResources().updateConfiguration(configuration, getContext().getResources().getDisplayMetrics());
     }
 
 }

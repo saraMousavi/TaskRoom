@@ -9,7 +9,6 @@
         android:id="@+id/editSubtaskConstarintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layoutDirection="rtl"
         android:visibility="gone">
 
         <ImageView
@@ -52,8 +51,7 @@
         android:id="@+id/subtaskRow"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:background="?recyclerViewBackground"
-        android:layoutDirection="rtl">
+        android:background="?recyclerViewBackground">
 
         <ImageView
             android:id="@+id/subtasksCompletedIcon"
@@ -71,7 +69,6 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:ellipsize="end"
-            android:textDirection="rtl"
             android:maxLines="1"
             android:text=""
             android:textColor="?attr/textColor"

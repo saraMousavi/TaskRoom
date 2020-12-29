@@ -14,6 +14,7 @@
         <Button
             android:id="@+id/firstAddProjectBtn"
             android:layout_width="match_parent"
+            android:textAllCaps="false"
             android:layout_height="@dimen/_50sdp"
             android:backgroundTint="?colorAccent"
             android:text="@string/createNewProject"

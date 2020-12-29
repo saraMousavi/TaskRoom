@@ -47,7 +47,6 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
     private TextInputEditText projectsTitle;
     private TextInputLayout editText;
     private Category selectedCategory = null;
-    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,8 +69,8 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
             categoryViewModel.getAllCategory().observe(this, new Observer<List<Category>>() {
                 @Override
                 public void onChanged(List<Category> categories) {
-                    for(Category category:categories){
-                        if(category.getCategory_id().equals(selectedProject.getCategory_id())){
+                    for (Category category : categories) {
+                        if (category.getCategory_id().equals(selectedProject.getCategory_id())) {
                             projectCategory.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -133,8 +132,6 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
 
 
     private void init() {
-        this.sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getContext());
         projectCategory = this.inflatedView.findViewById(R.id.projectCategory);
         insertProjectBtn = this.inflatedView.findViewById(R.id.insertProjectBtn);
         projectsTitle = this.inflatedView.findViewById(R.id.projectsTitle);
@@ -166,7 +163,7 @@ public class AddProjectBottomSheetFragment extends BottomSheetDialogFragment {
         viewMap.put(insertProjectBtn, true);
         views.add(viewMap);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+            Init.setViewBackgroundDependOnTheme(views, getContext());
         }
     }
 }

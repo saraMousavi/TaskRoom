@@ -5,9 +5,9 @@ public interface DatePickerController {
 
     void onDayOfMonthSelected(int year, int month, int day);
 
-    void registerOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener);
+    void registerOnDateChangedListener(DatePickerDialogs.OnDateChangedListener listener);
 
-    void unregisterOnDateChangedListener(DatePickerDialog.OnDateChangedListener listener);
+    void unregisterOnDateChangedListener(DatePickerDialogs.OnDateChangedListener listener);
 
     MonthAdapter.CalendarDay getSelectedDay();
 

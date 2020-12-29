@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.ui.activity.MainActivity;
 
 public class ThemeActivity extends AppCompatActivity {
@@ -82,8 +83,7 @@ public class ThemeActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.remove("theme");
         editor.putInt("theme", flag);
-        editor.remove("NIGHT_MODE");
-        editor.putBoolean("NIGHT_MODE", false);
+        SettingUtil.getInstance(ThemeActivity.this).setDarkTheme(false);
         editor.apply();
         startActivity(new Intent(ThemeActivity.this, MainActivity.class));
         finish();

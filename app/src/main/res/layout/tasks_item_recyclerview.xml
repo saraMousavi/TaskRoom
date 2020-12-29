@@ -6,17 +6,16 @@
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     android:background="?recyclerViewBackground"
-    android:layoutDirection="rtl"
     android:padding="0dp">
 
     <View
         android:id="@+id/priorityView"
         android:layout_width="@dimen/_15sdp"
         android:layout_height="0dp"
-        android:background="@drawable/grey_priority_corner_shape"
+        android:background="@drawable/grey_priority_corner_shape_english"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/constraintContent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/constraintContent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,8 +24,8 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_5sdp"
         app:layout_constraintBottom_toTopOf="@id/guideline2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/priorityView"
+        app:layout_constraintStart_toEndOf="@+id/priorityView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -34,9 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_radio_button_unchecked_black"
+            app:srcCompat="@drawable/ic_radio_button_unchecked_black"
             app:layout_constraintBottom_toTopOf="@+id/tasks_startdatetitle"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tasks_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,14 +44,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="right"
             android:maxLines="1"
             android:text="title"
             android:textColor="?attr/textColor"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/tasks_startdatetitle"
-            app:layout_constraintLeft_toLeftOf="@+id/guideline5"
-            app:layout_constraintRight_toLeftOf="@+id/tasks_iscompleted"
+            app:layout_constraintEnd_toEndOf="@+id/guideline5"
+            app:layout_constraintStart_toEndOf="@+id/tasks_iscompleted"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -63,7 +61,7 @@
             android:textColor="?attr/textColor"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tasks_title" />
 
         <TextView
@@ -74,19 +72,19 @@
             android:textColor="?attr/textColor"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/tasks_startdatetitle"
+            app:layout_constraintStart_toEndOf="@+id/tasks_startdatetitle"
             app:layout_constraintTop_toBottomOf="@id/tasks_title" />
 
         <TextView
             android:id="@+id/tasks_startdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="2dp"
+            android:layout_marginEnd="2dp"
             android:text="1398/06/06"
             android:textColor="?attr/textColor"
             android:textSize="11sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/tasks_startdatetitle"
-            app:layout_constraintRight_toLeftOf="@+id/dot" />
+            app:layout_constraintStart_toEndOf="@+id/dot" />
 
         <TextView
             android:id="@+id/tasks_enddatetitle"
@@ -96,7 +94,7 @@
             android:textColor="?attr/textColor"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
 
         <TextView
@@ -107,7 +105,7 @@
             android:textColor="?attr/textColor"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/tasks_enddatetitle"
+            app:layout_constraintStart_toEndOf="@+id/tasks_enddatetitle"
             app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
 
         <TextView
@@ -119,17 +117,17 @@
             android:textColor="?attr/textColor"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/dot2"
+            app:layout_constraintStart_toEndOf="@+id/dot2"
             app:layout_constraintTop_toBottomOf="@id/tasks_startdatetitle" />
-<!--        //ic_orange_repeat-->
+        <!--        //ic_orange_repeat-->
         <ImageView
             android:id="@+id/reminder_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_orange_alarm"
+            app:srcCompat="@drawable/ic_orange_alarm"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/reminder_attach"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
@@ -137,10 +135,10 @@
             android:id="@+id/reminder_attach"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_orange_attach"
+            app:srcCompat="@drawable/ic_orange_attach"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/tasks_comment"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminder_time" />
 
         <ImageView
@@ -150,8 +148,9 @@
             android:src="@drawable/ic_orange_comment"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminder_attach" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline5"
             android:layout_width="wrap_content"
@@ -168,8 +167,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/_5sdp"
         android:paddingRight="@dimen/_5sdp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/priorityView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/priorityView"
         app:layout_constraintTop_toBottomOf="@+id/guideline2" />
 
     <androidx.constraintlayout.widget.Guideline

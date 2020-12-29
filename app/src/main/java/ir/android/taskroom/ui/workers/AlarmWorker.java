@@ -26,6 +26,7 @@ import java.util.Locale;
 import ir.android.taskroom.R;
 import ir.android.taskroom.ui.activity.AlarmActivity;
 import ir.android.taskroom.ui.activity.MainActivity;
+import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -74,7 +75,7 @@ public class AlarmWorker extends Worker {
         NotificationCompat.Builder builder = new NotificationCompat.Builder
                 (getApplicationContext(), PRIMARY_CHANNEL_ID)
                 .setContentTitle(getInputData().getString("alarmTitle"))
-                .setContentText(Init.getCurrentTime())
+                .setContentText(EnglishInit.getCurrentTime())
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(getInputData().getString("alarmExpandableText")))
 //                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture())

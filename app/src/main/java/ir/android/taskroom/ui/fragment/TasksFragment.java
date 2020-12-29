@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.data.db.entity.Tasks;
@@ -170,8 +171,12 @@ public class TasksFragment extends Fragment {
                         WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedTask.getWork_id()));
                     }
                 }
+                String deleteSnackBar = getString(R.string.successDeleteTask);
+                if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                    deleteSnackBar = getString(R.string.successDeleteTask);
+                }
                 Snackbar snackbar = Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG);
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), deleteSnackBar, Snackbar.LENGTH_LONG);
                 ViewCompat.setLayoutDirection(snackbar.getView(),ViewCompat.LAYOUT_DIRECTION_RTL);
                 snackbar.show();
             }
@@ -190,6 +195,9 @@ public class TasksFragment extends Fragment {
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskRecyclerView = this.inflatedView.findViewById(R.id.recyclerView);
         firstAddTaskBtn = this.inflatedView.findViewById(R.id.firstAddTaskBtn);
+        if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+            firstAddTaskBtn.setText(getString(R.string.createNewTask));
+        }
         taskAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
     }
@@ -210,16 +218,23 @@ public class TasksFragment extends Fragment {
                 View taskList = (View) inflatedView.findViewById(R.id.taskList);
                 View taskEmptyList = (View) inflatedView.findViewById(R.id.taskEmptyList);
                 tasksNum = tasks.size();
+                String addTaskBtnPersian = getString(R.string.enterFirstTaskGuide);
+                String deleteTaskBtnPersian = getString(R.string.editDeleteTaskGuide);
+                if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                    addTaskBtnPersian = getString(R.string.enterFirstTaskGuide);
+                    deleteTaskBtnPersian = getString(R.string.editDeleteTaskGuide);
+                }
                 if (tasksNum == 0) {
                     taskList.setVisibility(View.GONE);
                     taskEmptyList.setVisibility(View.VISIBLE);
                     addTaskBtn.setVisibility(View.GONE);
-                    Init.initShowCaseView(getContext(), firstAddTaskBtn, getString(R.string.enterFirstTaskGuide), ShowCaseSharePref.FIRST_TASK_GUIDE.getValue(), null);
+
+                    Init.initShowCaseView(getContext(), firstAddTaskBtn, addTaskBtnPersian, ShowCaseSharePref.FIRST_TASK_GUIDE.getValue(), null);
                 } else {
                     taskList.setVisibility(View.VISIBLE);
                     taskEmptyList.setVisibility(View.GONE);
                     addTaskBtn.setVisibility(View.VISIBLE);
-                    Init.initShowCaseView(getContext(), taskRecyclerView, getString(R.string.editDeleteTaskGuide), ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue(), null);
+                    Init.initShowCaseView(getContext(), taskRecyclerView, deleteTaskBtnPersian, ShowCaseSharePref.EDIT_DELETE_TASK_GUIDE.getValue(), null);
                 }
                 taskAdapter.submitList(tasks);
             }
@@ -239,9 +254,15 @@ public class TasksFragment extends Fragment {
             projects.setProject_id(selectedProject.getProject_id());
             projectViewModel.update(projects);
             taskAdapter.notifyDataSetChanged();
+            String insertSnackBar = getString(R.string.successInsertTask);
+            if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                insertSnackBar = getString(R.string.successInsertTask);
+            }
             Snackbar snackbar = Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), insertSnackBar , Snackbar.LENGTH_LONG);
+            if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            }
             snackbar.show();
         } else if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED) {
             Tasks tasks = new Tasks("", 0, 0, 0,
@@ -252,9 +273,15 @@ public class TasksFragment extends Fragment {
         }
         if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
             taskAdapter.notifyDataSetChanged();
+            String editSnackBar = getString(R.string.successEditTask);
+            if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                editSnackBar = getString(R.string.successEditTask);
+            }
             Snackbar snackbar = Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditTask), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), editSnackBar, Snackbar.LENGTH_LONG);
+            if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            }
             snackbar.show();
         }
     }

@@ -15,8 +15,8 @@
                 </shape>
             </item>
 
-            <item android:left="5dp">
-                <bitmap android:gravity="left" android:src="@drawable/spinner_arrow_down" />
+            <item android:end="5dp">
+                <bitmap android:gravity="end" android:src="@drawable/spinner_arrow_down" />
             </item>
 
         </layer-list>

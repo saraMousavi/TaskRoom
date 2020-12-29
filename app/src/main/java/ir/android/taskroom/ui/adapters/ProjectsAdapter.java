@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.ui.fragment.AddProjectBottomSheetFragment;
@@ -89,6 +90,10 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             projectsTitle = itemView.findViewById(R.id.projectsTitle);
             tasksNumVal = itemView.findViewById(R.id.tasksNumVal);
             tasknum = itemView.findViewById(R.id.tasknum);
+            if(!SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()){
+                projectsBox.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+                tasknum.setText(mFragmentActivity.getString(R.string.tasknum));
+            }
         }
     }
 
@@ -160,7 +165,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
 
             if (clickedPosition == position) {
                 Drawable drawable = null;
-                if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+                if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isDarkTheme()) {
                     drawable = mFragmentActivity.getResources().getDrawable(R.drawable.dark_selected_corner_shape);
                 } else {
                     TypedArray array = mFragmentActivity.getTheme().obtainStyledAttributes(getAppThemeStyle(mFragmentActivity), new int[]{R.attr.selectedBox});
@@ -172,7 +177,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
                 itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                 itemViewHolder.tasknum.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
             } else {
-                if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+                if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isDarkTheme()) {
                     itemViewHolder.projectsBox.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.dark_item_corner_shape));
                     itemViewHolder.projectsTitle.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
                     itemViewHolder.tasksNumVal.setTextColor(mFragmentActivity.getResources().getColor(R.color.white));
@@ -235,7 +240,7 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
     }
 
     public void setMasterTheme(Context context) {
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isDarkTheme()) {
             context.setTheme(R.style.FeedActivityThemeDark);
             return;
         }

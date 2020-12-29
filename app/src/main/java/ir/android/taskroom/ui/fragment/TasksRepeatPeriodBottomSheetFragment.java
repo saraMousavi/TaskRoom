@@ -1,11 +1,12 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,15 +27,16 @@ import ir.android.taskroom.R;
 
 public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragment {
     private View inlfateView;
-    private Button repeatDayBtn;
+    private Button repeatPeriodBtn;
     private NumberPicker numberPeriod;
     private NumberPicker typePeriod;
     private RepeatPeriodClickListener repeatTypeClickListener;
     private String[] typePeriodVal;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tasks_repeat_period, container,false);
+        View view = inflater.inflate(R.layout.tasks_repeat_period, container, false);
         this.inlfateView = view;
         init();
         bundleFields();
@@ -44,11 +46,11 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
 
     private void bundleFields() {
         Bundle bundle = getArguments();
-        if(bundle != null && !bundle.getString("selectedPeriod").isEmpty()){
+        if (bundle != null && !bundle.getString("selectedPeriod").isEmpty()) {
             String[] selectedPeriod = bundle.getString("selectedPeriod").split(" ");
             numberPeriod.setValue(Integer.parseInt(selectedPeriod[1]));
-            for(int i =0 ; i < typePeriodVal.length ; i++){
-                if(typePeriodVal[i].equals(selectedPeriod[2])){
+            for (int i = 0; i < typePeriodVal.length; i++) {
+                if (typePeriodVal[i].equals(selectedPeriod[2])) {
                     typePeriod.setValue(i);
                 }
             }
@@ -56,7 +58,7 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
     }
 
     private void onClickListener() {
-        repeatDayBtn.setOnClickListener(new View.OnClickListener() {
+        repeatPeriodBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
@@ -68,9 +70,9 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
     }
 
     private void init() {
-        repeatDayBtn = inlfateView.findViewById(R.id.repeatPeriodBtn);
+        repeatPeriodBtn = inlfateView.findViewById(R.id.repeatPeriodBtn);
         numberPeriod = inlfateView.findViewById(R.id.numberPeriod);
-        
+
         numberPeriod.setMinValue(2);
         numberPeriod.setMaxValue(100);
         typePeriod = inlfateView.findViewById(R.id.typePeriod);

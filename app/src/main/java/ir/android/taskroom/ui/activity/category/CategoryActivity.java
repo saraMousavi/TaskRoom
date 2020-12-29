@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.factory.ProjectsViewModelFactory;
@@ -48,7 +49,6 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     private FloatingActionButton addCategoryBtn;
     private RecyclerView categoryRecyclerView;
     private CategoryAdapter categoryAdapter;
-    private SharedPreferences sharedPreferences;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
@@ -120,8 +120,8 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                 projectViewModel.getAllProjects().observe(CategoryActivity.this, new Observer<List<Projects>>() {
                     @Override
                     public void onChanged(List<Projects> projects) {
-                        for(Projects project:projects){
-                            if(project.getCategory_id().equals(selectedCategory.getCategory_id())){
+                        for (Projects project : projects) {
+                            if (project.getCategory_id().equals(selectedCategory.getCategory_id())) {
                                 Snackbar snackbar = Snackbar
                                         .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstDeleteProjectsInCategory), Snackbar.LENGTH_LONG);
                                 ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
@@ -174,16 +174,14 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
         Map<View, Boolean> viewMap = new HashMap<>();
         viewMap.put(addCategoryBtn, false);
         views.add(viewMap);
-        this.sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(CategoryActivity.this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Init.setViewBackgroundDependOnTheme(views, CategoryActivity.this,sharedPreferences.getBoolean("NIGHT_MODE", false));
+            Init.setViewBackgroundDependOnTheme(views, CategoryActivity.this);
         }
     }
 
     @Override
     public void onClickSubmit(Category category, ActionTypes actionTypes) {
-        switch (actionTypes){
+        switch (actionTypes) {
             case ADD:
                 categoryViewModel.insert(category);
                 Snackbar snackbar = Snackbar
@@ -204,9 +202,7 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
     }
 
     public void setMasterTheme() {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(CategoryActivity.this);
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(CategoryActivity.this).isDarkTheme()) {
             setTheme(R.style.FeedActivityThemeDark);
             return;
         }

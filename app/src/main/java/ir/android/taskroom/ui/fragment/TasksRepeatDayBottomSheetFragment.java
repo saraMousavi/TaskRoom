@@ -1,7 +1,9 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 
 public class TasksRepeatDayBottomSheetFragment extends BottomSheetDialogFragment {
     private View inlfateView;
@@ -24,7 +27,10 @@ public class TasksRepeatDayBottomSheetFragment extends BottomSheetDialogFragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tasks_repeat_day, container,false);
+        View view = inflater.inflate(R.layout.tasks_repeat_day_persian, container,false);
+        if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+            view = inflater.inflate(R.layout.tasks_repeat_day_english, container,false);
+        }
         this.inlfateView = view;
         init();
         bundleFields();

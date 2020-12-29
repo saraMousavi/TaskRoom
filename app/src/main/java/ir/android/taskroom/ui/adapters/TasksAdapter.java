@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -26,14 +26,13 @@ import androidx.work.WorkManager;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-
 import java.util.UUID;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Tasks;
 import ir.android.taskroom.ui.fragment.SubTaskFragment;
+import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.TaskViewModel;
@@ -60,7 +59,6 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                     oldItem.getWork_id().equals(newItem.getWork_id());
         }
     };
-    private SharedPreferences sharedPreferences;
     private Context context;
 
 
@@ -82,6 +80,12 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             taskTitle = itemView.findViewById(R.id.tasks_title);
             tasks_startdate = itemView.findViewById(R.id.tasks_startdate);
             tasks_enddate = itemView.findViewById(R.id.tasks_enddate);
+            if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    tasks_startdate.setTextAppearance(R.style.numberTextInput);
+                    tasks_enddate.setTextAppearance(R.style.numberTextInput);
+                }
+            }
             tasksIsCompleted = itemView.findViewById(R.id.tasks_iscompleted);
             reminder_time = itemView.findViewById(R.id.reminder_time);
             tasks_comment = itemView.findViewById(R.id.tasks_comment);
@@ -96,8 +100,6 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         this.context = context;
-        sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
         setMasterTheme(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View taskView = inflater.inflate(R.layout.tasks_item_recyclerview, parent, false);
@@ -108,6 +110,31 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Tasks tasks = getItem(position);
+        if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
+            //set priority colorflag
+            if (tasks.getTasks_priority() == 1) {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape_english));
+            } else if (tasks.getTasks_priority() == 2) {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.orange_priority_corner_shape_english));
+            } else if (tasks.getTasks_priority() == 3) {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape_english));
+            } else {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.grey_priority_corner_shape_english));
+            }
+        } else {
+            holder.taskTitle.setGravity(Gravity.RIGHT);
+            //set priority colorflag
+            if (tasks.getTasks_priority() == 1) {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape_persian));
+            } else if (tasks.getTasks_priority() == 2) {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.orange_priority_corner_shape_persian));
+            } else if (tasks.getTasks_priority() == 3) {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape_persian));
+            } else {
+                holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.grey_priority_corner_shape_persian));
+            }
+        }
+
         holder.taskTitle.setText(tasks.getTasks_title());
 
         Init.toggleCompleteCircle(holder.taskTitle, holder.tasksIsCompleted, tasks.getTasks_iscompleted());
@@ -125,7 +152,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                 String workId = createWorkRequest(tasks, tasks.getTasks_iscompleted() == 0 ? false : true);
                 if (tasks.getTasks_iscompleted() == 0) {
                     task.setTasks_iscompleted(1);
-                    task.setComplete_date(mFragmentActivity.getString(R.string.inDate) + " " + Init.getCurrentDate() +
+                    task.setComplete_date(mFragmentActivity.getString(R.string.inDate) + " " + EnglishInit.getCurrentDate() +
                             " " + mFragmentActivity.getString(R.string.completed));
                     Snackbar snackbar = Snackbar
                             .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), mFragmentActivity.getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG);
@@ -160,14 +187,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
         if (tasks.getHas_attach()) {
             holder.reminder_attach.setVisibility(View.VISIBLE);
         }
-        //set priority colorflag
-        if (tasks.getTasks_priority() == 1) {
-            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.yellow_priority_corner_shape));
-        } else if (tasks.getTasks_priority() == 2) {
-            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.orange_priority_corner_shape));
-        } else if (tasks.getTasks_priority() == 3) {
-            holder.priorityView.setBackground(mFragmentActivity.getResources().getDrawable(R.drawable.green_priority_corner_shape));
-        }
+
         int newContainerID = View.generateViewId();
         holder.subtaskConstarint.setId(newContainerID);
         fragmentJump(tasks, newContainerID);
@@ -241,7 +261,7 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
     }
 
     public void setMasterTheme(Context context) {
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(context).isDarkTheme()) {
             context.setTheme(R.style.FeedActivityThemeDark);
             return;
         }

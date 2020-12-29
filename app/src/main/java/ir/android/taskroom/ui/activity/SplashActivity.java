@@ -6,17 +6,22 @@ import androidx.core.view.ViewCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
+import ir.android.taskroom.ui.dialog.LanguageDialog;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -46,7 +51,7 @@ public class SplashActivity extends AppCompatActivity {
 
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(SplashActivity.this);
-        if(sharedPreferences.getBoolean("NIGHT_MODE", false)){
+        if(SettingUtil.getInstance(SplashActivity.this).isDarkTheme()){
             ConstraintLayout splashRoot = findViewById(R.id.splash_root);
             splashRoot.setBackgroundColor(getResources().getColor(R.color.backgroundDarkWindow));
             mContentView.setTextColor(getResources().getColor(R.color.white));
@@ -59,11 +64,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (sharedPreferences.getInt("isFirstInstall", 0) == 1) {
                     intent = new Intent(SplashActivity.this, MainActivity.class);
                 } else {
-                    intent = new Intent(SplashActivity.this, AboutAppActivity.class);
-                    intent.putExtra("isFirstInvoke", 1);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("isFirstInstall", 1);
-                    editor.apply();
+                    intent = new Intent(SplashActivity.this, LanguageActivity.class);
                 }
                 startActivity(intent);
                 finish();

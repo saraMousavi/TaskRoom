@@ -2,13 +2,15 @@ package ir.android.taskroom.ui.activity.task;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,12 +24,14 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -53,13 +57,13 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
 import org.joda.time.DateTime;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -67,12 +71,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Attachments;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -91,10 +97,11 @@ import ir.android.taskroom.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatTypeBottomSheetFragment;
+import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
-import ir.android.taskroom.utils.calender.DatePickerDialog;
+import ir.android.taskroom.utils.calender.DatePickerDialogs;
 import ir.android.taskroom.utils.calender.PersianCalendar;
-import ir.android.taskroom.utils.calender.TimePickerDialog;
+import ir.android.taskroom.utils.calender.TimePickerDialogs;
 import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.AttachmentsViewModel;
 import ir.android.taskroom.viewmodels.CategoryViewModel;
@@ -103,8 +110,8 @@ import ir.android.taskroom.viewmodels.SubTasksViewModel;
 import ir.android.taskroom.viewmodels.TaskViewModel;
 
 public class AddEditTaskActivity extends AppCompatActivity implements
-        TimePickerDialog.OnTimeSetListener
-        , DatePickerDialog.OnDateSetListener
+        TimePickerDialogs.OnTimeSetListener
+        , DatePickerDialogs.OnDateSetListener
         , TasksRepeatTypeBottomSheetFragment.RepeatTypeClickListener
         , TasksRepeatDayBottomSheetFragment.RepeatDayClickListener
         , TasksRepeatPeriodBottomSheetFragment.RepeatPeriodClickListener
@@ -119,6 +126,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     private static final int FILE_PICKER_REQUEST_CODE = 500;
     private static final int WRITE_EXTERNAL_STORAGE_STORAGE = 600;
     private TextInputEditText taskNameEdit, tasksComment;
+    private TextInputLayout taskName;
     private FloatingActionButton fabInsertTask, fabInsertTask2;
     private ConstraintLayout startDateConstraint, endDateConstraint, subfirstRow,
             repeatTypeConstraint, priorityTypeContraint, subTaskTitle,
@@ -277,9 +285,15 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Subtasks selectedSubTask = subTasksAdapter.getSubTaskAt(viewHolder.getAdapterPosition());
                 subTasksViewModel.delete(selectedSubTask);
+                String successDeleteSubTask = getString(R.string.successDeleteSubTask);
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    successDeleteSubTask = getString(R.string.successDeleteSubTask);
+                }
                 Snackbar snackbar = Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteSubTask), Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), successDeleteSubTask, Snackbar.LENGTH_LONG);
+                if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
             }
         }).attachToRecyclerView(subtaskRecyclerView);
@@ -338,28 +352,50 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         startDateConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PersianCalendar persianCalendar = new PersianCalendar();
-                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                        AddEditTaskActivity.this,
-                        persianCalendar.getPersianYear(),
-                        persianCalendar.getPersianMonth(),
-                        persianCalendar.getPersianDay()
-                );
-                datePickerDialog.show(getSupportFragmentManager(), "startDatepickerdialog");
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    Calendar calendar = Calendar.getInstance();
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(
+                            AddEditTaskActivity.this, startDateListener,
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH)
+                    );
+                    datePickerDialog.show();
+                } else {
+                    PersianCalendar persianCalendar = new PersianCalendar();
+                    DatePickerDialogs datePickerDialog = DatePickerDialogs.newInstance(
+                            AddEditTaskActivity.this,
+                            persianCalendar.getPersianYear(),
+                            persianCalendar.getPersianMonth(),
+                            persianCalendar.getPersianDay()
+                    );
+                    datePickerDialog.show(getSupportFragmentManager(), "startDatepickerdialog");
+                }
             }
         });
 
         endDateConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PersianCalendar persianCalendar = new PersianCalendar();
-                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                        AddEditTaskActivity.this,
-                        persianCalendar.getPersianYear(),
-                        persianCalendar.getPersianMonth(),
-                        persianCalendar.getPersianDay()
-                );
-                datePickerDialog.show(getSupportFragmentManager(), "endDatepickerdialog");
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    Calendar calendar = Calendar.getInstance();
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(
+                            AddEditTaskActivity.this, endDateListener,
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH)
+                    );
+                    datePickerDialog.show();
+                } else {
+                    PersianCalendar persianCalendar = new PersianCalendar();
+                    DatePickerDialogs datePickerDialog = DatePickerDialogs.newInstance(
+                            AddEditTaskActivity.this,
+                            persianCalendar.getPersianYear(),
+                            persianCalendar.getPersianMonth(),
+                            persianCalendar.getPersianDay()
+                    );
+                    datePickerDialog.show(getSupportFragmentManager(), "endDatepickerdialog");
+                }
             }
         });
         /**
@@ -434,11 +470,20 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                     completeIcon.setTag(R.drawable.ic_radio_button_checked_green);
                     completedDate.setVisibility(View.VISIBLE);
                     isCompleted = true;
-                    completedDateVal = Init.getCurrentDate();
+                    completedDateVal = EnglishInit.getCurrentDate();
                     completedDate.setText(getString(R.string.inDate) + " " + completedDateVal + " " + getString(R.string.completed));
+                    if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                        completedDate.setText(getString(R.string.completed) + " " + getString(R.string.inDate) + " " + completedDateVal);
+                    }
+                    String disableReminderBecauseOfCompleted = getString(R.string.disableReminderBecauseOfCompleted);
+                    if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                        disableReminderBecauseOfCompleted = getString(R.string.disableReminderBecauseOfCompleted);
+                    }
                     Snackbar snackbar = Snackbar
-                            .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                            .make(getWindow().getDecorView().findViewById(android.R.id.content), disableReminderBecauseOfCompleted, Snackbar.LENGTH_LONG);
+                    if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    }
                     snackbar.show();
                 } else {
                     completeIcon.setImageResource(R.drawable.ic_black_circle);
@@ -461,6 +506,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         reminderTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String chooseadvancerepeattype = getString(R.string.chooseadvancerepeattype);
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    chooseadvancerepeattype = getString(R.string.chooseadvancerepeattype);
+                }
                 switch (position) {
                     case 0:
                         reminderTypeConstraint.setVisibility(View.GONE);
@@ -485,9 +535,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         if (reminderTime.getAdapter().getCount() < 4) {
                             repeatTypeConstraint.setVisibility(View.VISIBLE);
                             Init.fadeVisibelityView(repeatTypeConstraint);
+
                             Snackbar snackbar = Snackbar
-                                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG);
-                            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                                    .make(getWindow().getDecorView().findViewById(android.R.id.content), chooseadvancerepeattype, Snackbar.LENGTH_LONG);
+                            if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                            }
                             snackbar.show();
                         }
                         break;
@@ -498,9 +551,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                         repeatTypeConstraint.setVisibility(View.VISIBLE);
                         Init.fadeVisibelityView(reminderTypeConstraint);
                         Init.fadeVisibelityView(repeatTypeConstraint);
+
                         Snackbar snackbar = Snackbar
-                                .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.chooseadvancerepeattype), Snackbar.LENGTH_LONG);
-                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                                .make(getWindow().getDecorView().findViewById(android.R.id.content), chooseadvancerepeattype, Snackbar.LENGTH_LONG);
+                        if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        }
                         snackbar.show();
                         break;
                 }
@@ -558,8 +614,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             Animation anim = new ScaleAnimation(
                     0, 1f, // Start and end values for the X axis scaling
                     1f, 1f, // Start and end values for the Y axis scaling
-                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
-                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+                    Animation.RELATIVE_TO_SELF, 1f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 0f); // Pivot point of Y scaling
             anim.setFillAfter(true); // Needed to keep the result of the animation
             anim.setDuration(500);
             uploadChoose.startAnimation(anim);
@@ -568,8 +624,8 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             Animation anim = new ScaleAnimation(
                     1f, 0, // Start and end values for the X axis scaling
                     1f, 1f, // Start and end values for the Y axis scaling
-                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
-                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+                    Animation.RELATIVE_TO_SELF, 1f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 0f); // Pivot point of Y scaling
             anim.setFillAfter(true); // Needed to keep the result of the animation
             anim.setDuration(500);
             uploadChoose.startAnimation(anim);
@@ -588,11 +644,15 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         fabInsertTask2 = findViewById(R.id.fabInsertTask2);
         insertSubtasksBtn = findViewById(R.id.insertSubtasksBtn);
         taskNameEdit = findViewById(R.id.taskNameEdit);
+        taskName = findViewById(R.id.taskName);
+        if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+            taskName.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            taskName.setHint(getString(R.string.taskTitle));
+        }
         tasksComment = findViewById(R.id.tasksComment);
         startDateConstraint = findViewById(R.id.startDateConstraint);
         endDateConstraint = findViewById(R.id.endDateConstraint);
         startTextVal = findViewById(R.id.reminderTimeVal);
-        startTextVal.setText(Init.getCurrentDate());
         endTextVal = findViewById(R.id.endTextVal);
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
         completedDate = findViewById(R.id.completedDate);
@@ -620,7 +680,18 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         drawIcon = findViewById(R.id.drawIcon);
         uploadChoose = findViewById(R.id.uploadChoose);
         completeIcon.setTag(R.drawable.ic_black_circle);
-        startDatepickerVal = Init.getCurrentDate();
+        if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                startTextVal.setTextAppearance(R.style.numberTextInput);
+                endTextVal.setTextAppearance(R.style.numberTextInput);
+            }
+            startDatepickerVal = EnglishInit.getCurrentDate();
+            startTextVal.setText(EnglishInit.getCurrentDate());
+        } else {
+            startDatepickerVal = Init.getCurrentDate();
+            startTextVal.setText(Init.getCurrentDate());
+        }
+
         ProjectsViewModelFactory projectFactory = new ProjectsViewModelFactory(getApplication(), null);
 
         TasksViewModelFactory taskFactory = new TasksViewModelFactory(getApplication(), sharedPreferences.getLong("selectedProjectID", 0));
@@ -634,7 +705,9 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             clickedTask = (Tasks) intent.getExtras().getSerializable("clickedTask");
             editableTaskFields();
         }
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+
+
+        if (SettingUtil.getInstance(AddEditTaskActivity.this).isDarkTheme()) {
             View someView = findViewById(R.id.nestedScroll);
             View root = someView.getRootView();
             root.setBackgroundColor(getResources().getColor(R.color.backgroundDarkWindow));
@@ -713,9 +786,15 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         RadioButton reminderType = findViewById(reminderTypeGroup.getCheckedRadioButtonId());
         //@TODO get repeat type val from bottom sheet
         if (taskNameEdit.getText().toString().isEmpty()) {
+            String enterTaskName = getString(R.string.enterTaskName);
+            if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                enterTaskName = getString(R.string.enterTaskName);
+            }
             Snackbar snackbar = Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterTaskName), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), enterTaskName, Snackbar.LENGTH_LONG);
+            if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            }
             snackbar.show();
             return;
         }
@@ -735,9 +814,16 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         if (!isCompleted) {
             workID = createWorkRequest();
             if (workID.equals("-1")) {
+
+                String validstartdateandenddate = getString(R.string.validstartdateandenddate);
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    validstartdateandenddate = getString(R.string.validstartdateandenddate);
+                }
                 Snackbar snackbar = Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validstartdateandenddate), Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), validstartdateandenddate, Snackbar.LENGTH_LONG);
+                if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
                 return;
             }
@@ -779,21 +865,36 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             return "-1";
         }
         if (tasksReminderActions.getRemainDuration() == -2) {
-            Toast.makeText(getApplicationContext(), getString(R.string.validstartdatepast), Toast.LENGTH_LONG).show();
+            String validstartdatepast = getString(R.string.validstartdatepast);
+            if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                validstartdatepast = getString(R.string.validstartdatepast);
+            }
+            Toast.makeText(getApplicationContext(), validstartdatepast, Toast.LENGTH_LONG).show();
             return "-2";
         }
         if (tasksReminderActions.getRemainTime().isEmpty()) {
             //if remind time was dont remind
             return "0";
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
+
+            String remindeTime = getString(R.string.remindeTime);
+            if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                remindeTime = getString(R.string.remindeTime);
+            }
+            Toast.makeText(getApplicationContext(), remindeTime + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
             String workId = "";
-            if(!tasks.getTasks_enddate().isEmpty() && !tasks.getTasks_repeateddays().isEmpty() && tasks.getTasks_iscompleted() == 0) {
+            if (!tasks.getTasks_enddate().isEmpty() && !tasks.getTasks_repeateddays().isEmpty() && tasks.getTasks_iscompleted() == 0) {
                 TasksReminderActions endTimeReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(endTimeTask, calenderClickedDate, getResources());
-                workId = Init.requestWork(getApplicationContext(), getResources().getString(R.string.taskTime)
-                                + " " + taskNameEdit.getText().toString() + " " + getResources().getString(R.string.endTimeMessage),
-                        getResources().getString(R.string.alarmExpandableText)
-                        ,0,//notif
+                String msg = getResources().getString(R.string.taskTime)
+                        + " " + taskNameEdit.getText().toString() + " " + getResources().getString(R.string.endTimeMessage);
+                String msg2 = getResources().getString(R.string.alarmExpandableText);
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    msg = getResources().getString(R.string.taskTime)
+                            + " " + taskNameEdit.getText().toString() + " " + getResources().getString(R.string.endTimeMessage);
+                    msg2 = getResources().getString(R.string.alarmExpandableText);
+                }
+                workId = Init.requestWork(getApplicationContext(), msg, msg2
+                        , 0,//notif
                         Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
                         endTimeReminderActions.getRemainDuration(), false, false) + ",";
             }
@@ -805,13 +906,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateSet(DatePickerDialogs view, int year, int monthOfYear, int dayOfMonth) {
         monthOfYear++;
         String date = year + "/"
                 + (monthOfYear < 10 ? "0" + monthOfYear : monthOfYear)
                 + "/" + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
         DateTime dateTime = new DateTime();
-        TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
+        TimePickerDialogs timePickerDialog = TimePickerDialogs.newInstance(
                 AddEditTaskActivity.this,
                 dateTime.getHourOfDay(),
                 dateTime.getMinuteOfHour(),
@@ -830,7 +931,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
+    public void onTimeSet(TimePickerDialogs view, int hourOfDay, int minute) {
         String time = " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
                 + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
         if (view.getTag().equals("startTimePickerDialog")) {
@@ -853,6 +954,80 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             Init.fadeVisibelityView(reminderTimeConstraint);
         }
     }
+
+    private DatePickerDialog.OnDateSetListener startDateListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            month++;
+            String date = year + "/"
+                    + (month < 10 ? "0" + month : month)
+                    + "/" + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
+            DateTime dateTime = new DateTime();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    AddEditTaskActivity.this, startTimeListener,
+                    dateTime.getHourOfDay(),
+                    dateTime.getMinuteOfHour(),
+                    true
+            );
+            startDatepickerVal = "";
+            startDatepickerVal += date;
+            timePickerDialog.show();
+            isReminerTimeChange = true;
+        }
+    };
+    private DatePickerDialog.OnDateSetListener endDateListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            month++;
+            String date = year + "/"
+                    + (month < 10 ? "0" + month : month)
+                    + "/" + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
+            DateTime dateTime = new DateTime();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    AddEditTaskActivity.this, endTimeListener,
+                    dateTime.getHourOfDay(),
+                    dateTime.getMinuteOfHour(),
+                    true
+            );
+            endDatepickerVal = "";
+            endDatepickerVal += date;
+            timePickerDialog.show();
+            isReminerTimeChange = true;
+        }
+    };
+
+    private TimePickerDialog.OnTimeSetListener startTimeListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            String time = " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
+                    + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
+            startDatepickerVal += time;
+            startTextVal.setText(startDatepickerVal);
+            startTextVal.setVisibility(View.VISIBLE);
+        }
+    };
+
+
+    private TimePickerDialog.OnTimeSetListener endTimeListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            String time = " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
+                    + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
+            endDatepickerVal += time;
+            endTextVal.setText(endDatepickerVal);
+            endTextVal.setVisibility(View.VISIBLE);
+            ArrayList<String> remindTimeArray = new ArrayList<>();
+            remindTimeArray.add(getString(R.string.dontRemind));
+            remindTimeArray.add(getString(R.string.remindInStartDate));
+            remindTimeArray.add(getString(R.string.remindInEndDate));
+            //@TODO change this translation
+            remindTimeArray.add(getString(R.string.remindInAdvance));
+            ArrayAdapter<String> remindTimeAdapter = new ArrayAdapter<>(AddEditTaskActivity.this,
+                    android.R.layout.simple_spinner_dropdown_item, remindTimeArray);
+            reminderTime.setAdapter(remindTimeAdapter);
+            Init.fadeVisibelityView(reminderTimeConstraint);
+        }
+    };
 
     @Override
     public void onClickRepeatType(String repeatType) {
@@ -880,11 +1055,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         } else {
             priorityVal.setVisibility(View.VISIBLE);
             priorityVal.setText(priorityType);
-            if (priorityVal.getText().toString().equals(getString(R.string.low))) {
+            if (priorityVal.getText().toString().equals(getString(R.string.low)) || priorityVal.getText().toString().equals(getString(R.string.low))) {
                 priorityIcon.setImageResource(R.drawable.ic_low_yellow_priority);
-            } else if (priorityVal.getText().toString().equals(getString(R.string.medium))) {
+            } else if (priorityVal.getText().toString().equals(getString(R.string.medium)) || priorityVal.getText().toString().equals(getString(R.string.medium))) {
                 priorityIcon.setImageResource(R.drawable.ic_medium_orange_priority);
-            } else if (priorityVal.getText().toString().equals(getString(R.string.high))) {
+            } else if (priorityVal.getText().toString().equals(getString(R.string.high)) || priorityVal.getText().toString().equals(getString(R.string.high))) {
                 priorityIcon.setImageResource(R.drawable.ic_high_green_priority);
             } else {
                 priorityIcon.setImageResource(R.drawable.ic_priority);
@@ -894,9 +1069,7 @@ public class AddEditTaskActivity extends AppCompatActivity implements
 
 
     public void setMasterTheme() {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(AddEditTaskActivity.this);
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(AddEditTaskActivity.this).isDarkTheme()) {
             setTheme(R.style.FeedActivityThemeDark);
             return;
         }

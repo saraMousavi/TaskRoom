@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 
 public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewHolder> {
@@ -87,9 +88,7 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.ViewH
     }
 
     public void setMasterTheme(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(context).isDarkTheme()) {
             context.setTheme(R.style.FeedActivityThemeDark);
             return;
         }

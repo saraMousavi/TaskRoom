@@ -17,7 +17,7 @@ import java.util.List;
 
 import ir.android.taskroom.R;
 
-public class YearPickerView extends ListView implements OnItemClickListener, DatePickerDialog.OnDateChangedListener {
+public class YearPickerView extends ListView implements OnItemClickListener, DatePickerDialogs.OnDateChangedListener {
     private static final String TAG = "YearPickerView";
 
     private final DatePickerController mController;

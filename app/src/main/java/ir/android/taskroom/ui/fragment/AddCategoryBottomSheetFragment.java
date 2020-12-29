@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.enums.ActionTypes;
@@ -41,7 +42,6 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     private RadioButton tempRadioButton = null;
     private Drawable TempDrawable;
     private String categoryImage = "ir.android.taskroom:drawable/ic_white_art";
-    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -141,8 +141,6 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     private void init() {
-        this.sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(getContext());
         insertCategoryBtn = this.inflatedView.findViewById(R.id.insertCategoryBtn);
         categoryTitle = this.inflatedView.findViewById(R.id.categoryTitle);
         category_image_1 = this.inflatedView.findViewById(R.id.category_image_1);
@@ -152,7 +150,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
         viewMap.put(insertCategoryBtn, true);
         views.add(viewMap);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Init.setViewBackgroundDependOnTheme(views, getContext(), sharedPreferences.getBoolean("NIGHT_MODE", false));
+            Init.setViewBackgroundDependOnTheme(views, getContext());
         }
         Bundle bundle = getArguments();
         if (bundle.getBoolean("isEditCategory")) {
@@ -200,7 +198,7 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public void setMasterTheme(Context context) {
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(context).isDarkTheme()) {
             context.setTheme(R.style.FeedActivityThemeDark);
             return;
         }

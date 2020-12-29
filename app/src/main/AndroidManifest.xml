@@ -3,11 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ir.android.taskroom">
 
+    <uses-permission
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
         android:name=".ui.activity.MyApplication"
@@ -15,13 +22,14 @@
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="q">
-        <activity android:name=".ui.activity.RecordingActivity"/>
+        <activity android:name=".ui.activity.LanguageActivity"></activity>
+        <activity android:name=".ui.activity.RecordingActivity" />
         <activity android:name=".ui.activity.DrawingActivity" />
         <activity android:name=".ui.activity.ImagePreviewActivity" />
         <activity android:name=".ui.activity.task.AddEditShortCutTaskActivity" />

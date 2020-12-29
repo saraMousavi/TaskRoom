@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.databinding.ReminderFragmentBinding;
 import ir.android.taskroom.ui.activity.reminder.AddEditReminderActivity;
@@ -136,10 +137,15 @@ public class ReminderFragment extends Fragment {
                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
                 }
                 reminderViewModel.delete(selectedReminder);
-
+                String successDeleteReminder = getString(R.string.successDeleteReminder);
+                if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                    successDeleteReminder = getString(R.string.successDeleteReminder);
+                }
                 Snackbar snackbar = Snackbar
-                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteReminder), Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), successDeleteReminder, Snackbar.LENGTH_LONG);
+                if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
             }
         }).attachToRecyclerView(reminderRecyclerView);
@@ -183,7 +189,11 @@ public class ReminderFragment extends Fragment {
                 View remindersEmptyPage = inflaterView.findViewById(R.id.remindersEmptyPage);
                 ConstraintLayout reminderLinear = inflaterView.findViewById(R.id.reminderLinear);
                 if (reminders.size() == 0) {
-                    Init.initShowCaseView(getContext(),firstAddReminderBtn, getString(R.string.enterFirstRemidner), ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue(), null);
+                    String enterFirstRemidner = getString(R.string.enterFirstRemidner);
+                    if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                        enterFirstRemidner = getString(R.string.enterFirstRemidner);
+                    }
+                    Init.initShowCaseView(getContext(),firstAddReminderBtn, enterFirstRemidner, ShowCaseSharePref.FIRST_REMINDER_GUIDE.getValue(), null);
                     remindersEmptyPage.setVisibility(View.VISIBLE);
                     reminderLinear.setVisibility(View.GONE);
                     addReminderBtn.setVisibility(View.GONE);
@@ -192,7 +202,12 @@ public class ReminderFragment extends Fragment {
                         @Override
                         public void run() {
                             if(isAdded()) {
-                                Init.initShowCaseView(getContext(), reminderRecyclerView.getChildAt(0), getString(R.string.editDeleteReminderGuide),
+
+                                String editDeleteReminderGuide = getString(R.string.editDeleteReminderGuide);
+                                if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                                    editDeleteReminderGuide = getString(R.string.editDeleteReminderGuide);
+                                }
+                                Init.initShowCaseView(getContext(), reminderRecyclerView.getChildAt(0), editDeleteReminderGuide,
                                         ShowCaseSharePref.EDIT_DELETE_REMINDER_GUIDE.getValue(), null);
                             }
                         }
@@ -217,15 +232,24 @@ public class ReminderFragment extends Fragment {
         firstAddReminderBtn = this.inflaterView.findViewById(R.id.firstAddReminderBtn);
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
+        if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+            firstAddReminderBtn.setText(getString(R.string.createNewReminder));
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_OK) {
+            String successInsertReminder = getString(R.string.successInsertReminder);
+            if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                successInsertReminder = getString(R.string.successInsertReminder);
+            }
             Snackbar snackbar = Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), successInsertReminder, Snackbar.LENGTH_LONG);
+            if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            }
             snackbar.show();
             reminderAdapter.notifyDataSetChanged();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
@@ -236,9 +260,15 @@ public class ReminderFragment extends Fragment {
             reminderViewModel.delete(reminders);
         }
         if (requestCode == EDIT_REMINDER_REQUEST && resultCode == RESULT_OK) {
+            String successEditReminder = getString(R.string.successEditReminder);
+            if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                successEditReminder = getString(R.string.successEditReminder);
+            }
             Snackbar snackbar = Snackbar
-                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditReminder), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), successEditReminder, Snackbar.LENGTH_LONG);
+            if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            }
             snackbar.show();
             reminderAdapter.notifyDataSetChanged();
         }

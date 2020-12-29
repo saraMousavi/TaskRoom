@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/languageTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:paddingStart="@dimen/_8sdp"
+        android:background="@drawable/bg_corner_shape_language"
+        android:text="@string/selectLanguage"
+        android:textColor="@color/white" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pink"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/englishLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/pink"
+            android:drawableLeft="@drawable/flag_english_icon"
+            android:text="@string/English"
+            android:textColor="@color/black"/>
+        <Button
+            android:id="@+id/persianLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/pink"
+            android:drawableLeft="@drawable/flag_persian_icon"
+            android:text="@string/Persian"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+</LinearLayout>

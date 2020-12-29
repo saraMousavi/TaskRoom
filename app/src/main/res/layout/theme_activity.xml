@@ -14,7 +14,6 @@
             android:id="@+id/themeGroup1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
             android:orientation="horizontal">
 
             <RadioButton
@@ -42,7 +41,6 @@
             android:id="@+id/themeGroup2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
             android:orientation="horizontal">
 
             <RadioButton
@@ -70,7 +68,6 @@
             android:id="@+id/themeGroup3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
             android:orientation="horizontal">
 
             <RadioButton

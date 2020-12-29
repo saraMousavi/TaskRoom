@@ -40,7 +40,6 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:hint="@string/taskTitle"
-                    android:layoutDirection="rtl"
                     android:textColorHint="@color/white"
                     app:hintTextColor="@color/white"
                     app:boxBackgroundColor="?colorPrimary">

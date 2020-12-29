@@ -1,10 +1,12 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.NumberPicker;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.work.impl.model.Preference;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -29,6 +32,7 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
     private Button priorityTypeBtn;
     private String[] priorityTypVal;
     private PriorityTypeClickListener priorityTypeClickListener;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -56,6 +60,7 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
     }
 
     private void init() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         priorityType = inflateView.findViewById(R.id.priorityType);
         //@TODO get value from PriorityType enum
         priorityTypVal = new String[]{getString(R.string.nonePriority),
@@ -66,7 +71,6 @@ public class TasksPriorityTypeBottomSheetFragment extends BottomSheetDialogFragm
         priorityType.setMinValue(0);
         priorityType.setMaxValue(3);
         priorityTypeBtn = inflateView.findViewById(R.id.priorityTypeBtn);
-
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(R.attr.textColor, typedValue, true);

@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
@@ -199,7 +200,7 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
     }
 
     public void setMasterTheme(Context context) {
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(context).isDarkTheme()) {
             context.setTheme(R.style.FeedActivityThemeDark);
             return;
         }

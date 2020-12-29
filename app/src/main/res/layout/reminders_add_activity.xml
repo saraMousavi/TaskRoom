@@ -37,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:hint="@string/reminderTitle"
-                    android:layoutDirection="rtl"
                     style="@style/TextInputLayoutStyle"
                     app:hintTextColor="@color/white"
                     android:textColorHint="@color/white"

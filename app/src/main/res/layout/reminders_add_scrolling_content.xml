@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="rtl"
     android:paddingBottom="50dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/reminders_add_activity">
@@ -12,14 +11,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="32dp">
+        android:padding="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/startDateConstraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="@+id/guideline10"
+                app:layout_constraintStart_toStartOf="@+id/guideline10"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
@@ -72,13 +70,20 @@
                 app:barrierDirection="top" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@id/startDateConstraint"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reminderTypeConstraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/reminderType"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="@+id/guideline13"
+                app:layout_constraintStart_toStartOf="@+id/guideline13"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <RadioGroup
@@ -133,12 +138,21 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@id/reminderTypeConstraint"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/repeatTypeConstraint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="@+id/guideline14"
+                app:layout_constraintStart_toStartOf="@+id/guideline14"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
@@ -187,12 +201,21 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@id/repeatTypeConstraint"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/eightRow"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -213,17 +236,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/active"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="@id/guideline15"
+                app:layout_constraintStart_toStartOf="@id/guideline15"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/reminders_active"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:switchMinWidth="56dp"
                 android:checked="true"
+                android:switchMinWidth="56dp"
                 android:textOff="@string/inactive"
-                android:textOn="@string/active" />
+                android:textOn="@string/active"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline15"
@@ -234,12 +258,21 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@id/eightRow"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/priorityTypeContraint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -288,13 +321,21 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintTop_toBottomOf="@id/priorityTypeContraint"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/uploadFileContraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:paddingTop="@dimen/_3sdp"
-            android:layoutDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -331,36 +372,36 @@
                 android:padding="@dimen/_3sdp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/attachedRecyclerView"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/cameraIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_8sdp"
-                    android:layout_marginRight="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
                     app:srcCompat="@drawable/ic_camera" />
 
                 <ImageView
                     android:id="@+id/storageIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     app:srcCompat="@drawable/ic_storage" />
 
                 <ImageView
                     android:id="@+id/recordIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     app:srcCompat="@drawable/ic_record" />
 
                 <ImageView
                     android:id="@+id/drawIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     app:srcCompat="@drawable/ic_draw" />
 
             </LinearLayout>
@@ -388,7 +429,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layoutDirection="rtl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -399,28 +439,28 @@
                 android:id="@+id/commentIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_black_comment"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_black_comment" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/editText"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:hintTextColor="?textColor"
                 android:textColorHint="?textColor"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="@id/guideline17"
+                app:hintTextColor="?textColor"
+                app:layout_constraintStart_toStartOf="@id/guideline17"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/reminderComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/textColor"
-                    android:hint="@string/addComment" />
+                    android:hint="@string/addComment"
+                    android:textColor="?attr/textColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

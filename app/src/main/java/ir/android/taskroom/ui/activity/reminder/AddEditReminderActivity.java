@@ -1,6 +1,7 @@
 package ir.android.taskroom.ui.activity.reminder;
 
 import android.Manifest;
+import android.app.TimePickerDialog;
 import android.app.job.JobScheduler;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -24,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +39,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -48,6 +52,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 //import com.imagepicker.FilePickUtils;
@@ -63,6 +68,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +76,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Attachments;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.data.db.factory.AttachmentsViewModelFactory;
@@ -82,8 +89,8 @@ import ir.android.taskroom.ui.fragment.TasksPriorityTypeBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatDayBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatTypeBottomSheetFragment;
+import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
-import ir.android.taskroom.utils.calender.TimePickerDialog;
 import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.AttachmentsViewModel;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
@@ -95,6 +102,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         , TasksRepeatPeriodBottomSheetFragment.RepeatPeriodClickListener
         , TasksPriorityTypeBottomSheetFragment.PriorityTypeClickListener {
     private TextInputEditText reminderNameEdit, reminderComment;
+    private TextInputLayout reminderName;
     private FloatingActionButton fabInsertReminders, fabInsertReminders2;
     private ConstraintLayout startDateConstraint,
             repeatTypeConstraint, priorityTypeContraint, uploadFileContraint,
@@ -208,13 +216,13 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 DateTime dateTime = new DateTime();
-                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
-                        AddEditReminderActivity.this,
+                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                        AddEditReminderActivity.this, AddEditReminderActivity.this,
                         dateTime.getHourOfDay(),
                         dateTime.getMinuteOfHour(),
                         true
                 );
-                timePickerDialog.show(getSupportFragmentManager(), "startTimePickerDialog");
+                timePickerDialog.show();
 
             }
         });
@@ -348,6 +356,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         fabInsertReminders = findViewById(R.id.fabInsertReminders);
         fabInsertReminders2 = findViewById(R.id.fabInsertReminders2);
         reminderNameEdit = findViewById(R.id.reminderNameEdit);
+        reminderName = findViewById(R.id.reminderName);
         reminderComment = findViewById(R.id.reminderComment);
         startDateConstraint = findViewById(R.id.startDateConstraint);
         reminderTime = findViewById(R.id.reminderTimeVal);
@@ -358,13 +367,19 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         drawIcon = findViewById(R.id.drawIcon);
         priorityIcon = findViewById(R.id.priorityIcon);
         //@TODO why hour and minute  has inversed in ui
-        reminderTime.setText(Init.getCurrentTime());
+        reminderTime.setText(EnglishInit.getCurrentTime());
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
         priorityVal = findViewById(R.id.priorityVal);
         reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);
         reminderTypeConstraint = findViewById(R.id.reminderTypeConstraint);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             reminderTypeConstraint.setVisibility(View.GONE);
+        }
+
+        if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                reminderTime.setTextAppearance(R.style.numberTextInput);
+            }
         }
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         repeatTypeConstraint = findViewById(R.id.repeatTypeConstraint);
@@ -374,7 +389,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminders_active = findViewById(R.id.reminders_active);
         attachedRecyclerView = findViewById(R.id.attachedRecyclerView);
         toolBarLayout = findViewById(R.id.toolbar_layout);
-        datepickerVal = Init.getCurrentTime();
+        datepickerVal = EnglishInit.getCurrentTime();
         RadioButton radioButton = reminderTypeGroup.findViewWithTag("notification");
         if (radioButton.isChecked()) {
             radioButton.setChecked(true);
@@ -392,8 +407,8 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         reminderNameEdit.setText(clickedReminder.getReminders_title());
         reminderTime.setText(clickedReminder.getReminders_time());
         priorityIcon.setImageResource(R.drawable.ic_priority);
-        String priorityStringVal = getString(R.string.nonePriority);
         priorityVal.setVisibility(View.VISIBLE);
+        String priorityStringVal = getString(R.string.nonePriority);
         if (clickedReminder.getReminders_priority() == 1) {
             priorityStringVal = getString(R.string.low);
             priorityIcon.setImageResource(R.drawable.ic_low_yellow_priority);
@@ -416,9 +431,15 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private void insertReminder() {
         if (reminderNameEdit.getText().toString().isEmpty()) {
+            String enterReminderName = getString(R.string.enterReminderName);
+            if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                enterReminderName = getString(R.string.enterReminderName);
+            }
             Snackbar snackbar = Snackbar
-                    .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterReminderName), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    .make(getWindow().getDecorView().findViewById(android.R.id.content), enterReminderName, Snackbar.LENGTH_LONG);
+            if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+            }
             snackbar.show();
             return;
         }
@@ -437,9 +458,15 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         if (isActive) {
             String id = createWorkRequest();
             if (id.equals("-1")) {
+                String validtimepast = getString(R.string.validtimepast);
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    validtimepast = getString(R.string.validtimepast);
+                }
                 Snackbar snackbar = Snackbar
-                        .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.validtimepast), Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        .make(getWindow().getDecorView().findViewById(android.R.id.content), validtimepast, Snackbar.LENGTH_LONG);
+                if (!SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
                 return;
             }
@@ -450,7 +477,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                 repeatTypeVal.getText().toString(), 0, isActive ? 1 : 0,
                 0, workID, attachmentsAdapter.getItemCount() > 0);
         if (!isActive) {
-            reminders.setReminders_update(Init.convertDateTimeToInteger(Init.getCurrentDateTimeWithSecond()));
+            reminders.setReminders_update(Init.convertDateTimeToInteger(EnglishInit.getCurrentDateTimeWithSecond()));
         }
 
         if (isEditActivity) {
@@ -464,12 +491,12 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             reminders.setReminders_crdate(Long.parseLong(clickedReminder.getReminders_crdate() / 1000000 + "" + reminderTime.getText().toString().replaceAll(":", "")));
         } else {
             if (getIntent().getExtras() == null) {
-                DateTime dateTime1 = Init.getCurrentDateTimeWithSecond();
-                DateTime crDate = Init.getTodayDateTimeWithSelectedTime(datepickerVal, 0, false);
+                DateTime dateTime1 = EnglishInit.getCurrentDateTimeWithSecond();
+                DateTime crDate = EnglishInit.getTodayDateTimeWithSelectedTime(datepickerVal, 0, false);
                 if (Integer.parseInt(datepickerVal.replaceAll(":", "")) < Integer.parseInt(dateTime1.getHourOfDay()
                         + "" + (dateTime1.getMinuteOfHour() < 10 ? "0" + dateTime1.getMinuteOfHour() : dateTime1.getMinuteOfHour()) +
                         "" + (dateTime1.getSecondOfMinute() < 10 ? "0" + dateTime1.getSecondOfMinute() : dateTime1.getSecondOfMinute()))) {
-                    crDate = Init.getTodayDateTimeWithSelectedTime(datepickerVal, 1, false);
+                    crDate = EnglishInit.getTodayDateTimeWithSelectedTime(datepickerVal, 1, false);
                 }
                 reminders.setReminders_crdate(Init.convertDateTimeToInteger(crDate));
             } else {
@@ -489,8 +516,8 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             Animation anim = new ScaleAnimation(
                     0, 1f, // Start and end values for the X axis scaling
                     1f, 1f, // Start and end values for the Y axis scaling
-                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
-                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+                    Animation.RELATIVE_TO_SELF, 1f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 0f); // Pivot point of Y scaling
             anim.setFillAfter(true); // Needed to keep the result of the animation
             anim.setDuration(500);
             uploadChoose.startAnimation(anim);
@@ -499,8 +526,8 @@ public class AddEditReminderActivity extends AppCompatActivity implements
             Animation anim = new ScaleAnimation(
                     1f, 0, // Start and end values for the X axis scaling
                     1f, 1f, // Start and end values for the Y axis scaling
-                    Animation.RELATIVE_TO_SELF, 0f, // Pivot point of X scaling
-                    Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+                    Animation.RELATIVE_TO_SELF, 1f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 0f); // Pivot point of Y scaling
             anim.setFillAfter(true); // Needed to keep the result of the animation
             anim.setDuration(500);
             uploadChoose.startAnimation(anim);
@@ -514,19 +541,16 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         if (tasksReminderActions.getRemainDuration() == -1) {
             return "-1";
         }
-        Toast.makeText(getApplicationContext(), getString(R.string.remindeTime) + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
+        String remindeTime = getString(R.string.remindeTime);
+        if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+            remindeTime = getString(R.string.remindeTime);
+        }
+        Toast.makeText(getApplicationContext(), remindeTime + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
         return Init.requestWork(getApplicationContext(), reminderNameEdit.getText().toString(), reminderComment.getText().toString(), reminderTypeVal,
                 Init.getWorkRequestPeriodicIntervalMillis(getResources(), repeatTypeVal.getText().toString()),
                 tasksReminderActions.getRemainDuration(), !repeatTypeVal.getText().toString().isEmpty(), true);
     }
 
-
-    @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute) {
-        datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay) + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
-        reminderTime.setText(datepickerVal);
-        isReminerTimeChange = true;
-    }
 
     @Override
     public void onClickRepeatType(String repeatType) {
@@ -567,9 +591,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     }
 
     public void setMasterTheme() {
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(AddEditReminderActivity.this);
-        if (sharedPreferences.getBoolean("NIGHT_MODE", false)) {
+        if (SettingUtil.getInstance(AddEditReminderActivity.this).isDarkTheme()) {
             setTheme(R.style.FeedActivityThemeDark);
             return;
         }
@@ -685,6 +707,13 @@ public class AddEditReminderActivity extends AppCompatActivity implements
                     break;
             }
         }
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay) + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
+        reminderTime.setText(datepickerVal);
+        isReminerTimeChange = true;
     }
 
     public interface ClickAddSubTaskListener {

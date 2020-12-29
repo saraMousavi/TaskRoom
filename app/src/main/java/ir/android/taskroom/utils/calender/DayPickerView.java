@@ -17,7 +17,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 
 public abstract class DayPickerView extends ListView implements AbsListView.OnScrollListener,
-        DatePickerDialog.OnDateChangedListener {
+        DatePickerDialogs.OnDateChangedListener {
 
     private static final String TAG = "MonthFragment";
 
