@@ -27,14 +27,12 @@ import android.widget.Button;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import net.vrgsoft.layoutmanager.RollingLayoutManager;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.databinding.ReminderFragmentBinding;
 import ir.android.taskroom.ui.activity.reminder.AddEditReminderActivity;

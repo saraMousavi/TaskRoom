@@ -1,7 +1,6 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
@@ -45,7 +43,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.data.db.entity.Tasks;

@@ -23,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
 import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;

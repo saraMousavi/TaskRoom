@@ -78,7 +78,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Attachments;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;

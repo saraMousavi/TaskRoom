@@ -20,7 +20,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.Locale;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;

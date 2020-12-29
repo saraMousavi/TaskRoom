@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;

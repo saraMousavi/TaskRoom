@@ -15,7 +15,6 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.view.ViewCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.enums.ActionTypes;

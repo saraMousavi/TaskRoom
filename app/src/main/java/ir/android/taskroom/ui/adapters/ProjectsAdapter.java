@@ -31,7 +31,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.ui.fragment.AddProjectBottomSheetFragment;

@@ -11,7 +11,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import java.util.List;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.utils.TypefaceUtil;
 import ir.android.taskroom.viewmodels.CategoryViewModel;

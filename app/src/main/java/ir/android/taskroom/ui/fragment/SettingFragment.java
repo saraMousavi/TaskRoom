@@ -26,12 +26,10 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
-import java.util.Set;
 
 import ir.android.taskroom.BuildConfig;
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
-import ir.android.taskroom.ui.activity.LanguageActivity;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.ui.activity.MainActivity;
 import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
 import ir.android.taskroom.ui.activity.category.CategoryActivity;

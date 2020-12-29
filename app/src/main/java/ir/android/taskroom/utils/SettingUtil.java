@@ -1,10 +1,8 @@
-package ir.android.taskroom;
+package ir.android.taskroom.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
-import ir.android.taskroom.utils.Constant;
 
 public class SettingUtil {
     private static SettingUtil instance = null;

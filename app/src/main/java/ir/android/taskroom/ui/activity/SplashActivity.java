@@ -6,22 +6,17 @@ import androidx.core.view.ViewCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
-import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
-import ir.android.taskroom.ui.dialog.LanguageDialog;
+import ir.android.taskroom.utils.SettingUtil;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

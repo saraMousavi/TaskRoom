@@ -19,10 +19,8 @@ import androidx.core.content.ContextCompat;
 import java.util.Locale;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
-import ir.android.taskroom.ui.activity.LanguageActivity;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.ui.activity.MainActivity;
-import ir.android.taskroom.ui.activity.SplashActivity;
 import ir.android.taskroom.ui.activity.setting.AboutAppActivity;
 
 public class LanguageDialog extends Dialog {

@@ -1,7 +1,6 @@
 package ir.android.taskroom.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -34,7 +33,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
 import ir.android.taskroom.data.db.entity.Reminders;
 import ir.android.taskroom.data.db.entity.Tasks;
 import ir.android.taskroom.ui.workers.AlarmWorker;

@@ -29,7 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
-import ir.android.taskroom.SettingUtil;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Tasks;
 import ir.android.taskroom.ui.fragment.SubTaskFragment;
 import ir.android.taskroom.utils.EnglishInit;
