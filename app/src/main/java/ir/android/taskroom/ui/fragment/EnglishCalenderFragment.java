@@ -1,10 +1,7 @@
 package ir.android.taskroom.ui.fragment;
 
 import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,19 +38,12 @@ import androidx.work.WorkManager;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
-import org.joda.time.Minutes;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -62,10 +51,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -91,7 +78,6 @@ import ir.android.taskroom.viewmodels.TaskViewModel;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.ACCOUNT_SERVICE;
 
 public class EnglishCalenderFragment extends Fragment {
     private static final String TAG = "TAG";
@@ -136,12 +122,8 @@ public class EnglishCalenderFragment extends Fragment {
             CalendarContract.Events.DTSTART,                  // 3
             CalendarContract.Events.EVENT_LOCATION                  // 3
     };
-
-    // The indices for the projection array above.
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
+    private boolean dateHasTask = false;
+    private boolean dateHasReminder = false;
 
 
     @Override
@@ -155,15 +137,17 @@ public class EnglishCalenderFragment extends Fragment {
         View view = inflater.inflate(R.layout.calender_english_fragment, container, false);
         this.inflater = view;
         init();
-        readCalendar(getContext());
-//        googleSignIn();
-//        getDataFromCalendarTable();
-        markDaysThatHaveTask();
-        markDaysThatHaveReminder();
+        if (checkRequestPermission()) {
+            readCalendar(getContext());
+        } else {
+            requestPermission();
+        }
+        markDaysThatHaveEvent();
         onClickListener();
         onTouchListener();
         Init.initShowCaseView(getContext(), this.inflater.findViewById(R.id.englishCalendar),
                 getString(R.string.seeListOfTaskAndReminderInCalender), "firstCalenderGuide", null);
+
         calendarView.setHeaderVisibility(0);
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
@@ -192,7 +176,23 @@ public class EnglishCalenderFragment extends Fragment {
         return view;
     }
 
-    private void markDaysThatHaveReminder() {
+    private void markDaysThatHaveEvent() {
+        taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
+            @Override
+            public void onChanged(List<Tasks> tasks) {
+                for (Tasks task : tasks) {
+                    TasksReminderActions tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(task, clickedDateTime, getResources());
+                    ArrayList<DateTime> markedDateTime = tasksReminderActions.getDateTimesThatShouldMarkInCalender();
+
+                    if (markedDateTime != null) {
+                        for (DateTime dateTime : markedDateTime) {
+                            dateHasTask = true;
+                            markSomeDays(dateTime);
+                        }
+                    }
+                }
+            }
+        });
         reminderViewModel.getAllReminders().observe(getViewLifecycleOwner(), new Observer<List<Reminders>>() {
 
             @Override
@@ -203,7 +203,8 @@ public class EnglishCalenderFragment extends Fragment {
 
                     if (markedDateTime != null) {
                         for (DateTime dateTime : markedDateTime) {
-                            markVerticalSomeDays(dateTime);
+                            dateHasReminder = true;
+                            markSomeDays(dateTime);
                         }
                     }
                 }
@@ -426,26 +427,6 @@ public class EnglishCalenderFragment extends Fragment {
         });
     }
 
-    /**
-     * mark days that have task(day that are between start date and end date of the task)
-     */
-    private void markDaysThatHaveTask() {
-        taskViewModel.getAllTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
-            @Override
-            public void onChanged(List<Tasks> tasks) {
-                for (Tasks task : tasks) {
-                    TasksReminderActions tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(task, clickedDateTime, getResources());
-                    ArrayList<DateTime> markedDateTime = tasksReminderActions.getDateTimesThatShouldMarkInCalender();
-
-                    if (markedDateTime != null) {
-                        for (DateTime dateTime : markedDateTime) {
-                            markSomeDays(dateTime);
-                        }
-                    }
-                }
-            }
-        });
-    }
 
     private void init() {
         this.sharedPreferences = PreferenceManager
@@ -474,29 +455,44 @@ public class EnglishCalenderFragment extends Fragment {
         clickedDateTime = EnglishInit.getCurrentDateWhitoutTime();
         disableBackground = inflater.findViewById(R.id.disableBackground);
 
+        if (!checkRequestPermission()) {
+            requestPermission();
+        }
+
         //Only main FAB is visible in the beginning
         closeSubMenusFab();
     }
 
-
-    public void markSomeDays(DateTime perChr) {
-        List<EventDay> events = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, perChr.getYear());
-        calendar.set(Calendar.MONTH, perChr.getMonthOfYear());
-        calendar.set(Calendar.DAY_OF_MONTH, perChr.getDayOfMonth());
-        events.add(new EventDay(calendar, R.drawable.ic_black_airport));
-        calendarView.setEvents(events);
+    private boolean checkRequestPermission() {
+        int read_calendar = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALENDAR);
+        int write_calendar = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR);
+        return read_calendar == PackageManager.PERMISSION_GRANTED && write_calendar == PackageManager.PERMISSION_GRANTED;
     }
 
-    public void markVerticalSomeDays(DateTime perChr) {
-        List<EventDay> events = new ArrayList<>();
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR
+        }, REQUEST_PERMISSION_CODE);
+    }
+
+
+    public void markSomeDays(DateTime perChr) {
+        List<EventDay> markEvents = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, perChr.getYear());
         calendar.set(Calendar.MONTH, perChr.getMonthOfYear() - 1);
         calendar.set(Calendar.DAY_OF_MONTH, perChr.getDayOfMonth());
-        events.add(new EventDay(calendar, R.drawable.ic_black_airport));
-        calendarView.setEvents(events);
+        if (dateHasTask && dateHasReminder) {
+            markEvents.add(new EventDay(calendar, R.drawable.ic_mark_reminder_task));
+        } else if (dateHasReminder) {
+            markEvents.add(new EventDay(calendar, R.drawable.ic_mark_reminder));
+        } else if (dateHasTask) {
+            markEvents.add(new EventDay(calendar, R.drawable.ic_mark_task));
+        }
+
+
+        calendarView.setEvents(markEvents);
     }
 
     private void closeSubMenusFab() {
