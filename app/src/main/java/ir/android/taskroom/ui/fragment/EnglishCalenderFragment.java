@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.view.LayoutInflater;
@@ -106,6 +107,9 @@ public class EnglishCalenderFragment extends Fragment {
     private TextView taskList, reminderList;
     private DateTime clickedDateTime = null;
     private CalendarView calendarView;
+    private ArrayList<DateTime> taskDateList = new ArrayList<>();
+    private ArrayList<DateTime> reminderDateList = new ArrayList<>();
+    private ArrayList<DateTime> reminderTaskDateList = new ArrayList<>();
 
     private ArrayList<Reminders> reminderCalenderList = new ArrayList<>();
 
@@ -122,8 +126,7 @@ public class EnglishCalenderFragment extends Fragment {
             CalendarContract.Events.DTSTART,                  // 3
             CalendarContract.Events.EVENT_LOCATION                  // 3
     };
-    private boolean dateHasTask = false;
-    private boolean dateHasReminder = false;
+    private List<EventDay> markEvents = new ArrayList<>();
 
 
     @Override
@@ -153,6 +156,9 @@ public class EnglishCalenderFragment extends Fragment {
             @Override
             public void onDayClick(EventDay eventDay) {
                 Calendar calendar = eventDay.getCalendar();
+                List<Calendar> selectedDate = new ArrayList<>();
+                selectedDate.add(calendar);
+                calendarView.setSelectedDates(selectedDate);
                 clickedDateTime = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), 0, 0);
                 if (taskList.getTag().equals("clicked")) {
                     initTaskRecyclerView();
@@ -186,8 +192,8 @@ public class EnglishCalenderFragment extends Fragment {
 
                     if (markedDateTime != null) {
                         for (DateTime dateTime : markedDateTime) {
-                            dateHasTask = true;
-                            markSomeDays(dateTime);
+                            DateTime newDateTime = new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth(), 0, 0);
+                            taskDateList.add(newDateTime);
                         }
                     }
                 }
@@ -200,16 +206,48 @@ public class EnglishCalenderFragment extends Fragment {
                 for (Reminders reminder : reminders) {
                     TasksReminderActions tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(reminder, clickedDateTime, getResources());
                     ArrayList<DateTime> markedDateTime = tasksReminderActions.getDateTimesThatShouldMarkInCalender();
-
                     if (markedDateTime != null) {
                         for (DateTime dateTime : markedDateTime) {
-                            dateHasReminder = true;
-                            markSomeDays(dateTime);
+                            DateTime newDateTime = new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth(), 0, 0);
+                            reminderDateList.add(newDateTime);
                         }
                     }
                 }
             }
         });
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean isBoth;
+                for (DateTime taskDateTime : taskDateList) {
+                    isBoth = false;
+                    for (DateTime reminderDateTime : reminderDateList) {
+                        if (taskDateTime.equals(reminderDateTime)) {
+                            reminderTaskDateList.add(taskDateTime);
+                            isBoth = true;
+                        }
+                    }
+                    if(!isBoth){
+                        markTaskDays(taskDateTime);
+                    }
+                }
+                isBoth = false;
+                for (DateTime reminderDateTime : reminderDateList) {
+                    for (DateTime taskDateTime : taskDateList) {
+                        if (taskDateTime.equals(reminderDateTime)) {
+                            reminderTaskDateList.add(taskDateTime);
+                            isBoth = true;
+                        }
+                    }
+                    if(!isBoth) {
+                        markRemindersDays(reminderDateTime);
+                    }
+                }
+                for (DateTime bothDateTime : reminderTaskDateList) {
+                    markTaskRemindersDays(bothDateTime);
+                }
+            }
+        }, 1000);
     }
 
     private void initTaskRecyclerView() {
@@ -475,21 +513,30 @@ public class EnglishCalenderFragment extends Fragment {
     }
 
 
-    public void markSomeDays(DateTime perChr) {
-        List<EventDay> markEvents = new ArrayList<>();
+    public void markTaskDays(DateTime perChr) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, perChr.getYear());
         calendar.set(Calendar.MONTH, perChr.getMonthOfYear() - 1);
         calendar.set(Calendar.DAY_OF_MONTH, perChr.getDayOfMonth());
-        if (dateHasTask && dateHasReminder) {
-            markEvents.add(new EventDay(calendar, R.drawable.ic_mark_reminder_task));
-        } else if (dateHasReminder) {
-            markEvents.add(new EventDay(calendar, R.drawable.ic_mark_reminder));
-        } else if (dateHasTask) {
-            markEvents.add(new EventDay(calendar, R.drawable.ic_mark_task));
-        }
+        markEvents.add(new EventDay(calendar, R.drawable.ic_mark_task));
+        calendarView.setEvents(markEvents);
+    }
 
+    public void markRemindersDays(DateTime perChr) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, perChr.getYear());
+        calendar.set(Calendar.MONTH, perChr.getMonthOfYear() - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, perChr.getDayOfMonth());
+        markEvents.add(new EventDay(calendar, R.drawable.ic_mark_reminder));
+        calendarView.setEvents(markEvents);
+    }
 
+    public void markTaskRemindersDays(DateTime perChr) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, perChr.getYear());
+        calendar.set(Calendar.MONTH, perChr.getMonthOfYear() - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, perChr.getDayOfMonth());
+        markEvents.add(new EventDay(calendar, R.drawable.ic_mark_reminder_task));
         calendarView.setEvents(markEvents);
     }
 
@@ -566,32 +613,6 @@ public class EnglishCalenderFragment extends Fragment {
         closeSubMenusFab();
     }
 
-    public void addCalendar() {
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(CalendarContract.Calendars.ACCOUNT_NAME, "cal@zoftino.com");
-        contentValues.put(CalendarContract.Calendars.ACCOUNT_TYPE, "cal.zoftino.com");
-        contentValues.put(CalendarContract.Calendars.NAME, "zoftino calendar");
-        contentValues.put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, "Zoftino.com Calendar");
-        contentValues.put(CalendarContract.Calendars.CALENDAR_COLOR, "232323");
-        contentValues.put(CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL, CalendarContract.Calendars.CAL_ACCESS_OWNER);
-        contentValues.put(CalendarContract.Calendars.OWNER_ACCOUNT, "cal@zoftino.com");
-        contentValues.put(CalendarContract.Calendars.ALLOWED_REMINDERS, "METHOD_ALERT, METHOD_EMAIL, METHOD_ALARM");
-        contentValues.put(CalendarContract.Calendars.ALLOWED_ATTENDEE_TYPES, "TYPE_OPTIONAL, TYPE_REQUIRED, TYPE_RESOURCE");
-        contentValues.put(CalendarContract.Calendars.ALLOWED_AVAILABILITY, "AVAILABILITY_BUSY, AVAILABILITY_FREE, AVAILABILITY_TENTATIVE");
-
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CALENDAR}, MY_CAL_WRITE_REQ);
-        }
-
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        uri = uri.buildUpon().appendQueryParameter(android.provider.CalendarContract.CALLER_IS_SYNCADAPTER, "true")
-                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, "cal@zoftino.com")
-                .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_TYPE, "cal.zoftino.com").build();
-        getContext().getContentResolver().insert(uri, contentValues);
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -612,29 +633,16 @@ public class EnglishCalenderFragment extends Fragment {
         Cursor cursor = null;
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = CalendarContract.EventsEntity.CONTENT_URI;
-        String myDate = "09/01/2019";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date date1 = null;
-        try {
-            date1 = sdf.parse(myDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long millis = date1.getTime();
         String selection = "(("
                 + CalendarContract.Events.ORGANIZER + " = ? ) or (" + CalendarContract.Events.ORGANIZER + " like '%@gmail.com'))";
-        System.out.println("millis = " + millis);
         String[] selectionArgs = new String[]{"Phone"};
 
 // Submit the query and get a Cursor object back.
         cursor = contentResolver.query(uri, CALENDAR_PROJECTION, selection, selectionArgs, null);
 
         try {
-            System.out.println("Count=" + cursor.getCount());
             if (cursor.getCount() > 0) {
-                System.out.println("the control is just inside of the cursor.count loop");
                 while (cursor.moveToNext()) {
-
                     String _id = cursor.getString(0);
                     String displayName = cursor.getString(1);
                     String accountName = cursor.getString(2);
@@ -655,6 +663,7 @@ public class EnglishCalenderFragment extends Fragment {
                     int hour = calendar.get(Calendar.HOUR_OF_DAY);
                     int minute = calendar.get(Calendar.MINUTE);
                     int second = calendar.get(Calendar.SECOND);
+                    reminderDateList.add(new DateTime(year, month, day, 0, 0));
                     reminders.setReminders_crdate(Long.parseLong(year + "" +
                             (month < 10 ? "0" + month : month) + ""
                             + (day < 10 ? "0" + day : day) + ""
@@ -670,142 +679,6 @@ public class EnglishCalenderFragment extends Fragment {
             e.printStackTrace();
         }
 
-
-        // For each calendar, display all the events from the previous week to the end of next week.
-//        for (String id : calendarIds) {
-//            Uri eventUri = CalendarContract.Events.CONTENT_URI;
-//            Uri.Builder builder = Uri.parse("content://com.android.calendar/instances/when").buildUpon();
-//            //Uri.Builder builder = Uri.parse("content://com.android.calendar/calendars").buildUpon();
-//            long now = new Date().getTime();
-//
-//            ContentUris.appendId(builder, now - DateUtils.DAY_IN_MILLIS * 10000);
-//            ContentUris.appendId(builder, now + DateUtils.DAY_IN_MILLIS * 10000);
-//            String eventSelection = "((" + CalendarContract.Events.ACCOUNT_NAME + " = ?))";
-//
-//            String[] eventselectionArgs = new String[]{"sara.mousavi.90@gmail.com"};
-//            Cursor eventCursor = contentResolver.query(eventUri,
-//                    EVENT_PROJECTION, eventSelection,
-//                    eventselectionArgs, null);
-//
-//            System.out.println("eventCursor count=" + eventCursor.getCount());
-//            if (eventCursor.getCount() > 0) {
-//
-//                if (eventCursor.moveToFirst()) {
-//                    do {
-//                        Object mbeg_date, beg_date, beg_time, end_date, end_time;
-//
-//                        final Integer _id = eventCursor.getInt(0);
-//                        final String title = eventCursor.getString(1);
-////                        final Date begin = new Date(eventCursor.getLong(1));
-////                        final Date end = new Date(eventCursor.getLong(2));
-////                        final Boolean allDay = !eventCursor.getString(3).equals("0");
-//
-//                        /*  System.out.println("Title: " + title + " Begin: " + begin + " End: " + end +
-//                                    " All Day: " + allDay);
-//                        */
-//                        System.out.println("ID:" + _id);
-//                        System.out.println("Title:" + title);
-////                        System.out.println("Begin:" + begin);
-////                        System.out.println("End:" + end);
-////                        System.out.println("All Day:" + allDay);
-//
-//                        /* the calendar control metting-begin events Respose  sub-string (starts....hare) */
-//
-////                        Pattern p = Pattern.compile(" ");
-////                        String[] items = p.split(begin.toString());
-////                        String scalendar_metting_beginday, scalendar_metting_beginmonth, scalendar_metting_beginyear, scalendar_metting_begindate, scalendar_metting_begintime, scalendar_metting_begingmt;
-////
-////                        scalendar_metting_beginday = items[0];
-////                        scalendar_metting_beginmonth = items[1];
-////                        scalendar_metting_begindate = items[2];
-////                        scalendar_metting_begintime = items[3];
-////                        scalendar_metting_begingmt = items[4];
-////                        scalendar_metting_beginyear = items[5];
-////
-////
-////                        String calendar_metting_beginday = scalendar_metting_beginday;
-////                        String calendar_metting_beginmonth = scalendar_metting_beginmonth.toString().trim();
-////
-////                        int calendar_metting_begindate = Integer.parseInt(scalendar_metting_begindate.trim());
-////
-////                        String calendar_metting_begintime = scalendar_metting_begintime.toString().trim();
-////                        String calendar_metting_begingmt = scalendar_metting_begingmt;
-////                        int calendar_metting_beginyear = Integer.parseInt(scalendar_metting_beginyear.trim());
-////
-////
-////                        System.out.println("calendar_metting_beginday=" + calendar_metting_beginday);
-////
-////                        System.out.println("calendar_metting_beginmonth =" + calendar_metting_beginmonth);
-////
-////                        System.out.println("calendar_metting_begindate =" + calendar_metting_begindate);
-////
-////                        System.out.println("calendar_metting_begintime=" + calendar_metting_begintime);
-////
-////                        System.out.println("calendar_metting_begingmt =" + calendar_metting_begingmt);
-////
-////                        System.out.println("calendar_metting_beginyear =" + calendar_metting_beginyear);
-////
-////                        /* the calendar control metting-begin events Respose  sub-string (starts....ends) */
-////
-////                        /* the calendar control metting-end events Respose  sub-string (starts....hare) */
-////
-////                        Pattern p1 = Pattern.compile(" ");
-////                        String[] enditems = p.split(end.toString());
-////                        String scalendar_metting_endday, scalendar_metting_endmonth, scalendar_metting_endyear, scalendar_metting_enddate, scalendar_metting_endtime, scalendar_metting_endgmt;
-////
-////                        scalendar_metting_endday = enditems[0];
-////                        scalendar_metting_endmonth = enditems[1];
-////                        scalendar_metting_enddate = enditems[2];
-////                        scalendar_metting_endtime = enditems[3];
-////                        scalendar_metting_endgmt = enditems[4];
-////                        scalendar_metting_endyear = enditems[5];
-////
-////
-////                        String calendar_metting_endday = scalendar_metting_endday;
-////                        String calendar_metting_endmonth = scalendar_metting_endmonth.toString().trim();
-////
-////                        int calendar_metting_enddate = Integer.parseInt(scalendar_metting_enddate.trim());
-////
-////                        String calendar_metting_endtime = scalendar_metting_endtime.toString().trim();
-////                        String calendar_metting_endgmt = scalendar_metting_endgmt;
-////                        int calendar_metting_endyear = Integer.parseInt(scalendar_metting_endyear.trim());
-////
-////
-////                        System.out.println("calendar_metting_beginday=" + calendar_metting_endday);
-////
-////                        System.out.println("calendar_metting_beginmonth =" + calendar_metting_endmonth);
-////
-////                        System.out.println("calendar_metting_begindate =" + calendar_metting_enddate);
-////
-////                        System.out.println("calendar_metting_begintime=" + calendar_metting_endtime);
-////
-////                        System.out.println("calendar_metting_begingmt =" + calendar_metting_endgmt);
-////
-////                        System.out.println("calendar_metting_beginyear =" + calendar_metting_endyear);
-////
-////                        /* the calendar control metting-end events Respose  sub-string (starts....ends) */
-////
-////                        System.out.println("only date begin of events=" + begin.getDate());
-////                        System.out.println("only begin time of events=" + begin.getHours() + ":" + begin.getMinutes() + ":" + begin.getSeconds());
-////
-////
-////                        System.out.println("only date begin of events=" + end.getDate());
-////                        System.out.println("only begin time of events=" + end.getHours() + ":" + end.getMinutes() + ":" + end.getSeconds());
-////
-////                        beg_date = begin.getDate();
-////                        mbeg_date = begin.getDate() + "/" + calendar_metting_beginmonth + "/" + calendar_metting_beginyear;
-////                        beg_time = begin.getHours();
-////
-////                        System.out.println("the vaule of mbeg_date=" + mbeg_date.toString().trim());
-////                        end_date = end.getDate();
-////                        end_time = end.getHours();
-//
-//                    }
-//                    while (eventCursor.moveToNext());
-//                }
-//            }
-//            break;
-//        }
     }
 
 

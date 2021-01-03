@@ -107,7 +107,11 @@ public class SettingFragment extends Fragment {
                     sendIntent.setAction(Intent.ACTION_SEND);
                     String shareMessage = getString(R.string.app_name);
                     shareMessage += "\n" + getString(R.string.shareSubject) + "\n\n";
-                    shareMessage += "http://cafebazaar.ir/app/" + BuildConfig.APPLICATION_ID + "/?l=fa\n\n";
+                    if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
+                        shareMessage += "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
+                    } else {
+                        shareMessage += "http://cafebazaar.ir/app/" + BuildConfig.APPLICATION_ID + "/?l=fa\n\n";
+                    }
                     sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     sendIntent.setType("text/plain");
                     startActivity(Intent.createChooser(sendIntent, "choose one"));

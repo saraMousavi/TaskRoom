@@ -3,14 +3,7 @@
     <item>
         <bitmap
             android:gravity="top|left"
-            android:tint="@color/priority_yellow"
+            android:tint="@color/theme_page_blue"
             android:src="@drawable/ic_dot" />
-    </item>
-
-    <item android:left="15dp">
-        <bitmap
-            android:gravity="right"
-            android:tint="@color/red"
-            android:src="@drawable/ic_dot"/>
     </item>
 </layer-list>
