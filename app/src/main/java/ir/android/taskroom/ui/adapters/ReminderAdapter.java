@@ -83,6 +83,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     remindertime.setTextAppearance(R.style.numberTextInput);
+                    remindertime.setTextSize(mFragmentActivity.getResources().getDimension(R.dimen._15ssp));
                 }
             }
             remindersRepeat = itemView.findViewById(R.id.reminders_repeat);
@@ -185,9 +186,6 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
                 String workId = cancelOrCreateRequest(getReminderAt(position), isChecked);
                 if (workId.equals("-1")) {
                     String validtimepast = mFragmentActivity.getString(R.string.validtimepast);
-                    if (SettingUtil.getInstance(context).isEnglishLanguage()) {
-                        validtimepast = mFragmentActivity.getString(R.string.validtimepast);
-                    }
                     Snackbar snackbar = Snackbar
                             .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), validtimepast, Snackbar.LENGTH_LONG);
                     if (!SettingUtil.getInstance(context).isEnglishLanguage()) {
@@ -216,9 +214,6 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
                 return "-1";
             }
             String remindeTime = mFragmentActivity.getString(R.string.remindeTime);
-            if (SettingUtil.getInstance(context).isEnglishLanguage()) {
-                remindeTime = mFragmentActivity.getString(R.string.remindeTime);
-            }
             Toast.makeText(mFragmentActivity.getApplicationContext(), remindeTime + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
             return Init.requestWork(mFragmentActivity.getApplicationContext(), reminders.getReminders_title(), reminders.getReminders_comment(), reminders.getReminders_type(),
                     Init.getWorkRequestPeriodicIntervalMillis(mFragmentActivity.getResources(), reminders.getReminders_repeatedday()),
