@@ -1,13 +1,20 @@
 package ir.android.taskroom.ui.fragment;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +24,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -46,12 +56,14 @@ import org.joda.time.Interval;
 
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -113,6 +125,17 @@ public class CalenderFragment extends Fragment {
     //boolean flag to know if main FAB is in open or closed state.
     private boolean fabExpanded = false;
     private FrameLayout disableBackground;
+    private static final int REQUEST_PERMISSION_CODE = 420;
+    // Projection array. Creating indices for this array instead of doing
+// dynamic lookups improves performance.
+    public static final String[] CALENDAR_PROJECTION = new String[]{
+            CalendarContract.Events._ID,                           // 0
+            CalendarContract.Events.TITLE,                  // 1
+            CalendarContract.Events.ORGANIZER,         // 2
+            CalendarContract.Events.DTSTART,                  // 3
+            CalendarContract.Events.EVENT_LOCATION                  // 3
+    };
+    private ArrayList<Reminders> reminderCalenderList = new ArrayList<>();
 
 
     @Override
@@ -126,6 +149,11 @@ public class CalenderFragment extends Fragment {
         View view = inflater.inflate(R.layout.calender_fragment, container, false);
         this.inflater = view;
         init();
+        if (checkRequestPermission()) {
+            readCalendar(getContext());
+        } else {
+            requestPermission();
+        }
         markDaysThatHaveTask();
         markDaysThatHaveReminder();
         onClickListener();
@@ -233,8 +261,24 @@ public class CalenderFragment extends Fragment {
                 @Override
                 public void onChanged(List<Reminders> reminders) {
                     List<Reminders> filterReminders = new ArrayList<>();
+                    for (Reminders reminder : reminderCalenderList) {
+                        if (reminder.getReminders_crdate() / 10000000000L > 2000) {
+                            CalendarTool calendarTool = new CalendarTool();
+                            calendarTool.setGregorianDate(clickedDateTime.getYear(), clickedDateTime.getMonthOfYear(), clickedDateTime.getDayOfMonth());
+                            clickedDateTime = new DateTime(Integer.parseInt(calendarTool.getIranianDate().split("/")[0]),
+                                    Integer.parseInt(calendarTool.getIranianDate().split("/")[1]),
+                                    Integer.parseInt(calendarTool.getIranianDate().split("/")[2]), 0, 0);
+                        } else {
+                            clickedDateTime = tempClickDateTime;
+                        }
+                        TasksReminderActions tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(reminder, clickedDateTime, getResources());
+                        if (tasksReminderActions.isInRecyclerView()) {
+                            filterReminders.add(reminder);
+                        }
+                        clickedDateTime = tempClickDateTime;
+                    }
                     for (Reminders reminder : reminders) {
-                        if (reminder.getReminders_crdate()/10000000000L > 2000) {
+                        if (reminder.getReminders_crdate() / 10000000000L > 2000) {
                             CalendarTool calendarTool = new CalendarTool();
                             calendarTool.setIranianDate(clickedDateTime.getYear(), clickedDateTime.getMonthOfYear(), clickedDateTime.getDayOfMonth());
                             clickedDateTime = new DateTime(Integer.parseInt(calendarTool.getGregorianDate().split("/")[0]),
@@ -443,6 +487,10 @@ public class CalenderFragment extends Fragment {
         clickedDateTime = EnglishInit.getCurrentDateWhitoutTime();
         disableBackground = inflater.findViewById(R.id.disableBackground);
 
+        if (!checkRequestPermission()) {
+            requestPermission();
+        }
+
         //Only main FAB is visible in the beginning
         closeSubMenusFab();
     }
@@ -543,5 +591,85 @@ public class CalenderFragment extends Fragment {
             snackbar.show();
         }
         closeSubMenusFab();
+    }
+
+    private boolean checkRequestPermission() {
+        int read_calendar = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALENDAR);
+        int write_calendar = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR);
+        return read_calendar == PackageManager.PERMISSION_GRANTED && write_calendar == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR
+        }, REQUEST_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.permissionDenied), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+
+    private void readCalendar(Context context) {
+
+        Cursor cursor = null;
+        ContentResolver contentResolver = context.getContentResolver();
+        Uri uri = CalendarContract.EventsEntity.CONTENT_URI;
+        String selection = "(("
+                + CalendarContract.Events.ORGANIZER + " = ? ) or (" + CalendarContract.Events.ORGANIZER + " like '%@gmail.com'))";
+        String[] selectionArgs = new String[]{"Phone"};
+
+// Submit the query and get a Cursor object back.
+        cursor = contentResolver.query(uri, CALENDAR_PROJECTION, selection, selectionArgs, null);
+
+        try {
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    String _id = cursor.getString(0);
+                    String displayName = cursor.getString(1);
+                    String accountName = cursor.getString(2);
+                    String date = cursor.getString(3);
+                    String type = cursor.getString(4);
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+
+                    // Create a calendar object that will convert the date and time value in milliseconds to date.
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(Long.parseLong(date));
+                    Reminders reminders = new Reminders(0, "",
+                            calendar.get(Calendar.HOUR_OF_DAY) +
+                                    ":" + calendar.get(Calendar.MINUTE)
+                                    + ":" + calendar.get(Calendar.SECOND), 0, displayName, "", 0, 1, 0, "", false);
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH) + 1;
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    int second = calendar.get(Calendar.SECOND);
+                    markVerticalSomeDays(new DateTime(year, month, day, 0, 0));
+                    reminders.setReminders_crdate(Long.parseLong(year + "" +
+                            (month < 10 ? "0" + month : month) + ""
+                            + (day < 10 ? "0" + day : day) + ""
+                            + (hour < 10 ? "0" + hour : hour) + ""
+                            + (minute < 10 ? "0" + minute : minute) + ""
+                            + (second < 10 ? "0" + second : second)));
+                    reminderCalenderList.add(reminders);
+                }
+            }
+        } catch (AssertionError ex) {
+            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
