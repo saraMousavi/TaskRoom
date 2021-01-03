@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.ui.activity.category.CategoryActivity;
 import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.entity.Subtasks;
@@ -137,7 +138,9 @@ public class SubTasksAdapter extends ListAdapter<Subtasks, RecyclerView.ViewHold
                         Snackbar snackbar = Snackbar
                                 .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content),
                                         mFragmentActivity.getString(R.string.enterSubTaskName), Snackbar.LENGTH_LONG);
-                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        if(!SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
+                            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        }
                         snackbar.show();
                         return;
                     }

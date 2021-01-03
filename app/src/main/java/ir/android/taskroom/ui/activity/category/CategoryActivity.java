@@ -81,7 +81,9 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                 if (category.getCategory_id() < 4) {
                     Snackbar snackbar = Snackbar
                             .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantEditDefaultCategory), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    if(!SettingUtil.getInstance(CategoryActivity.this).isEnglishLanguage()) {
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    }
                     snackbar.show();
                     return;
                 }
@@ -110,7 +112,9 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                 if (selectedCategory.getCategory_id() < 4) {
                     Snackbar snackbar = Snackbar
                             .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.cantDeleteDefaultCategory), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    if(!SettingUtil.getInstance(CategoryActivity.this).isEnglishLanguage()) {
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    }
                     snackbar.show();
                     categoryAdapter.notifyDataSetChanged();
                     return;
@@ -124,7 +128,9 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                             if (project.getCategory_id().equals(selectedCategory.getCategory_id())) {
                                 Snackbar snackbar = Snackbar
                                         .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstDeleteProjectsInCategory), Snackbar.LENGTH_LONG);
-                                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                                if(!SettingUtil.getInstance(CategoryActivity.this).isEnglishLanguage()) {
+                                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                                }
                                 snackbar.show();
                                 categoryAdapter.notifyDataSetChanged();
                                 return;
@@ -134,7 +140,9 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                         categoryViewModel.delete(selectedCategory);
                         Snackbar snackbar = Snackbar
                                 .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteCategory), Snackbar.LENGTH_LONG);
-                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        if(!SettingUtil.getInstance(CategoryActivity.this).isEnglishLanguage()) {
+                            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        }
                         snackbar.show();
                     }
                 });
@@ -186,14 +194,18 @@ public class CategoryActivity extends AppCompatActivity implements AddCategoryBo
                 categoryViewModel.insert(category);
                 Snackbar snackbar = Snackbar
                         .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertCategory), Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                if(!SettingUtil.getInstance(CategoryActivity.this).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
                 break;
             case EDIT:
                 categoryViewModel.update(category);
                 Snackbar snackbar1 = Snackbar
                         .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditCategory), Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar1.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                if(!SettingUtil.getInstance(CategoryActivity.this).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar1.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar1.show();
                 break;
         }

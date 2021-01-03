@@ -17,6 +17,7 @@ import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
 import ir.android.taskroom.data.db.factory.ProjectsViewModelFactory;
 import ir.android.taskroom.ui.activity.MainActivity;
+import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
 
 public class AddEditShortCutTaskActivity extends AppCompatActivity {
@@ -33,7 +34,9 @@ public class AddEditShortCutTaskActivity extends AppCompatActivity {
                 if(projects.size() == 0){
                     Snackbar snackbar = Snackbar
                             .make(getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.firstdefineProject), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    if(!SettingUtil.getInstance(AddEditShortCutTaskActivity.this).isEnglishLanguage()) {
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    }
                     snackbar.show();
                     new Handler().postDelayed(new Runnable() {
                         @Override

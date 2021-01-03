@@ -337,7 +337,6 @@ public class EnglishCalenderFragment extends Fragment {
                     }
                     Snackbar snackbar = Snackbar
                             .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteTask), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
                     snackbar.show();
                 } else if (reminderList.getTag().equals("clicked")) {
                     Reminders selectedReminder = reminderAdapter.getReminderAt(viewHolder.getAdapterPosition());
@@ -351,7 +350,6 @@ public class EnglishCalenderFragment extends Fragment {
                     }
                     Snackbar snackbar = Snackbar
                             .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteReminder), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
                     snackbar.show();
                 }
             }
@@ -528,7 +526,6 @@ public class EnglishCalenderFragment extends Fragment {
         if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_OK) {
             Snackbar snackbar = Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertReminder), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
             snackbar.show();
         } else if (requestCode == ADD_REMINDER_REQUEST && resultCode == RESULT_CANCELED) {
             Reminders reminders = new Reminders(0, "", "",
@@ -540,7 +537,6 @@ public class EnglishCalenderFragment extends Fragment {
         if (requestCode == EDIT_REMINDER_REQUEST && resultCode == RESULT_OK) {
             Snackbar snackbar = Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditReminder), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
             snackbar.show();
             reminderAdapter.notifyDataSetChanged();
         }
@@ -551,7 +547,6 @@ public class EnglishCalenderFragment extends Fragment {
             projectViewModel.update(projects);
             Snackbar snackbar = Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successInsertTask), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
             snackbar.show();
         } else if (requestCode == ADD_TASK_REQUEST && resultCode == RESULT_CANCELED) {
             if (selectedProject != null) {
@@ -566,7 +561,6 @@ public class EnglishCalenderFragment extends Fragment {
             tasksAdapter.notifyDataSetChanged();
             Snackbar snackbar = Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successEditTask), Snackbar.LENGTH_LONG);
-            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
             snackbar.show();
         }
         closeSubMenusFab();

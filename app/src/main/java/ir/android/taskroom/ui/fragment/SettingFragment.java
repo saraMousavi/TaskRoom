@@ -155,7 +155,9 @@ public class SettingFragment extends Fragment {
                 Snackbar snackbar = Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content),
                                 getActivity().getString(R.string.successActiveUserGuide), Snackbar.LENGTH_SHORT);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
                 return;
             }

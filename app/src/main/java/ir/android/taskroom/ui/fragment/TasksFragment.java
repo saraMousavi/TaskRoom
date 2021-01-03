@@ -168,12 +168,11 @@ public class TasksFragment extends Fragment {
                     }
                 }
                 String deleteSnackBar = getString(R.string.successDeleteTask);
-                if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
-                    deleteSnackBar = getString(R.string.successDeleteTask);
-                }
                 Snackbar snackbar = Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), deleteSnackBar, Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(),ViewCompat.LAYOUT_DIRECTION_RTL);
+                if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
             }
         }).attachToRecyclerView(taskRecyclerView);
@@ -191,9 +190,6 @@ public class TasksFragment extends Fragment {
         projectViewModel = ViewModelProviders.of(this, projectFactory).get(ProjectViewModel.class);
         taskRecyclerView = this.inflatedView.findViewById(R.id.recyclerView);
         firstAddTaskBtn = this.inflatedView.findViewById(R.id.firstAddTaskBtn);
-        if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
-            firstAddTaskBtn.setText(getString(R.string.createNewTask));
-        }
         taskAdapter = new TasksAdapter(taskViewModel, getActivity(), getFragmentManager());
         addTaskBtn = getActivity().findViewById(R.id.addTaskBtn);
     }
@@ -216,10 +212,6 @@ public class TasksFragment extends Fragment {
                 tasksNum = tasks.size();
                 String addTaskBtnPersian = getString(R.string.enterFirstTaskGuide);
                 String deleteTaskBtnPersian = getString(R.string.editDeleteTaskGuide);
-                if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
-                    addTaskBtnPersian = getString(R.string.enterFirstTaskGuide);
-                    deleteTaskBtnPersian = getString(R.string.editDeleteTaskGuide);
-                }
                 if (tasksNum == 0) {
                     taskList.setVisibility(View.GONE);
                     taskEmptyList.setVisibility(View.VISIBLE);
@@ -251,9 +243,6 @@ public class TasksFragment extends Fragment {
             projectViewModel.update(projects);
             taskAdapter.notifyDataSetChanged();
             String insertSnackBar = getString(R.string.successInsertTask);
-            if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
-                insertSnackBar = getString(R.string.successInsertTask);
-            }
             Snackbar snackbar = Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), insertSnackBar , Snackbar.LENGTH_LONG);
             if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()){
@@ -270,9 +259,6 @@ public class TasksFragment extends Fragment {
         if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
             taskAdapter.notifyDataSetChanged();
             String editSnackBar = getString(R.string.successEditTask);
-            if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
-                editSnackBar = getString(R.string.successEditTask);
-            }
             Snackbar snackbar = Snackbar
                     .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), editSnackBar, Snackbar.LENGTH_LONG);
             if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {

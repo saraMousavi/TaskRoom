@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.ui.activity.category.CategoryActivity;
 import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Category;
 import ir.android.taskroom.utils.Init;
@@ -173,7 +174,9 @@ public class AddCategoryBottomSheetFragment extends BottomSheetDialogFragment {
                     if (categoryTitle.getText().toString().isEmpty()) {
                         Snackbar snackbar = Snackbar
                                 .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.enterCategoryName), Snackbar.LENGTH_LONG);
-                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                        }
                         snackbar.show();
                         return;
                     }

@@ -213,11 +213,7 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
             }
         });
         projectRecyclerView.setAdapter(projectsAdapter);
-        boolean isRtl = true;
-        if (SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
-            isRtl = false;
-        }
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, isRtl);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         projectRecyclerView.setLayoutManager(layoutManager);
     }
 
@@ -292,7 +288,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
 
                 Snackbar snackbar = Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar.show();
                 break;
             case EDIT:
@@ -300,7 +298,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
                 msg = getString(R.string.successUpdateProject);
                 Snackbar snackbar1 = Snackbar
                         .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
-                ViewCompat.setLayoutDirection(snackbar1.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+                    ViewCompat.setLayoutDirection(snackbar1.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                }
                 snackbar1.show();
                 break;
             case DELETE:
@@ -340,7 +340,9 @@ public class ProjectsFragment extends Fragment implements AddProjectBottomSheetF
         String undo = getString(R.string.undo);
         Snackbar snackbar = Snackbar
                 .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), deleteProjectSnackbar, Snackbar.LENGTH_LONG);
-        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+        if(!SettingUtil.getInstance(getContext()).isEnglishLanguage()) {
+            ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+        }
         snackbar.show();
         snackbar.setAction(undo, new View.OnClickListener() {
 
