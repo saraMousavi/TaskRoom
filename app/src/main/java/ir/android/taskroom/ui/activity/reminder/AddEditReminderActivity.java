@@ -69,6 +69,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Attachments;
 import ir.android.taskroom.data.db.entity.Reminders;
@@ -529,7 +530,12 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     private String createWorkRequest() {
         Reminders reminders = new Reminders(0, "", reminderTime.getText().toString(), 0, "", repeatTypeVal.getText().toString(), 0, 0, 0, "", false);
-        TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, calenderClickedDate, getResources());
+        TasksReminderActions tasksReminderActions = null;
+        if(SettingUtil.getInstance(AddEditReminderActivity.this).isEnglishLanguage()){
+            tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(reminders, calenderClickedDate, getResources());
+        } else {
+            tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, calenderClickedDate, getResources());
+        }
         if (tasksReminderActions.getRemainDuration() == -1) {
             return "-1";
         }

@@ -859,7 +859,13 @@ public class AddEditTaskActivity extends AppCompatActivity implements
                 reminderTypeVal, 2, "",
                 endTextVal.getText().toString(), 1, tasksComment.getText().toString(),
                 "", attachmentsAdapter.getItemCount() > 0, completedDate.getText().toString());
-        TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(tasks, calenderClickedDate, getResources());
+        TasksReminderActions tasksReminderActions = null;
+        if (SettingUtil.getInstance(AddEditTaskActivity.this).isEnglishLanguage()) {
+            tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(tasks, calenderClickedDate, getResources());
+        } else {
+            tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(tasks, calenderClickedDate, getResources());
+        }
+
 
         if (tasksReminderActions.getRemainDuration() == -1) {
             return "-1";
@@ -884,7 +890,12 @@ public class AddEditTaskActivity extends AppCompatActivity implements
             Toast.makeText(getApplicationContext(), remindeTime + tasksReminderActions.getRemainTime(), Toast.LENGTH_LONG).show();
             String workId = "";
             if (!tasks.getTasks_enddate().isEmpty() && !tasks.getTasks_repeateddays().isEmpty() && tasks.getTasks_iscompleted() == 0) {
-                TasksReminderActions endTimeReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(endTimeTask, calenderClickedDate, getResources());
+                TasksReminderActions endTimeReminderActions = null;
+                if(SettingUtil.getInstance(AddEditTaskActivity.this).isEnglishLanguage()){
+                    endTimeReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(endTimeTask, calenderClickedDate, getResources());
+                } else {
+                    endTimeReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(endTimeTask, calenderClickedDate, getResources());
+                }
                 String msg = getResources().getString(R.string.taskTime)
                         + " " + taskNameEdit.getText().toString() + " " + getResources().getString(R.string.endTimeMessage);
                 String msg2 = getResources().getString(R.string.alarmExpandableText);
