@@ -83,7 +83,7 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
             if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     remindertime.setTextAppearance(R.style.numberTextInput);
-                    remindertime.setTextSize(mFragmentActivity.getResources().getDimension(R.dimen._15ssp));
+                    remindertime.setTextSize(mFragmentActivity.getResources().getDimension(R.dimen._13ssp));
                 }
             }
             remindersRepeat = itemView.findViewById(R.id.reminders_repeat);

@@ -2,6 +2,7 @@ package ir.android.taskroom.ui.activity.reminder;
 
 import android.Manifest;
 import android.app.TimePickerDialog;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
@@ -84,12 +86,13 @@ import ir.android.taskroom.ui.fragment.TasksRepeatPeriodBottomSheetFragment;
 import ir.android.taskroom.ui.fragment.TasksRepeatTypeBottomSheetFragment;
 import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
+import ir.android.taskroom.utils.calender.TimePickerDialogs;
 import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.AttachmentsViewModel;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
 
 public class AddEditReminderActivity extends AppCompatActivity implements
-        TimePickerDialog.OnTimeSetListener
+        TimePickerDialogs.OnTimeSetListener
         , TasksRepeatTypeBottomSheetFragment.RepeatTypeClickListener
         , TasksRepeatDayBottomSheetFragment.RepeatDayClickListener
         , TasksRepeatPeriodBottomSheetFragment.RepeatPeriodClickListener
@@ -208,14 +211,25 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         startDateConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateTime dateTime = new DateTime();
-                TimePickerDialog timePickerDialog = new TimePickerDialog(
-                        AddEditReminderActivity.this, AddEditReminderActivity.this,
-                        dateTime.getHourOfDay(),
-                        dateTime.getMinuteOfHour(),
-                        true
-                );
-                timePickerDialog.show();
+                if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+                    DateTime dateTime = new DateTime();
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(
+                            AddEditReminderActivity.this, startTimeListener,
+                            dateTime.getHourOfDay(),
+                            dateTime.getMinuteOfHour(),
+                            true
+                    );
+                    timePickerDialog.show();
+                } else {
+                    DateTime dateTime = new DateTime();
+                    TimePickerDialogs timePickerDialog = TimePickerDialogs.newInstance(
+                            AddEditReminderActivity.this,
+                            dateTime.getHourOfDay(),
+                            dateTime.getMinuteOfHour(),
+                            true
+                    );
+                    timePickerDialog.show(getSupportFragmentManager(), "startTimePickerDialog");
+                }
 
             }
         });
@@ -474,6 +488,13 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
 
         if (isEditActivity) {
+            if(tempReminderID >= 1000){
+                reminders.setReminders_id(tempReminderID);
+                UpdateCalendarEntry(reminders);
+                setResult(RESULT_OK);
+                finish();
+                return;
+            }
             if (clickedReminder.getWork_id().contains(",")) {
                 for (String requestId : clickedReminder.getWork_id().split(",")) {
                     WorkManager.getInstance(getApplicationContext()).cancelWorkById(UUID.fromString(requestId));
@@ -707,8 +728,18 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         }
     }
 
+    private TimePickerDialog.OnTimeSetListener startTimeListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            datepickerVal = " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
+                    + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
+            reminderTime.setText(datepickerVal);
+            isReminerTimeChange = true;
+        }
+    };
+
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    public void onTimeSet(TimePickerDialogs view, int hourOfDay, int minute) {
         datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay) + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
         reminderTime.setText(datepickerVal);
         isReminerTimeChange = true;
@@ -716,5 +747,22 @@ public class AddEditReminderActivity extends AppCompatActivity implements
 
     public interface ClickAddSubTaskListener {
         void addSubTaskListener();
+    }
+
+    private int UpdateCalendarEntry(Reminders reminders) {
+        int iNumRowsUpdated = 0;
+
+        Uri eventUri;
+        // the new way
+        eventUri = CalendarContract.Events.CONTENT_URI;
+
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.TITLE, reminders.getReminders_title());
+
+        Uri updateUri = ContentUris.withAppendedId(eventUri, reminders.getReminders_id() - 1000);
+        iNumRowsUpdated = getContentResolver().update(updateUri, values, null,
+                null);
+
+        return iNumRowsUpdated;
     }
 }

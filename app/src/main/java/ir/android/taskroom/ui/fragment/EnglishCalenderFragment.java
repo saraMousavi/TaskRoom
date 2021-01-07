@@ -2,6 +2,7 @@ package ir.android.taskroom.ui.fragment;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -52,7 +53,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
@@ -124,7 +127,7 @@ public class EnglishCalenderFragment extends Fragment {
             CalendarContract.Events.TITLE,                  // 1
             CalendarContract.Events.ORGANIZER,         // 2
             CalendarContract.Events.DTSTART,                  // 3
-            CalendarContract.Events.EVENT_LOCATION                  // 3
+            CalendarContract.Events.RRULE             // 3
     };
     private List<EventDay> markEvents = new ArrayList<>();
 
@@ -227,19 +230,20 @@ public class EnglishCalenderFragment extends Fragment {
                             isBoth = true;
                         }
                     }
-                    if(!isBoth){
+                    if (!isBoth) {
                         markTaskDays(taskDateTime);
                     }
                 }
-                isBoth = false;
+
                 for (DateTime reminderDateTime : reminderDateList) {
+                    isBoth = false;
                     for (DateTime taskDateTime : taskDateList) {
                         if (taskDateTime.equals(reminderDateTime)) {
                             reminderTaskDateList.add(taskDateTime);
                             isBoth = true;
                         }
                     }
-                    if(!isBoth) {
+                    if (!isBoth) {
                         markRemindersDays(reminderDateTime);
                     }
                 }
@@ -378,13 +382,17 @@ public class EnglishCalenderFragment extends Fragment {
                     snackbar.show();
                 } else if (reminderList.getTag().equals("clicked")) {
                     Reminders selectedReminder = reminderAdapter.getReminderAt(viewHolder.getAdapterPosition());
-                    reminderViewModel.delete(selectedReminder);
-                    if (selectedReminder.getWork_id().contains(",")) {
-                        for (String requestId : selectedReminder.getWork_id().split(",")) {
-                            WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                    if (selectedReminder.getReminders_id() > 1000) {
+                        deleteCalendarEntry(selectedReminder.getReminders_id());
+                    } else {
+                        reminderViewModel.delete(selectedReminder);
+                        if (selectedReminder.getWork_id().contains(",")) {
+                            for (String requestId : selectedReminder.getWork_id().split(",")) {
+                                WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(requestId));
+                            }
+                        } else if (!selectedReminder.getWork_id().equals("0")) {
+                            WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
                         }
-                    } else if (!selectedReminder.getWork_id().equals("0")) {
-                        WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
                     }
                     Snackbar snackbar = Snackbar
                             .make(getActivity().getWindow().getDecorView().findViewById(android.R.id.content), getString(R.string.successDeleteReminder), Snackbar.LENGTH_LONG);
@@ -642,26 +650,71 @@ public class EnglishCalenderFragment extends Fragment {
         try {
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    String _id = cursor.getString(0);
+                    Long id = 1000 + Long.parseLong(cursor.getString(0));
                     String displayName = cursor.getString(1);
                     String accountName = cursor.getString(2);
                     String date = cursor.getString(3);
-                    String type = cursor.getString(4);
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
+                    String rRule = cursor.getString(4);
+                    StringBuilder reminderRepeatDay = new StringBuilder();
+                    if (rRule != null && !rRule.isEmpty()) {
+                        System.out.println("rRule = " + rRule);
+                        System.out.println("displayName = " + displayName);
+                        String[] rRules = rRule.split(";");
+                        Map<String, String> rRuleMap = new HashMap<>();
+                        for(String rule: rRules){
+                            rRuleMap.put(rule.split("=")[0].trim(), rule.split("=")[1].trim());
+                        }
+                        String repeatValue = rRuleMap.get("FREQ");
+                        if(rRuleMap.get("BYDAY") == null){
+                            if (repeatValue.equals(getString(R.string.DAILY))) {
+                                reminderRepeatDay.append(getString(R.string.daily));
+                            } else if (repeatValue.equals(getString(R.string.WEEKLY))) {
+                                reminderRepeatDay.append(getString(R.string.weekly));
+                            } else if (repeatValue.equals(getString(R.string.MONTHLY))) {
+                                reminderRepeatDay.append(getString(R.string.monthly));
+                            } else if (repeatValue.equals(getString(R.string.YEARLY))) {
+                                reminderRepeatDay.append(getString(R.string.yearly));
+                            }
+                        } else {
+                            String[] repeatDays = rRuleMap.get("BYDAY").split(",");
+                            for (String repeatDay : repeatDays) {
+                                if (repeatDay.equals(getString(R.string.sa))) {
+                                    reminderRepeatDay.append(getString(R.string.saterday)).append(",");
+                                } else if (repeatDay.equals(getString(R.string.su))) {
+                                    reminderRepeatDay.append(getString(R.string.sunday)).append(",");
+                                } else if (repeatDay.equals(getString(R.string.mo))) {
+                                    reminderRepeatDay.append(getString(R.string.monday)).append(",");
+                                } else if (repeatDay.equals(getString(R.string.tu))) {
+                                    reminderRepeatDay.append(getString(R.string.tuesday)).append(",");
+                                } else if (repeatDay.equals(getString(R.string.we))) {
+                                    reminderRepeatDay.append(getString(R.string.wednesday)).append(",");
+                                } else if (repeatDay.equals(getString(R.string.th))) {
+                                    reminderRepeatDay.append(getString(R.string.thursday)).append(",");
+                                } else if (repeatDay.equals(getString(R.string.fr))) {
+                                    reminderRepeatDay.append(getString(R.string.friday)).append(",");
+                                }
+                            }
+                            if(reminderRepeatDay.lastIndexOf(",") == reminderRepeatDay.length() - 1){
+                                reminderRepeatDay = reminderRepeatDay.deleteCharAt(reminderRepeatDay.length() - 1);
+                            }
+                        }
+
+                    }
 
                     // Create a calendar object that will convert the date and time value in milliseconds to date.
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(Long.parseLong(date));
-                    Reminders reminders = new Reminders(0, "",
-                            calendar.get(Calendar.HOUR_OF_DAY) +
-                                    ":" + calendar.get(Calendar.MINUTE)
-                                    + ":" + calendar.get(Calendar.SECOND), 0, displayName, "", 0, 1, 0, "", false);
                     int year = calendar.get(Calendar.YEAR);
                     int month = calendar.get(Calendar.MONTH) + 1;
                     int day = calendar.get(Calendar.DAY_OF_MONTH);
                     int hour = calendar.get(Calendar.HOUR_OF_DAY);
                     int minute = calendar.get(Calendar.MINUTE);
                     int second = calendar.get(Calendar.SECOND);
+                    Reminders reminders = new Reminders(0, "",
+                            (hour < 10 ? "0" + hour : hour) + ":"
+                                    + (minute < 10 ? "0" + minute : minute) + ":"
+                                    + (second < 10 ? "0" + second : second), 0, displayName, reminderRepeatDay.toString(), 0, 1, 0, "", false);
+                    reminders.setReminders_id(id);
                     reminderDateList.add(new DateTime(year, month, day, 0, 0));
                     reminders.setReminders_crdate(Long.parseLong(year + "" +
                             (month < 10 ? "0" + month : month) + ""
@@ -672,12 +725,19 @@ public class EnglishCalenderFragment extends Fragment {
                     reminderCalenderList.add(reminders);
                 }
             }
-        } catch (AssertionError ex) {
-            ex.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private int deleteCalendarEntry(long entryID) {
+        int iNumRowsDeleted = 0;
+
+        Uri eventUri = ContentUris
+                .withAppendedId(CalendarContract.Events.CONTENT_URI, entryID - 1000);
+        iNumRowsDeleted = getContext().getContentResolver().delete(eventUri, null, null);
+        return iNumRowsDeleted;
     }
 
 

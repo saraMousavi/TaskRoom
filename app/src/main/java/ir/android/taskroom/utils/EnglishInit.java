@@ -173,7 +173,7 @@ public class EnglishInit {
      * @return
      */
     public static String stringFormatDate(DateTime dateTime) {
-        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "/" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth());
 //                + " " + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
 //                + ":" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour());
@@ -193,7 +193,7 @@ public class EnglishInit {
      * @return
      */
     public static String stringFormatDateTime(DateTime dateTime) {
-        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "/" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth())
                 + " " + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
                 + ":" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour())
@@ -208,7 +208,7 @@ public class EnglishInit {
      */
     public static Long integerFormatDate(DateTime dateTime) {
         return Long.valueOf(dateTime.getYear() + ""
-                + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+                + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth()));
 //                + "" + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
 //                + "" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour()) );
@@ -222,7 +222,7 @@ public class EnglishInit {
      */
     public static Long integerFormatDateTime(DateTime dateTime) {
         return Long.valueOf(dateTime.getYear() + ""
-                + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+                + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth())
                 + "" + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
                 + "" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour())
@@ -827,23 +827,66 @@ public class EnglishInit {
         int nextYear = currentDateTime.getYear();
         int nextMonth = currentDateTime.getMonthOfYear();
         int nextDay = currentDateTime.getDayOfMonth();
-        if (currentDateTime.getMonthOfYear() == 12 && currentDateTime.getDayOfMonth() > (29 - afterDayDuration)) {
-            nextYear += 1;
-            nextMonth = 1;
-            nextDay = afterDayDuration - (29 - nextDay);
-            if (nextDay > 30) {
-                nextDay = nextDay - 30;
-                nextMonth = 2;
-            }
-        }
-        if (nextMonth > 6 && currentDateTime.getDayOfMonth() > (30 - afterDayDuration)) {
-            nextMonth += 1;
-            nextDay = afterDayDuration - (30 - nextDay);
-        } else if (nextMonth < 7 && currentDateTime.getDayOfMonth() > (31 - afterDayDuration)) {
-            nextMonth += 1;
-            nextDay = afterDayDuration - (31 - nextDay);
-        } else {
-            nextDay += afterDayDuration;
+        switch (nextMonth) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                if (afterDayDuration <= 31 - nextDay) {
+                    nextDay += afterDayDuration;
+                } else {
+                    if ((31 - nextDay) == 0) {
+                        if (nextMonth == 12) {
+                            nextYear += 1;
+                            nextMonth = 1;
+                        } else {
+                            nextMonth += 1;
+                        }
+                        nextDay = 1;
+                        afterDayDuration -= 1;
+                    } else {
+                        afterDayDuration -= (31 - nextDay);
+                        nextDay = 31;
+                    }
+                    dateTimeAfter7dayFromCurrent(new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour()), afterDayDuration);
+                }
+                break;
+            case 2:
+                if (afterDayDuration <= 28 - nextDay) {
+                    nextDay += afterDayDuration;
+                } else {
+                    if ((28 - nextDay) == 0) {
+                        nextMonth += 1;
+                        nextDay = 1;
+                        afterDayDuration -= 1;
+                    } else {
+                        afterDayDuration -= (28 - nextDay);
+                        nextDay = 28;
+                    }
+                    dateTimeAfter7dayFromCurrent(new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour()), afterDayDuration);
+                }
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                if (afterDayDuration <= 30 - nextDay) {
+                    nextDay += afterDayDuration;
+                } else {
+                    if ((30 - nextDay) == 0) {
+                        nextMonth += 1;
+                        nextDay = 1;
+                        afterDayDuration -= 1;
+                    } else {
+                        afterDayDuration -= (30 - nextDay);
+                        nextDay = 30;
+                    }
+                    dateTimeAfter7dayFromCurrent(new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour()), afterDayDuration);
+                }
+                break;
         }
         return new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour());
     }
@@ -1080,8 +1123,8 @@ public class EnglishInit {
                 isActive = false;
                 endDate = EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(tasks.getComplete_date()
                         .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
-                if(EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(objectStartDate))){
-                    endDate  = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(objectStartDate))) {
+                    endDate = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         } else {
@@ -1093,8 +1136,8 @@ public class EnglishInit {
             if (reminders.getReminders_active() == 0 && reminders.getReminders_update() != null) {
                 isActive = false;
                 endDate = EnglishInit.convertIntegerToDateTime(reminders.getReminders_update());
-                if(EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(objectStartDate))){
-                    endDate  = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(objectStartDate))) {
+                    endDate = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         }
@@ -1104,7 +1147,7 @@ public class EnglishInit {
 
         DateTime startDate = EnglishInit.convertIntegerToDateTime(objectStartDate);
         int duration = Days.daysBetween(startDate, endDate).getDays();
-        if ((selectedCalender == null && isTask) || (isCreateReminder) || (selectedCalender != null && !isTask)) {//ijad
+        if ((selectedCalender == null && isTask) || (isCreateReminder)) {//ijad || (selectedCalender != null && !isTask)
             if (repeatType.equals(resources.getString(R.string.daily))) {
                 TasksReminderActions t = calculateRemainTimeInDaily(tasksOrReminder, selectedCalender, resources, 1);
                 remainDuration = t.getRemainDuration();
@@ -1342,8 +1385,8 @@ public class EnglishInit {
                 isActive = false;
                 endDate = EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(tasks.getComplete_date()
                         .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
-                if(EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDate)))){
-                    endDate  = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDate)))) {
+                    endDate = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
 
             }
@@ -1354,8 +1397,8 @@ public class EnglishInit {
             if (reminders.getReminders_active() == 0 && reminders.getReminders_update() != null) {
                 isActive = false;
                 endDate = EnglishInit.convertIntegerToDateTime(reminders.getReminders_update());
-                if(EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDate)))){
-                    endDate  = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDate)))) {
+                    endDate = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         }
@@ -1411,8 +1454,8 @@ public class EnglishInit {
                 isActive = false;
                 endDate = EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(tasks.getComplete_date()
                         .replace(resources.getString(R.string.inDate), "").replace(resources.getString(R.string.completed), "")));
-                if(EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDateString)))){
-                    endDate  = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDateString)))) {
+                    endDate = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         } else {
@@ -1422,8 +1465,8 @@ public class EnglishInit {
             if (reminders.getReminders_active() == 0) {
                 isActive = false;
                 endDate = EnglishInit.convertIntegerToDateTime(reminders.getReminders_update());
-                if(EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDateString)))){
-                    endDate  = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
+                if (EnglishInit.integerFormatTime(endDate) >= EnglishInit.integerFormatTime(EnglishInit.convertIntegerToDateTime(EnglishInit.integerFormatFromStringDate(startDateString)))) {
+                    endDate = EnglishInit.dateTimeAfter7dayFromCurrent(endDate, 1);
                 }
             }
         }
@@ -1434,7 +1477,7 @@ public class EnglishInit {
         boolean isInRecyclerView = false;
         for (String repeatTypeVal : repeatType.split(",")) {
             if (repeatTypeVal.equals(resources.getString(R.string.saterday))) {
-                if (selectedCalender.getDayOfWeek() == 1) {
+                if (selectedCalender.getDayOfWeek() == 7) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;
@@ -1457,7 +1500,7 @@ public class EnglishInit {
                     }
                 }
             } else if (repeatTypeVal.equals(resources.getString(R.string.sunday))) {
-                if (selectedCalender.getDayOfWeek() == 2) {
+                if (selectedCalender.getDayOfWeek() == 6) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;
@@ -1480,7 +1523,7 @@ public class EnglishInit {
                     }
                 }
             } else if (repeatTypeVal.equals(resources.getString(R.string.monday))) {
-                if (selectedCalender.getDayOfWeek() == 3) {
+                if (selectedCalender.getDayOfWeek() == 1) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;
@@ -1503,7 +1546,7 @@ public class EnglishInit {
                     }
                 }
             } else if (repeatTypeVal.equals(resources.getString(R.string.tuesday))) {
-                if (selectedCalender.getDayOfWeek() == 4) {
+                if (selectedCalender.getDayOfWeek() == 2) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;
@@ -1526,7 +1569,7 @@ public class EnglishInit {
                     }
                 }
             } else if (repeatTypeVal.equals(resources.getString(R.string.wednesday))) {
-                if (selectedCalender.getDayOfWeek() == 5) {
+                if (selectedCalender.getDayOfWeek() == 3) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;
@@ -1549,7 +1592,7 @@ public class EnglishInit {
                     }
                 }
             } else if (repeatTypeVal.equals(resources.getString(R.string.thursday))) {
-                if (selectedCalender.getDayOfWeek() == 6) {
+                if (selectedCalender.getDayOfWeek() == 4) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;
@@ -1572,7 +1615,7 @@ public class EnglishInit {
                     }
                 }
             } else if (repeatTypeVal.equals(resources.getString(R.string.friday))) {
-                if (selectedCalender.getDayOfWeek() == 7) {
+                if (selectedCalender.getDayOfWeek() == 5) {
                     if (EnglishInit.integerFormatFromStringDate(startDateString) / 1000000 <= EnglishInit.integerFormatDate(selectedCalender)) {
                         if (isActive) {
                             isInRecyclerView = true;

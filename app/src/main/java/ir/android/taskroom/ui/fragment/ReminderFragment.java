@@ -1,7 +1,9 @@
 package ir.android.taskroom.ui.fragment;
 
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import androidx.work.WorkManager;
 
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,7 +137,11 @@ public class ReminderFragment extends Fragment {
                 } else if(!selectedReminder.getWork_id().equals("0")) {
                     WorkManager.getInstance(getContext()).cancelWorkById(UUID.fromString(selectedReminder.getWork_id()));
                 }
-                reminderViewModel.delete(selectedReminder);
+                if(selectedReminder.getReminders_id() >= 1000){
+                    deleteCalendarEntry(selectedReminder.getReminders_id());
+                } else {
+                    reminderViewModel.delete(selectedReminder);
+                }
                 String successDeleteReminder = getString(R.string.successDeleteReminder);
                 if(SettingUtil.getInstance(getContext()).isEnglishLanguage()){
                     successDeleteReminder = getString(R.string.successDeleteReminder);
@@ -271,5 +278,16 @@ public class ReminderFragment extends Fragment {
             reminderAdapter.notifyDataSetChanged();
         }
     }
+
+    private int deleteCalendarEntry(long entryID) {
+        int iNumRowsDeleted = 0;
+
+        Uri eventUri = ContentUris
+                .withAppendedId(CalendarContract.EventsEntity.CONTENT_URI, entryID - 1000);
+        iNumRowsDeleted = getContext().getContentResolver().delete(eventUri, null, null);
+
+        return iNumRowsDeleted;
+    }
+
 
 }

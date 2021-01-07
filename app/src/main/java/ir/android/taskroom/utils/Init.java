@@ -22,8 +22,10 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Interval;
+import org.joda.time.chrono.PersianChronologyKhayyam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,7 +203,7 @@ public class Init {
      * @return
      */
     public static String stringFormatDate(DateTime dateTime) {
-        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "/" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth());
 //                + " " + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
 //                + ":" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour());
@@ -221,7 +223,7 @@ public class Init {
      * @return
      */
     public static String stringFormatDateTime(DateTime dateTime) {
-        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+        return dateTime.getYear() + "/" + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "/" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth())
                 + " " + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
                 + ":" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour())
@@ -250,7 +252,7 @@ public class Init {
      */
     public static Long integerFormatDateTime(DateTime dateTime) {
         return Long.valueOf(dateTime.getYear() + ""
-                + (dateTime.getMonthOfYear() <= 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
+                + (dateTime.getMonthOfYear() < 10 ? "0" + dateTime.getMonthOfYear() : dateTime.getMonthOfYear())
                 + "" + (dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : dateTime.getDayOfMonth())
                 + "" + (dateTime.getHourOfDay() < 10 ? "0" + dateTime.getHourOfDay() : dateTime.getHourOfDay())
                 + "" + (dateTime.getMinuteOfHour() < 10 ? "0" + dateTime.getMinuteOfHour() : dateTime.getMinuteOfHour())
@@ -291,7 +293,6 @@ public class Init {
      * @return
      */
     public static DateTime convertIntegerToDateTime(Long integerTime) {
-        System.out.println("integerTime = " + integerTime);
         if (integerTime == null || integerTime < 1000000) {
             return null;
         }
@@ -903,25 +904,70 @@ public class Init {
         int nextYear = currentDateTime.getYear();
         int nextMonth = currentDateTime.getMonthOfYear();
         int nextDay = currentDateTime.getDayOfMonth();
-        if (currentDateTime.getMonthOfYear() == 12 && currentDateTime.getDayOfMonth() > (29 - afterDayDuration)) {
-            nextYear += 1;
-            nextMonth = 1;
-            nextDay = afterDayDuration - (29 - nextDay);
-            if (nextDay > 30) {
-                nextDay = nextDay - 30;
-                nextMonth = 2;
-            }
+        switch (nextMonth) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                if (afterDayDuration <= 31 - nextDay) {
+                    nextDay += afterDayDuration;
+                } else {
+                    if ((31 - nextDay) == 0) {
+                        nextMonth += 1;
+                        nextDay = 1;
+                        afterDayDuration -= 1;
+                    } else {
+                        afterDayDuration -= (31 - nextDay);
+                        nextDay = 31;
+                    }
+                    DateTime returnDateTime = new DateTime(PersianChronologyKhayyam.getInstance(DateTimeZone.forID("Asia/Tehran")));
+                    returnDateTime.toDateTime().withDate(nextYear, nextMonth, nextDay);
+                    dateTimeAfter7dayFromCurrent(returnDateTime, afterDayDuration);
+                }
+                break;
+            case 12:
+                if (afterDayDuration <= 29 - nextDay) {
+                    nextDay += afterDayDuration;
+                } else {
+                    if ((29 - nextDay) == 0) {
+                        nextYear += 1;
+                        nextMonth = 1;
+                        nextDay = 1;
+                        afterDayDuration -= 1;
+                    } else {
+                        afterDayDuration -= (29 - nextDay);
+                        nextDay = 29;
+                    }
+                    DateTime returnDateTime = new DateTime(PersianChronologyKhayyam.getInstance(DateTimeZone.forID("Asia/Tehran")));
+                    returnDateTime.toDateTime().withDate(nextYear, nextMonth, nextDay);
+                    dateTimeAfter7dayFromCurrent(returnDateTime, afterDayDuration);
+                }
+                break;
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                if (afterDayDuration <= 30 - nextDay) {
+                    nextDay += afterDayDuration;
+                } else {
+                    if ((30 - nextDay) == 0) {
+                        nextMonth += 1;
+                        nextDay = 1;
+                        afterDayDuration -= 1;
+                    } else {
+                        afterDayDuration -= (30 - nextDay);
+                        nextDay = 30;
+                    }
+                    dateTimeAfter7dayFromCurrent(new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour()), afterDayDuration);
+                }
+                break;
         }
-        if (nextMonth > 6 && currentDateTime.getDayOfMonth() > (30 - afterDayDuration)) {
-            nextMonth += 1;
-            nextDay = afterDayDuration - (30 - nextDay);
-        } else if (nextMonth < 7 && currentDateTime.getDayOfMonth() > (31 - afterDayDuration)) {
-            nextMonth += 1;
-            nextDay = afterDayDuration - (31 - nextDay);
-        } else {
-            nextDay += afterDayDuration;
-        }
-        return new DateTime(nextYear, nextMonth, nextDay, currentDateTime.getHourOfDay(), currentDateTime.getMinuteOfHour());
+        DateTime returnDateTime = new DateTime(PersianChronologyKhayyam.getInstance(DateTimeZone.forID("Asia/Tehran")));
+        returnDateTime.toDateTime().withDate(nextYear, nextMonth, nextDay);
+        return returnDateTime;
     }
 
     public static TasksReminderActions getDurationInWholeStateOfRemindersOrTasks(Object reminderOrTask, DateTime selectedCalender, Resources resources) {
@@ -1180,7 +1226,7 @@ public class Init {
 
         DateTime startDate = Init.convertIntegerToDateTime(objectStartDate);
         int duration = Days.daysBetween(startDate, endDate).getDays();
-        if ((selectedCalender == null && isTask) || (isCreateReminder) || (selectedCalender != null && !isTask)) {//ijad
+        if ((selectedCalender == null && isTask) || (isCreateReminder)) {//ijad
             if (repeatType.equals(resources.getString(R.string.daily))) {
                 TasksReminderActions t = calculateRemainTimeInDaily(tasksOrReminder, selectedCalender, resources, 1);
                 remainDuration = t.getRemainDuration();

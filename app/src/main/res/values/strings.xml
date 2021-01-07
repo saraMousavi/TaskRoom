@@ -54,12 +54,16 @@
     <string name="mdtp_hour_picker_description" msgid="7586639618712934060">"لغزنده دایره‌ای ساعت"</string>
 
     <string name="daily">Daily</string>
+    <string name="DAILY">DAILY</string>
     <string name="day">Day</string>
     <string name="weekly">Weekly</string>
+    <string name="WEEKLY">WEEKLY</string>
     <string name="week">Week</string>
     <string name="monthly">Monthly</string>
+    <string name="MONTHLY">MONTHLY</string>
     <string name="month">Month</string>
     <string name="yearly">Yearly</string>
+    <string name="YEARLY">YEARLY</string>
     <string name="year">Year</string>
     <string name="selectDays">Select Days</string>
     <string name="advance">Advance</string>
@@ -71,6 +75,13 @@
     <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
+    <string name="sa">SA</string>
+    <string name="su">SU</string>
+    <string name="mo">MO</string>
+    <string name="tu">TU</string>
+    <string name="we">WE</string>
+    <string name="th">TH</string>
+    <string name="fr">FR</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="addSubtasks">Create new sub task</string>
