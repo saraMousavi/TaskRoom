@@ -309,7 +309,7 @@ public class EnglishCalenderFragment extends Fragment {
                         clickedDateTime = tempClickDateTime;
                     }
                     for (Reminders reminder : reminders) {
-                        if (reminder.getReminders_crdate() / 10000000 < 1500) {
+                        if (reminder.getReminders_crdate() != null && reminder.getReminders_crdate() / 10000000 < 1500) {
                             CalendarTool calendarTool = new CalendarTool();
                             calendarTool.setGregorianDate(clickedDateTime.getYear(), clickedDateTime.getMonthOfYear(), clickedDateTime.getDayOfMonth());
                             clickedDateTime = new DateTime(Integer.parseInt(calendarTool.getIranianDate().split("/")[0]),

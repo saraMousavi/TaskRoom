@@ -154,7 +154,7 @@ public class Init {
         if (isDate) {
             time = time.split(" ")[1];
         }
-        int hour = Integer.parseInt(time.split(":")[0]);
+        int hour = Integer.parseInt(time.trim().split(":")[0]);
         int minute = Integer.parseInt(time.split(":")[1]);
         int second = Integer.parseInt(time.split(":")[2]);
         //@TODO check today is last day of moth or not
