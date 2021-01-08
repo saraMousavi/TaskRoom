@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
@@ -52,26 +50,12 @@ import com.mohamadian.persianhorizontalexpcalendar.enums.PersianViewPagerType;
 import com.mohamadian.persianhorizontalexpcalendar.model.CustomGradientDrawable;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Interval;
-
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.data.db.entity.Projects;
@@ -85,10 +69,8 @@ import ir.android.taskroom.ui.activity.reminder.AddEditReminderActivity;
 import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.ui.adapters.ReminderAdapter;
 import ir.android.taskroom.ui.adapters.TasksAdapter;
-import ir.android.taskroom.utils.EnglishInit;
 import ir.android.taskroom.utils.Init;
 import ir.android.taskroom.utils.calender.CalendarTool;
-import ir.android.taskroom.utils.calender.PersianCalendar;
 import ir.android.taskroom.utils.objects.TasksReminderActions;
 import ir.android.taskroom.viewmodels.ProjectViewModel;
 import ir.android.taskroom.viewmodels.ReminderViewModel;
@@ -105,7 +87,6 @@ public class CalenderFragment extends Fragment {
     private RecyclerView recyclerView;
     private FloatingActionButton addTaskBtn;
     private LinearLayout fab1, fab2;
-    private CollapsingToolbarLayout toolBarLayout;
     public static final int ADD_TASK_REQUEST = 1;
     public static final int EDIT_TASK_REQUEST = 2;
     public static final int ADD_REMINDER_REQUEST = 3;
@@ -618,7 +599,11 @@ public class CalenderFragment extends Fragment {
         switch (requestCode) {
             case REQUEST_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    Fragment fragment = getFragmentManager().findFragmentById(R.id.calendarFragment);
+                    final FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    fragmentTransaction.detach(fragment);
+                    fragmentTransaction.attach(fragment);
+                    fragmentTransaction.commit();
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.permissionDenied), Toast.LENGTH_SHORT).show();
                 }
@@ -712,6 +697,7 @@ public class CalenderFragment extends Fragment {
                         @Override
                         public void run() {
                             markVerticalSomeDays(new DateTime(persianYear, persianMonth, persianDay, 0, 0));
+
                         }
                     }, 1500);
 

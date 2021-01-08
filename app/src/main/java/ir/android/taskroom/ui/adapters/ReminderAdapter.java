@@ -209,7 +209,12 @@ public class ReminderAdapter extends ListAdapter<Reminders, ReminderAdapter.View
     private String cancelOrCreateRequest(Reminders reminders, boolean isChecked) {
         String datepickerVal = reminders.getReminders_time();
         if (!datepickerVal.isEmpty() && isChecked) {
-            TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, Init.convertIntegerToDateTime(reminders.getReminders_crdate()), mFragmentActivity.getResources());
+            TasksReminderActions tasksReminderActions = null;
+            if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
+                tasksReminderActions  = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(reminders, Init.convertIntegerToDateTime(reminders.getReminders_crdate()), mFragmentActivity.getResources());
+            } else {
+                tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(reminders, Init.convertIntegerToDateTime(reminders.getReminders_crdate()), mFragmentActivity.getResources());
+            }
             if (tasksReminderActions.getRemainDuration() == -1) {
                 return "-1";
             }

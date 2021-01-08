@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.UUID;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.ui.activity.task.AddEditTaskActivity;
 import ir.android.taskroom.utils.SettingUtil;
 import ir.android.taskroom.data.db.entity.Tasks;
 import ir.android.taskroom.ui.fragment.SubTaskFragment;
@@ -156,7 +157,10 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
                             " " + mFragmentActivity.getString(R.string.completed));
                     Snackbar snackbar = Snackbar
                             .make(mFragmentActivity.getWindow().getDecorView().findViewById(android.R.id.content), mFragmentActivity.getString(R.string.disableReminderBecauseOfCompleted), Snackbar.LENGTH_LONG);
-                    ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    if(!SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()){
+                        ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
+                    }
+
                     snackbar.show();
                 } else {
                     task.setTasks_iscompleted(0);
@@ -188,9 +192,9 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
             holder.reminder_attach.setVisibility(View.VISIBLE);
         }
 
-        int newContainerID = View.generateViewId();
-        holder.subtaskConstarint.setId(newContainerID);
-        fragmentJump(tasks, newContainerID);
+//        int newContainerID = View.generateViewId();
+//        holder.subtaskConstarint.setId(newContainerID);
+//        fragmentJump(tasks, newContainerID);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +211,12 @@ public class TasksAdapter extends ListAdapter<Tasks, TasksAdapter.ViewHolder> {
 
     public String createWorkRequest(Tasks tasks, boolean isChecked) {
         if (isChecked) {
-            TasksReminderActions tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(tasks, null, mFragmentActivity.getResources());
+            TasksReminderActions tasksReminderActions = null;
+            if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
+                tasksReminderActions = EnglishInit.getDurationInWholeStateOfRemindersOrTasks(tasks, null, mFragmentActivity.getResources());
+            } else {
+                tasksReminderActions = Init.getDurationInWholeStateOfRemindersOrTasks(tasks, null, mFragmentActivity.getResources());
+            }
             if (tasksReminderActions.getRemainDuration() == -1) {
                 return "-1";
             }

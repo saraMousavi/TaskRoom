@@ -29,3 +29,5 @@
       *;
     }
     -keep class androidx.appcompat.widget.* {*;}
+    -keep class ir.android.taskroom.data.db.* {*;}
+    -dontobfuscate

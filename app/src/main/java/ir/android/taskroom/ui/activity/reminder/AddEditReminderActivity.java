@@ -731,7 +731,7 @@ public class AddEditReminderActivity extends AppCompatActivity implements
     private TimePickerDialog.OnTimeSetListener startTimeListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            datepickerVal = " " + (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
+            datepickerVal = (hourOfDay < 10 ? "0" + hourOfDay : hourOfDay)
                     + ":" + (minute < 10 ? "0" + minute : minute) + ":00";
             reminderTime.setText(datepickerVal);
             isReminerTimeChange = true;

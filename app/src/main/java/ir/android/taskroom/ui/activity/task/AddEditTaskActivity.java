@@ -401,24 +401,18 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         /**
          * show and hide add row for add new sub task
          */
-        Animation slideDown = AnimationUtils.loadAnimation(AddEditTaskActivity.this, R.anim.slide_down);
-        Animation slideUp = AnimationUtils.loadAnimation(AddEditTaskActivity.this, R.anim.slide_up);
         insertSubtasksBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (subfirstRow.getVisibility() == View.GONE) {
                     subfirstRow.setVisibility(View.VISIBLE);
-
-                    subfirstRow.startAnimation(slideDown);
                     if (subtaskRecyclerView.getChildCount() != 0) {
                         ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
                         addRow.setVisibility(View.VISIBLE);
-                        addRow.startAnimation(slideDown);
                     }
                 } else {
                     ConstraintLayout addRow = (ConstraintLayout) subtaskRecyclerView.getChildAt(subtaskRecyclerView.getChildCount() - 1);
                     addRow.setVisibility(View.VISIBLE);
-                    addRow.startAnimation(slideDown);
                 }
             }
         });

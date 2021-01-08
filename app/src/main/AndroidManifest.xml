@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ir.android.taskroom">
 
-    <uses-permission
-        android:name="android.permission.GET_ACCOUNTS"
-        android:maxSdkVersion="22" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
