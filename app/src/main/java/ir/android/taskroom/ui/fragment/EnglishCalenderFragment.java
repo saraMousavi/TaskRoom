@@ -646,8 +646,6 @@ public class EnglishCalenderFragment extends Fragment {
                     String rRule = cursor.getString(4);
                     StringBuilder reminderRepeatDay = new StringBuilder();
                     if (rRule != null && !rRule.isEmpty()) {
-                        System.out.println("rRule = " + rRule);
-                        System.out.println("displayName = " + displayName);
                         String[] rRules = rRule.split(";");
                         Map<String, String> rRuleMap = new HashMap<>();
                         for(String rule: rRules){
@@ -702,7 +700,7 @@ public class EnglishCalenderFragment extends Fragment {
                     Reminders reminders = new Reminders(0, "",
                             (hour < 10 ? "0" + hour : hour) + ":"
                                     + (minute < 10 ? "0" + minute : minute) + ":"
-                                    + (second < 10 ? "0" + second : second), 0, displayName, reminderRepeatDay.toString(), 0, 1, 0, "", false);
+                                    + (second < 10 ? "0" + second : second), 0, displayName, reminderRepeatDay.toString(), 0, 1, 0, "0", false);
                     reminders.setReminders_id(id);
                     reminderDateList.add(new DateTime(year, month, day, 0, 0));
                     reminders.setReminders_crdate(Long.parseLong(year + "" +

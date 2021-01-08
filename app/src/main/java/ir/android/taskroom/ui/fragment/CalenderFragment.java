@@ -679,7 +679,7 @@ public class CalenderFragment extends Fragment {
                     Reminders reminders = new Reminders(0, "",
                             (hour < 10 ? "0" + hour : hour) + ":"
                                     + (minute < 10 ? "0" + minute : minute) + ":"
-                                    + (second < 10 ? "0" + second : second), 0, displayName, reminderRepeatDay.toString(), 0, 1, 0, "", false);
+                                    + (second < 10 ? "0" + second : second), 0, displayName, reminderRepeatDay.toString(), 0, 1, 0, "0", false);
                     reminders.setReminders_id(id);
                     CalendarTool calendarTool = new CalendarTool();
                     calendarTool.setGregorianDate(year, month, day);
