@@ -649,6 +649,11 @@ public class AddEditTaskActivity extends AppCompatActivity implements
         startTextVal = findViewById(R.id.reminderTimeVal);
         endTextVal = findViewById(R.id.endTextVal);
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
+        if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                repeatTypeVal.setTextAppearance(R.style.numberTextInput);
+            }
+        }
         completedDate = findViewById(R.id.completedDate);
         priorityVal = findViewById(R.id.priorityVal);
         reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);

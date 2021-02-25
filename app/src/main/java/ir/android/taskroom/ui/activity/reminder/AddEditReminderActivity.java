@@ -376,6 +376,11 @@ public class AddEditReminderActivity extends AppCompatActivity implements
         //@TODO why hour and minute  has inversed in ui
         reminderTime.setText(EnglishInit.getCurrentTime());
         repeatTypeVal = findViewById(R.id.repeatTypeVal);
+        if (SettingUtil.getInstance(getApplicationContext()).isEnglishLanguage()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                repeatTypeVal.setTextAppearance(R.style.numberTextInput);
+            }
+        }
         priorityVal = findViewById(R.id.priorityVal);
         reminderTimeConstraint = findViewById(R.id.reminderTimeConstraint);
         reminderTypeConstraint = findViewById(R.id.reminderTypeConstraint);

@@ -193,4 +193,6 @@
     <string name="Persian">فارسی</string>
     <string name="changeLanguage">تغییر زبان برنامه</string>
     <string name="selectLanguage">انتخاب زبان</string>
+    <string name="privacyPolicy">حفظ حریم خصوصی</string>
+    <string name="done">انجام شد</string>
 </resources>

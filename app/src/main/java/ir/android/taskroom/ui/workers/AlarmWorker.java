@@ -7,27 +7,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import java.util.Locale;
+import java.util.Random;
 
 import ir.android.taskroom.R;
 import ir.android.taskroom.ui.activity.AlarmActivity;
 import ir.android.taskroom.ui.activity.MainActivity;
+import ir.android.taskroom.ui.activity.NotificationActivity;
 import ir.android.taskroom.utils.EnglishInit;
-import ir.android.taskroom.utils.Init;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -69,6 +67,9 @@ public class AlarmWorker extends Worker {
     }
 
     private void startNotification() {
+        int notificationId = new Random().nextInt(); // just use a counter in some util class...
+        PendingIntent dismissIntent = NotificationActivity.getDismissIntent(notificationId, getApplicationContext());
+
         PendingIntent contentPendingIntent = PendingIntent.getActivity
                 (getApplicationContext(), 0, new Intent(getApplicationContext(), MainActivity.class),
                         PendingIntent.FLAG_UPDATE_CURRENT);
@@ -84,9 +85,10 @@ public class AlarmWorker extends Worker {
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setAutoCancel(true);
+                .addAction(R.drawable.ic_red_close, getApplicationContext().getResources().getString(R.string.done), dismissIntent)
+                .setOngoing(true);
 
-        mNotifyManager.notify(0, builder.build());
+        mNotifyManager.notify(notificationId, builder.build());
     }
 
     private void startAlarmActivity() {

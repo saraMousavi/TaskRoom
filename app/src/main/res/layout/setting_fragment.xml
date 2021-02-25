@@ -40,8 +40,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -336,17 +336,22 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="@dimen/_400sdp" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/_20sdp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline21"
                 app:layout_constraintTop_toBottomOf="@+id/guideline20">
 
                 <ImageView
+                    android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:srcCompat="@drawable/ic_version" />
 
                 <TextView
@@ -354,22 +359,42 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/versionapp" />
+                    android:text="@string/versionapp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    tools:layout_editor_absoluteY="-4dp" />
 
                 <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/appVersionText"
+                    android:layout_gravity="center"
+                    android:text="@string/versionappnum" />
+
+                <TextView
+                    android:id="@+id/privacyPolicy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/_5sdp"
-                    android:text="@string/versionappnum" />
-            </LinearLayout>
+                    android:gravity="end"
+                    android:paddingStart="40dp"
+                    android:text="@string/privacyPolicy"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="@color/theme_page_blue"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline21"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="@dimen/_450sdp" />
+                app:layout_constraintGuide_begin="@dimen/_470sdp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

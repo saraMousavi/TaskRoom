@@ -33,6 +33,7 @@ public class LanguageDialog extends Dialog {
         this.mContext = context;
         this.sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(context);
+        setCanceledOnTouchOutside(false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -89,6 +90,11 @@ public class ProjectsAdapter extends ListAdapter<Projects, RecyclerView.ViewHold
             prjCategory = itemView.findViewById(R.id.prjCategory);
             projectsTitle = itemView.findViewById(R.id.projectsTitle);
             tasksNumVal = itemView.findViewById(R.id.tasksNumVal);
+            if (SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    tasksNumVal.setTextAppearance(R.style.numberTextInput);
+                }
+            }
             tasknum = itemView.findViewById(R.id.tasknum);
             if(!SettingUtil.getInstance(mFragmentActivity.getApplicationContext()).isEnglishLanguage()){
                 projectsBox.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);

@@ -192,4 +192,6 @@
 
     <string name="am_label">قبل‌ازظهر</string>
     <string name="pm_label">بعدازظهر</string>
+    <string name="privacyPolicy">privacy policy</string>
+    <string name="done">Done</string>
 </resources>

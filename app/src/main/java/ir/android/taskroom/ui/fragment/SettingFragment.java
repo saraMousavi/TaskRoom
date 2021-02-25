@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class SettingFragment extends Fragment {
     private SwitchCompat nightModeActive, languageActive;
     private LinearLayout projectCategory, themeFragment, shareApp, aboutApp, support, showCaseView, changeLanguageFragment;
     private SharedPreferences sharedPreferences;
-    private TextView projectCategoryText, darkModeText, themeFragmentText, changeLanguageFragmentText,
+    private TextView privacyPolicy,projectCategoryText, darkModeText, themeFragmentText, changeLanguageFragmentText,
             supportText, shareAppText, aboutAppText, showCaseViewText, appVersionText;
 
     @Nullable
@@ -133,7 +134,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:09944125972"));
+                intent.setData(Uri.parse("tel:+9809216875084"));
                 startActivity(intent);
             }
         });
@@ -175,6 +176,7 @@ public class SettingFragment extends Fragment {
                     SettingUtil.getInstance(getContext()).setDarkTheme(false);
                 }
                 startActivity(new Intent(getContext(), MainActivity.class));
+                getActivity().finish();
             }
         });
         languageActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -186,6 +188,16 @@ public class SettingFragment extends Fragment {
                     startActivity("fa");
                 }
             }
+        });
+        privacyPolicy.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view)
+            {
+                Intent browser= new Intent(Intent.ACTION_VIEW, Uri.parse("http://taskroom.ir/html/privacyPolicy.html"));
+                startActivity(browser);
+            }
+
         });
     }
 
@@ -202,6 +214,8 @@ public class SettingFragment extends Fragment {
         nightModeActive = this.inflatedView.findViewById(R.id.nightModeActive);
         languageActive = this.inflatedView.findViewById(R.id.languageActive);
         changeLanguageFragment = this.inflatedView.findViewById(R.id.changeLanguageFragment);
+        privacyPolicy = this.inflatedView.findViewById(R.id.privacyPolicy);
+        privacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
 
         if (SettingUtil.getInstance(getContext()).isDarkTheme()) {
             nightModeActive.setChecked(true);
@@ -230,6 +244,7 @@ public class SettingFragment extends Fragment {
         SettingUtil.getInstance(getContext()).setEnglishLanguage(language.equals("en"));
         editor.apply();
         startActivity(intent);
+        getActivity().finish();
     }
 
     private void setLocale(String lang) {

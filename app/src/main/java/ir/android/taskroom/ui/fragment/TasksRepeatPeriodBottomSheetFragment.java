@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -24,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 import ir.android.taskroom.R;
+import ir.android.taskroom.utils.SettingUtil;
 
 public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragment {
     private View inlfateView;
@@ -72,7 +74,6 @@ public class TasksRepeatPeriodBottomSheetFragment extends BottomSheetDialogFragm
     private void init() {
         repeatPeriodBtn = inlfateView.findViewById(R.id.repeatPeriodBtn);
         numberPeriod = inlfateView.findViewById(R.id.numberPeriod);
-
         numberPeriod.setMinValue(2);
         numberPeriod.setMaxValue(100);
         typePeriod = inlfateView.findViewById(R.id.typePeriod);
